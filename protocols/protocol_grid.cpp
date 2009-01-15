@@ -20,9 +20,9 @@ namespace protocol_grid{
  m_session->procces();
  }
 
- bellhop_get_adapter_name::bellhop_get_adapter_name ( std::size_t _requestId, adapter_session * _session )
+ bellhop_get_servant_info::bellhop_get_servant_info ( std::size_t _requestId, adapter_session * _session )
  : bellhop(_requestId, _session){}
- void bellhop_get_adapter_name ::response( std::string a0 , unsigned short a1 )
+ void bellhop_get_servant_info ::response( std::string a0 , unsigned short a1 )
  {
  stream_write * ssocket = m_session->begin_response( m_requestId );
  ssocket->write( a0 );
@@ -42,7 +42,7 @@ namespace protocol_grid{
 
  
  const int enum_method_add_adapter = 0;
- const int enum_method_get_adapter_name = 1;
+ const int enum_method_get_servant_info = 1;
  const int enum_method_get_adapter_id = 2;
  
  void servant::call_method( std::size_t _methodId, std::size_t _requestId, adapter_session * _session )
@@ -62,14 +62,14 @@ namespace protocol_grid{
  
  this->add_adapter ( bellhop , *a0 , *a1 , *a2 );
  }break;
- case enum_method_get_adapter_name:
+ case enum_method_get_servant_info:
  {
- bellhop_get_adapter_name * bellhop
- = new bellhop_get_adapter_name( _requestId, _session );
+ bellhop_get_servant_info * bellhop
+ = new bellhop_get_servant_info( _requestId, _session );
  std::string * a0;
  stream->select( &a0 );
  
- this->get_adapter_name ( bellhop , *a0 );
+ this->get_servant_info ( bellhop , *a0 );
  }break;
  case enum_method_get_adapter_id:
  {
@@ -91,7 +91,7 @@ namespace protocol_grid{
  this->response( *a0 );
  }
 
- void response_get_adapter_name ::response_call( stream_read * _stream )
+ void response_get_servant_info ::response_call( stream_read * _stream )
  {
  std::string * a0;
  _stream->select( &a0 );
@@ -123,9 +123,9 @@ namespace protocol_grid{
  this->procces();
  }
 
- void proxy:: get_adapter_name_async( std::string a0 , response_get_adapter_name * _response )
+ void proxy:: get_servant_info_async( std::string a0 , response_get_servant_info * _response )
  {
- stream_write * stream = this->begin_message( enum_method_get_adapter_name, _response );
+ stream_write * stream = this->begin_message( enum_method_get_servant_info, _response );
  stream->write( a0 );
  this->procces();
  }

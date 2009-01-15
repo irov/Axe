@@ -44,7 +44,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -188,6 +188,10 @@
 			>
 			<File
 				RelativePath=".\maker.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pch.hpp"
 				>
 			</File>
 			<File

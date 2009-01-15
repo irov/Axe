@@ -1,11 +1,5 @@
 #	pragma once
 
-#	include <boost/preprocessor/seq.hpp>
-#	include <boost/preprocessor/cat.hpp>
-#	include <boost/preprocessor/punctuation/comma_if.hpp>
-#	include <boost/preprocessor/seq/for_each_i.hpp>
-
-
 #	define IMPLEMENT_BELLHOP_ARGS(r, data, i , elem) BOOST_PP_COMMA_IF(i) elem BOOST_PP_CAT(a,i)
 #	define IMPLEMENT_BELLHOP_WRITE(r, data, i, elem) ssocket->write( BOOST_PP_CAT(a,i) );\n
 

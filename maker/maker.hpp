@@ -1,8 +1,5 @@
 #	pragma once
 
-#	include <iostream>
-#	include <boost/preprocessor/stringize.hpp>
-
 #	define PROTOCOL_PATH "../protocols/"
 
 #	define WRITE_F( text, f ) {const char buff[] = text ;fwrite(buff, sizeof(buff)-1, 1, f);}

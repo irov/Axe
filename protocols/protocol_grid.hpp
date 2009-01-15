@@ -16,11 +16,11 @@ namespace protocol_grid{
  void response( std::size_t );
  };
 
- class bellhop_get_adapter_name
+ class bellhop_get_servant_info
  : public bellhop
  {
  public:
- bellhop_get_adapter_name( std::size_t _requestId, adapter_session * _session );
+ bellhop_get_servant_info( std::size_t _requestId, adapter_session * _session );
  public:
  void response( std::string , unsigned short );
  };
@@ -39,7 +39,7 @@ namespace protocol_grid{
  {
  public:
  virtual void add_adapter ( bellhop_add_adapter * _bellhop , std::string a0 , std::string a1 , unsigned short a2 ) = 0;
- virtual void get_adapter_name ( bellhop_get_adapter_name * _bellhop , std::string a0 ) = 0;
+ virtual void get_servant_info ( bellhop_get_servant_info * _bellhop , std::string a0 ) = 0;
  virtual void get_adapter_id ( bellhop_get_adapter_id * _bellhop , size_t a0 ) = 0;
  
  private:
@@ -55,7 +55,7 @@ namespace protocol_grid{
  void response_call( stream_read * _stream ) override;
  };
 
- class response_get_adapter_name
+ class response_get_servant_info
  : public response_base
  {
  public:
@@ -79,7 +79,7 @@ namespace protocol_grid{
  public:
  proxy( std::size_t _id, connection * _cn );
  void add_adapter_async( std::string a0 , std::string a1 , unsigned short a2 , response_add_adapter * _response );
- void get_adapter_name_async( std::string a0 , response_get_adapter_name * _response );
+ void get_servant_info_async( std::string a0 , response_get_servant_info * _response );
  void get_adapter_id_async( size_t a0 , response_get_adapter_id * _response );
  
  };
