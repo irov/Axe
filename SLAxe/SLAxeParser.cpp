@@ -65,7 +65,14 @@ namespace Axe
 		parent.name = std::string( str, end );
 		parent.inheritance = m_inheritance;
 
-		m_class.parents.push_back( parent );
+		if( m_class.name.empty() == false )
+		{
+			m_class.parents.push_back( parent );
+		}
+		else if( m_struct.name.empty() == false )
+		{
+			m_struct.parents.push_back( parent );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_inheritance_type( char const* str, char const* end )
@@ -142,6 +149,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_default_out_argument( char const* str, char const* end )
 	{
+		if( m_type.name == "void" )
+		{
+			return;
+		}
+
 		Argument arg;
 		arg.name = std::string("__result__");
 		arg.type = m_type;

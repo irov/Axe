@@ -24,6 +24,9 @@ namespace Axe
 
 		void generateClass( const Declaration::Class & _class );
 		void generateBellhop( const Declaration::Class & _class );
+		void generateServant( const Declaration::Class & _class );
+		void generateResponse( const Declaration::Class & _class );
+		void generateProxy( const Declaration::Class & _class );
 
 	protected:
 		std::string writeArgumentType( const std::string & _type );
@@ -37,6 +40,7 @@ namespace Axe
 		typedef std::set<std::string> TSetTypes;
 		TSetTypes m_podTypes;
 		TSetTypes m_specTypes;
+		TSetTypes m_typedefTypes;
 		TSetTypes m_structTypes;
 		TSetTypes m_classTypes;
 		TSetTypes m_templatesTypes;

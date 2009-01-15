@@ -24,6 +24,20 @@ namespace Axe
 		m_templatesTypes.insert("vector");
 		m_templatesTypes.insert("set");
 
+		const TVectorTypedefs & typedefs = m_parser->getTypedefs();
+
+		for( TVectorTypedefs::const_iterator
+			it_typedef = typedefs.begin(),
+			it_typedef_end = typedefs.end();
+		it_typedef != it_typedef_end;
+		++it_typedef )
+		{
+			const Typedef & td = *it_typedef;
+
+			m_typedefTypes.insert( td.name );
+		}
+		
+
 		const TVectorClasses & classes = m_parser->getClasses();
 
 		for( TVectorClasses::const_iterator
@@ -107,6 +121,24 @@ namespace Axe
 		const Struct & st = _struct;
 
 		m_stream << "struct " + st.name << std::endl;
+
+		TVectorParents::const_iterator
+			it_parent = st.parents.begin(),
+			it_parent_end = st.parents.end();
+
+		if( it_parent != it_parent_end )
+		{
+			m_stream << "	: " << it_parent->inheritance << " " << it_parent->name << std::endl;
+
+			for( ++it_parent ; it_parent != it_parent_end; ++it_parent )
+			{
+				const Parent & pr = *it_parent;
+
+				m_stream << "	, " << it_parent->inheritance << " " << it_parent->name << std::endl;
+			}
+		}
+
+
 		m_stream <<	"{" << std::endl;
 
 		for( TVectorMembers::const_iterator
@@ -126,6 +158,17 @@ namespace Axe
 
 		m_stream << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
 		m_stream <<	"{" << std::endl;
+
+		for( TVectorParents::const_iterator
+			it_parent = st.parents.begin(),
+			it_parent_end = st.parents.end();
+		it_parent != it_parent_end;
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+
+			m_stream << "	ar << static_cast<const " << pr.name << " &>( _value );" << std::endl;
+		}
 
 		for( TVectorMembers::const_iterator
 			it_member = st.members.begin(),
@@ -176,6 +219,9 @@ namespace Axe
 	void SLAxeGenerator::generateClass( const Declaration::Class & _class )
 	{
 		generateBellhop( _class );
+		generateServant( _class );
+		generateResponse( _class );
+		generateProxy( _class );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateBellhop( const Class & _class )
@@ -195,7 +241,7 @@ namespace Axe
 			std::string bellhop_name = "Bellhop_" + cl.name + "_" + mt.name;
 
 			m_stream << "class " << bellhop_name << std::endl;
-			m_stream << "	: public bellhop" << std::endl;
+			m_stream << "	: public Axe::Bellhop" << std::endl;
 			m_stream << "{" << std::endl;
 			m_stream << "public:" << std::endl;
 			m_stream << "	" << bellhop_name << "( std::size_t _requestId, adapter_session * _session );" << std::endl;
@@ -211,20 +257,205 @@ namespace Axe
 				const Argument & ar = *it_args;
 
 				m_stream << " " << writeArgumentType( ar.type.name );
-				++it_args;
+
+				for( ++it_args; it_args != it_args_end; ++it_args )
+				{
+					const Argument & ar = *it_args;
+
+					m_stream << ", " << writeArgumentType( ar.type.name ) << " " << ar.name;
+				}
+
+				m_stream << " ";
 			}
 
-			for( ; it_args != it_args_end; ++it_args )
-			{
-				const Argument & ar = *it_args;
-
-				m_stream << writeArgumentType( ar.type.name ) << " " << ar.name << " ";
-			}
 
 			m_stream << ");" << std::endl;
 
 			m_stream << "};" << std::endl;
+
+			m_stream << "typedef Axe::SharedPtr<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateServant( const Declaration::Class & _class )
+	{
+		//class servant : public servant_base
+		//{
+		//public:
+		//	virtual void add_adapter ( bellhop_add_adapter * _bellhop , std::string a0 , std::string a1 , unsigned short a2 ) = 0;
+		//	virtual void get_servant_info ( bellhop_get_servant_info * _bellhop , std::string a0 ) = 0;
+		//	virtual void get_adapter_id ( bellhop_get_adapter_id * _bellhop , size_t a0 ) = 0;
+
+		//private:
+		//	void call_method( std::size_t _methodId , std::size_t _requestId , adapter_session * _session ) override;
+		//};
+
+		m_stream << std::endl;
+
+		const Class & cl = _class;
+
+		std::string servant_name = "Servant_" + cl.name;
+
+		m_stream << "class " << servant_name << std::endl;
+		m_stream << "	: public Axe::Servant" << std::endl;
+
+		m_stream << "{" << std::endl;
+		m_stream << "pulic:" << std::endl;
+
+		for( TVectorMethods::const_iterator
+			it_method = cl.methods.begin(),
+			it_method_end = cl.methods.end();
+		it_method != it_method_end;
+		++it_method )
+		{
+			const Method & mt = *it_method;
+
+			std::string bellhop_name = "Bellhop_" + cl.name + "_" + mt.name + "Ptr";
+
+			m_stream << "	virtual void " << mt.name << "( const " << bellhop_name << " & _cb";
+
+			for( TVectorArguments::const_iterator
+				it_args = mt.inArguments.begin(),
+				it_args_end = mt.inArguments.end();
+			it_args != it_args_end;
+			++it_args )
+			{
+				const Argument & ar = *it_args;
+
+				m_stream << ", " << writeArgumentType( ar.type.name ) << " " << ar.name;
+			}
+
+			m_stream << " ) = 0;" << std::endl;
+		}
+
+		m_stream << std::endl;
+
+		m_stream << "private:" << std::endl;
+
+		m_stream << "	void call_method( std::size_t _methodId , std::size_t _requestId , adapter_session * _session ) override;" << std::endl;
+
+		m_stream << "};" << std::endl;
+
+		m_stream << "typedef Axe::SharedPtr<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateResponse( const Declaration::Class & _class )
+	{
+		//class response_add_adapter
+		//	: public response_base
+		//{
+		//public:
+		//	virtual void response( std::size_t ) = 0;
+		//private:
+		//	void response_call( stream_read * _stream ) override;
+		//};
+
+		m_stream << std::endl;
+
+		const Class & cl = _class;
+
+		for( TVectorMethods::const_iterator
+			it_method = cl.methods.begin(),
+			it_method_end = cl.methods.end();
+		it_method != it_method_end;
+		++it_method )
+		{
+			const Method & mt = *it_method;
+
+			std::string response_name = "Response_" + cl.name +"_" + mt.name;
+
+			m_stream << "class " << response_name << std::endl;
+			m_stream << "	: public Axe::Response" << std::endl;
+
+			m_stream << "{" << std::endl;
+			m_stream << "pulic:" << std::endl;
+
+			m_stream << "	virtual void response(";
+			
+			TVectorArguments::const_iterator 
+				it_args = mt.outArguments.begin(),
+				it_args_end = mt.outArguments.end();
+
+			if( it_args != it_args_end )
+			{
+				const Argument & ar = *it_args;
+
+				m_stream << " " << writeArgumentType( ar.type.name );
+
+				for( ++it_args; it_args != it_args_end; ++it_args )
+				{
+					const Argument & ar = *it_args;
+
+					m_stream << ", " << writeArgumentType( ar.type.name ) << " " << ar.name;
+				}
+
+				m_stream << " ";
+			}
+
+			m_stream << ") = 0;" << std::endl;
+			m_stream << std::endl;
+			m_stream << "private:" << std::endl;
+			m_stream << "	void process( stream_read * _stream ) override;" << std::endl;
+			m_stream << "};" << std::endl;
+			m_stream << "typedef Axe::SharedPtr<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
+			m_stream << std::endl;
+		}
+	}
+	void SLAxeGenerator::generateProxy( const Declaration::Class & _class )
+	{
+		//class proxy: public proxy_base
+		//{
+		//public:
+		//	proxy( std::size_t _id, connection * _cn );
+		//	void add_adapter_async( std::string a0 , std::string a1 , unsigned short a2 , response_add_adapter * _response );
+		//	void get_servant_info_async( std::string a0 , response_get_servant_info * _response );
+		//	void get_adapter_id_async( size_t a0 , response_get_adapter_id * _response );
+
+		//};
+
+		m_stream << std::endl;
+
+		const Class & cl = _class;
+
+		std::string proxy_name = "Proxy_" + cl.name;
+
+		m_stream << "class " << proxy_name << std::endl;
+		m_stream << "	: public Axe::Proxy" << std::endl;
+
+		m_stream << "{" << std::endl;
+		m_stream << "pulic:" << std::endl;
+		m_stream << "	" << proxy_name << "( std::size_t _id, const Axe::ConnectionPtr & _connection );" << std::endl;
+		m_stream << std::endl;
+		m_stream << "pulic:" << std::endl;
+
+		for( TVectorMethods::const_iterator
+			it_method = cl.methods.begin(),
+			it_method_end = cl.methods.end();
+		it_method != it_method_end;
+		++it_method )
+		{
+			const Method & mt = *it_method;
+
+			std::string response_name = "Response_" + cl.name +"_" + mt.name + "Ptr";
+
+			m_stream << "	virtual void " << mt.name << "(";
+
+			for( TVectorArguments::const_iterator
+				it_args = mt.inArguments.begin(),
+				it_args_end = mt.inArguments.end();
+			it_args != it_args_end;
+			++it_args )
+			{
+				const Argument & ar = *it_args;
+
+				m_stream << " " << writeArgumentType( ar.type.name ) << " " << ar.name << ",";
+			}
+
+			m_stream << " const " << response_name << " & _response );" << std::endl;
+		}
+		m_stream << "};" << std::endl;
+
+		m_stream << "typedef Axe::SharedPtr<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeArgumentType( const std::string & _type )
@@ -248,6 +479,17 @@ namespace Axe
 			{
 				return "const std::string &";
 			}
+		}
+
+		TSetTypes::iterator it_typedef_found = m_typedefTypes.find( _type );
+
+		if( it_typedef_found != m_typedefTypes.end() )
+		{
+			std::string ret_type = "const ";
+			ret_type += _type;
+			ret_type += " &";
+
+			return ret_type;
 		}
 
 		TSetTypes::iterator it_struct_found = m_structTypes.find( _type );
