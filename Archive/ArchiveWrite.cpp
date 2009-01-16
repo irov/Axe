@@ -4,7 +4,7 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite::ArchiveWrite( TBlobject & _blob )
-			: m_blob(_blob)
+	: m_blob(_blob)
 	{
 		m_begin = _blob.size();
 
