@@ -99,7 +99,7 @@ namespace Axe
 					;
 
 				typedefs
-					= ("typedef" >> complex_type >> type_name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
+					= ("typedef" >> complex_type >> name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
 					;
 
 				complex_type
@@ -112,10 +112,6 @@ namespace Axe
 
 				template_type
 					= name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>')
-					;
-
-				type_name
-					= name
 					;
 
 				name

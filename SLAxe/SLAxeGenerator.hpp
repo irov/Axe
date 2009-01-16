@@ -19,14 +19,28 @@ namespace Axe
 
 	protected:
 		void generateHeader();
-		void generateStruct( const Declaration::Struct & _struct );
-		void generateTypedef( const Declaration::Typedef & _typedef );
+		void generateHeaderStruct( const Declaration::Struct & _struct );
+		void generateHeaderTypedef( const Declaration::Typedef & _typedef );
 
-		void generateClass( const Declaration::Class & _class );
-		void generateBellhop( const Declaration::Class & _class );
-		void generateServant( const Declaration::Class & _class );
-		void generateResponse( const Declaration::Class & _class );
-		void generateProxy( const Declaration::Class & _class );
+		void generateHeaderClass( const Declaration::Class & _class );
+		void generateHeaderBellhop( const Declaration::Class & _class );
+		void generateHeaderServant( const Declaration::Class & _class );
+		void generateHeaderResponse( const Declaration::Class & _class );
+		void generateHeaderProxy( const Declaration::Class & _class );
+
+	protected:
+		void generateImplement();
+		void generateImplementStruct( const Declaration::Struct & _struct );
+		void generateImplementClass( const Declaration::Class & _class );
+		
+		void generateImplementBellhop( const Declaration::Class & _class );
+		void generateImplementServant( const Declaration::Class & _class );
+
+
+	protected:
+		std::string writeBellhopeName( const Declaration::Class & _class, const Declaration::Method & _method );
+		std::string writeServantName( const Declaration::Class & _class );
+		
 
 	protected:
 		std::string writeArgumentType( const std::string & _type );

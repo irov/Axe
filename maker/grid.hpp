@@ -18,6 +18,7 @@ class grid
 };
 
 class box
+	: public grid
 {
 	void add();
 };

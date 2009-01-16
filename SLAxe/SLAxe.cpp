@@ -14,16 +14,16 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	bool SLAxe::generate( const char * _protocol, const char * _code )
 	{
-		FILE * file = fopen( _protocol, "rb" );
+		FILE * file_in = fopen( _protocol, "rb" );
 
-		if( file == 0 )
+		if( file_in == 0 )
 		{
 			return false;
 		}
 
-		fseek( file, 0L, SEEK_END );
-		long size = ftell( file );
-		rewind( file );
+		fseek( file_in, 0L, SEEK_END );
+		long size = ftell( file_in );
+		rewind( file_in );
 
 		if( size == 0 )
 		{
@@ -32,8 +32,8 @@ namespace Axe
 
 		char * buff = new char[ size ];
 
-		fread( buff, size, 1, file );
-		fclose( file );
+		fread( buff, size, 1, file_in );
+		fclose( file_in );
 
 		boost::spirit::parse_info<> info = boost::spirit::parse( 
 			buff, buff + size, 
@@ -54,7 +54,15 @@ namespace Axe
 		std::strstream & stream = generator.getStream();
 
 		char * str = stream.str();
-		printf("%s\n", str );
+
+		std::streamsize stream_size = stream.pcount();
+
+		FILE * file_out = fopen( _code, "wb" );
+
+		fwrite( str, stream_size, 1, file_out );
+		fclose( file_out );
+
+		//printf("%s\n", str );
 
 		return true;
 	}
