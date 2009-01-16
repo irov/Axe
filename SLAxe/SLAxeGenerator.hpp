@@ -35,12 +35,14 @@ namespace Axe
 		
 		void generateImplementBellhop( const Declaration::Class & _class );
 		void generateImplementServant( const Declaration::Class & _class );
-
+		void generateImplementResponse( const Declaration::Class & _class );
+		void generateImplementProxy( const Declaration::Class & _class );
 
 	protected:
 		std::string writeBellhopeName( const Declaration::Class & _class, const Declaration::Method & _method );
 		std::string writeServantName( const Declaration::Class & _class );
-		
+		std::string writeEnumMethodName( const Declaration::Class & _class, const Declaration::Method & _method );
+		std::string writeResponseName( const Declaration::Class & _class, const Declaration::Method & _method );
 
 	protected:
 		std::string writeArgumentType( const std::string & _type );
