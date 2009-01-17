@@ -9,26 +9,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SLAxeParser::SLAxeParser()
 	{
+		m_namespaces.push_back( Namespace() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorClasses & SLAxeParser::getClasses() const
+	const Namespace & SLAxeParser::getNamespace() const
 	{
-		return m_classes;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Declaration::TVectorStructs & SLAxeParser::getStructs() const
-	{
-		return m_structs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Declaration::TVectorTypedefs & SLAxeParser::getTypedefs() const
-	{
-		return m_typedefs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Declaration::TVectorOrder & SLAxeParser::getOrder() const
-	{
-		return m_order;
+		return m_namespaces.back();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_class_name( char const* str, char const* end )
@@ -37,10 +23,11 @@ namespace Axe
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_class( char const* str, char const* end )
-	{				
-		m_classes.push_back( m_class );
-		
-		m_order.push_back( DECL_CLASS );
+	{	
+		Namespace & nm = m_namespaces.back();
+
+		nm.classes.push_back( m_class );
+		nm.order.push_back( DECL_CLASS );
 
 		m_class = Class();
 	}
@@ -51,12 +38,28 @@ namespace Axe
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_struct( char const* str, char const* end )
-	{				
-		m_structs.push_back( m_struct );
+	{	
+		Namespace & nm = m_namespaces.back();
 
-		m_order.push_back( DECL_STRUCT );
+		nm.structs.push_back( m_struct );
+		nm.order.push_back( DECL_STRUCT );
 
 		m_struct = Struct();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::begin_namespace( char const* str, char const* end )
+	{
+		m_namespaces.push_back( Namespace() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::end_namespace( char const* str, char const* end )
+	{
+		Namespace & nm_parent = *(m_namespaces.end() - 2);
+
+		nm_parent.namespaces.push_back( m_namespaces.back() );
+		nm_parent.order.push_back( DECL_NAMESPACE );
+
+		m_namespaces.pop_back();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_parent_name( char const* str, char const* end)
@@ -104,9 +107,10 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_typedef( char const* str, char const* end )
 	{
-		m_typedefs.push_back( m_typedef );
+		Namespace & nm = m_namespaces.back();
 
-		m_order.push_back( DECL_TYPEDEF );
+		nm.typedefs.push_back( m_typedef );
+		nm.order.push_back( DECL_TYPEDEF );
 		
 		m_typedef = Typedef();
 	}

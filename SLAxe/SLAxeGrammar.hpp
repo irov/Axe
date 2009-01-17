@@ -26,7 +26,11 @@ namespace Axe
 				SLAxeParser * parser = _self.getParser();
 
 				root
-					= +(sclass | structs | typedefs )
+					= +definition_frame
+					;
+
+				definition_frame
+					= sclass | structs | typedefs | namespaces
 					;
 
 				structs
@@ -36,6 +40,17 @@ namespace Axe
 				sclass
 					= "class" >> class_name >> !parents >> class_body[ boost::bind( &SLAxeParser::add_class, parser, _1, _2 ) ]
 				;
+
+				typedefs
+					= ("typedef" >> complex_type >> name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
+				;
+
+				namespaces
+					= ("namespace" >> namespace_name >> '{' << *definition_frame << '}')[ boost::bind( &SLAxeParser::end_namespace, parser, _1, _2 ) ]
+					;
+
+				namespace_name
+					= name[ boost::bind( &SLAxeParser::begin_namespace, parser, _1, _2 ) ];
 
 				parents
 					= ':' >> parent >> *(',' >> parent)
@@ -98,10 +113,6 @@ namespace Axe
 					*(',' >> +type[ boost::bind( &SLAxeParser::add_type_to_template_list, parser, _1, _2 ) ])
 					;
 
-				typedefs
-					= ("typedef" >> complex_type >> name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
-					;
-
 				complex_type
 					= template_type | type
 					;
@@ -125,10 +136,12 @@ namespace Axe
 			}
 
 		protected:
-			boost::spirit::rule<T> root, structs, sclass, parents, parent, struct_body, class_body,
+			boost::spirit::rule<T> root, definition_frame, 
+				structs, sclass, typedefs, namespaces, 
+				parents, parent, struct_body, class_body,
 				inside_class_body, member, method, method_argument_list, method_argument,
 
-				type_list, typedefs, complex_type, type, type_name, template_type,
+				type_list, complex_type, type, type_name, template_type,
 				struct_name, class_name, inheritance_type, parent_name, name;
 		};
 

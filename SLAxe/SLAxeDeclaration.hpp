@@ -81,9 +81,26 @@ namespace Axe
 		{
 			DECL_TYPEDEF,
 			DECL_STRUCT,
-			DECL_CLASS
+			DECL_CLASS,
+			DECL_NAMESPACE
 		};
 
 		typedef std::vector<EOrder> TVectorOrder;
+
+		struct Namespace
+		{
+			std::string name;
+
+			TVectorClasses classes;
+			TVectorStructs structs;
+			TVectorTypedefs typedefs;
+
+			TVectorOrder order;
+
+			typedef std::vector<Namespace> TVectorNamespaces;
+			TVectorNamespaces namespaces;
+		};
+
+		typedef Namespace::TVectorNamespaces TVectorNamespaces;
 	}
 }

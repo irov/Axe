@@ -7,7 +7,7 @@ struct servant_info
 	: public base_info
 {
 	string enpoint;
-	size_t id;		
+	size_t id;
 };
 
 typedef vector<int> vector_int;

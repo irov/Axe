@@ -12,17 +12,17 @@ namespace Axe
 		SLAxeParser();
 
 	public:
-		const Declaration::TVectorClasses & getClasses() const;
-		const Declaration::TVectorStructs & getStructs() const;
-		const Declaration::TVectorTypedefs & getTypedefs() const;
-
-		const Declaration::TVectorOrder & getOrder() const;
+		const Declaration::Namespace & getNamespace() const;
 
 	public:
 		void set_class_name( char const* str, char const* end );
 		void add_class( char const* str, char const* end );
 		void set_struct_name( char const* str, char const* end );
 		void add_struct( char const* str, char const* end );
+
+		void begin_namespace( char const* str, char const* end );
+		void end_namespace( char const* str, char const* end );
+		
 		void set_parent_name( char const* str, char const* end);
 		void set_inheritance_type( char const* str, char const* end );
 		void add_member( char const* str, char const* end );
@@ -40,11 +40,7 @@ namespace Axe
 		void add_out_argument( char const* str, char const* end );
 
 	protected:
-		Declaration::TVectorClasses m_classes;
-		Declaration::TVectorStructs m_structs;
-		Declaration::TVectorTypedefs m_typedefs;
-
-		Declaration::TVectorOrder m_order;
+		Declaration::TVectorNamespaces m_namespaces;
 
 		std::string m_inheritance;
 
