@@ -202,6 +202,7 @@ namespace Axe
 		write() << std::endl;
 
 		write() << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
+		write() << "void operator >> ( ArchiveRead & ar, " << st.name << " & _value );" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderTypedef( const Typedef & _typedef )
@@ -629,6 +630,34 @@ namespace Axe
 			const Member & mb = *it_member;
 
 			write() << "	ar << _value." << mb.name << ";" << std::endl;
+		}
+
+		write() << "}" << std::endl;
+
+		writeLine();
+		write() << "void operator >> ( ArchiveRead & ar, " << st.name << " & _value )" << std::endl;
+		write() <<	"{" << std::endl;
+
+		for( TVectorParents::const_iterator
+			it_parent = st.parents.begin(),
+			it_parent_end = st.parents.end();
+		it_parent != it_parent_end;
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+
+			write() << "	ar >> static_cast<const " << pr.name << " &>( _value );" << std::endl;
+		}
+
+		for( TVectorMembers::const_iterator
+			it_member = st.members.begin(),
+			it_member_end = st.members.end();
+		it_member != it_member_end;
+		++it_member )
+		{
+			const Member & mb = *it_member;
+
+			write() << "	ar >> _value." << mb.name << ";" << std::endl;
 		}
 
 		write() << "}" << std::endl;
