@@ -5,7 +5,7 @@
 namespace Axe
 {
 	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
-	typedef AxeHandle<class Connection> SessionPtr;
+	typedef AxeHandle<class Connection> ConnectionPtr;
 	typedef AxeHandle<class Servant> ServantPtr;
 
 	class Adapter

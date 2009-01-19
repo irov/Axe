@@ -142,22 +142,142 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="Servant"
 			>
+			<File
+				RelativePath=".\Servant.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
+			Name="Archive"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Archive.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveRead.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveRead.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveWrite.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveWrite.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="Session"
 			>
+			<File
+				RelativePath=".\Session.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SessionConnection.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Adapter"
+			>
+			<File
+				RelativePath=".\Adapter.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AdapterConnection.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Bellhop"
+			>
+			<File
+				RelativePath=".\Bellhop.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Client"
+			>
+			<File
+				RelativePath=".\Client.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Connection"
+			>
+			<File
+				RelativePath=".\Connection.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Host"
+			>
+			<File
+				RelativePath=".\Host.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Proxy"
+			>
+			<File
+				RelativePath=".\Proxy.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Response"
+			>
+			<File
+				RelativePath=".\Response.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Router"
+			>
+			<File
+				RelativePath=".\Router.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterConnection.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterProxyConnection.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterResponse.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterSession.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Shared"
+			>
+			<File
+				RelativePath=".\Shared.hpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

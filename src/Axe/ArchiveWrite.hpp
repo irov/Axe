@@ -1,16 +1,15 @@
 #	pragma once
 
-#	include <vector>
+#	include "Archive.hpp"
+
 #	include <string>
 
 namespace Axe
 {
-	typedef std::vector<char> TBlobject;
-
 	class ArchiveWrite
 	{
 	public:
-		ArchiveWrite( TBlobject & _blob );
+		ArchiveWrite( Archive & _archive );
 
 	public:
 		template<class T>
@@ -27,8 +26,10 @@ namespace Axe
 
 	protected:
 		std::size_t m_begin;
-		TBlobject & m_blob;	
+		Archive & m_archive;	
 	};
+
+	void operator << ( ArchiveWrite & ar, const std::string & _value );
 
 	template<class T>
 	void operator << ( ArchiveWrite & ar, const T & _value )

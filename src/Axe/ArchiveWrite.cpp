@@ -3,10 +3,10 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite::ArchiveWrite( TBlobject & _blob )
-	: m_blob(_blob)
+	ArchiveWrite::ArchiveWrite( Archive & _archive )
+	: m_archive(_archive)
 	{
-		m_begin = _blob.size();
+		m_begin = _archive.size();
 
 		std::size_t size = 0;
 		write_t( size );
@@ -38,16 +38,16 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeBuffer( const void * _begin, const void * _end )
 	{
-		std::size_t old_size = m_blob.size();
+		std::size_t old_size = m_archive.size();
 
-		m_blob.insert( m_blob.end()	
-			, (const TBlobject::value_type *)_begin
-			, (const TBlobject::value_type *)_end
+		m_archive.insert( m_archive.end()
+			, (const Archive::value_type *)_begin
+			, (const Archive::value_type *)_end
 			);
 
-		std::size_t new_size = m_blob.size();
+		std::size_t new_size = m_archive.size();
 
-		*(std::size_t*)(&m_blob[m_begin]) += new_size - old_size;
+		*(std::size_t*)(&m_archive[m_begin]) += new_size - old_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( ArchiveWrite & ar, const std::string & _value )
