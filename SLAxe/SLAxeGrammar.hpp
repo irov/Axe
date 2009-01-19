@@ -34,37 +34,40 @@ namespace Axe
 					;
 
 				structs
-					= "struct" >> struct_name >> !parents >> struct_body[ boost::bind( &SLAxeParser::add_struct, parser, _1, _2 ) ]
+					= "struct" >> name[ boost::bind( &SLAxeParser::set_struct_name, parser, _1, _2 ) ] >> !parents >> struct_body[ boost::bind( &SLAxeParser::add_struct, parser, _1, _2 ) ]
 				;
 
 				sclass
-					= "class" >> class_name >> !parents >> class_body[ boost::bind( &SLAxeParser::add_class, parser, _1, _2 ) ]
+					= "class" >> name[ boost::bind( &SLAxeParser::set_class_name, parser, _1, _2 ) ] >> !parents >> class_body[ boost::bind( &SLAxeParser::add_class, parser, _1, _2 ) ]
 				;
 
 				typedefs
-					= ("typedef" >> complex_type >> name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
-				;
-
-				namespaces
-					= ("namespace" >> namespace_name >> '{' << *definition_frame << '}')[ boost::bind( &SLAxeParser::end_namespace, parser, _1, _2 ) ]
+					= (	"typedef" >> 
+					name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>') >> 
+					name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')
+					[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
 					;
 
-				namespace_name
-					= name[ boost::bind( &SLAxeParser::begin_namespace, parser, _1, _2 ) ];
+				namespaces
+					= ("namespace" >> name[ boost::bind( &SLAxeParser::begin_namespace, parser, _1, _2 ) ] >> 
+					'{' >> *definition_frame >> '}')
+					[ boost::bind( &SLAxeParser::end_namespace, parser, _1, _2 ) ]
+					;
 
 				parents
 					= ':' >> parent >> *(',' >> parent)
 					;
+
 				parent
-					= !inheritance_type >> parent_name
+					= !inheritance_type >> name[ boost::bind( &SLAxeParser::set_parent_name, parser, _1, _2 ) ]
 					;
 
 				struct_body
-					= '{' >> *member >> boost::spirit::ch_p('}') >> ';'
+					= '{' >> *member >> '}' >> ';'
 					;
 
 				class_body
-					= '{' >> inside_class_body >> boost::spirit::ch_p('}') >> ';'
+					= '{' >> inside_class_body >> '}' >> ';'
 					;
 
 				inside_class_body
@@ -78,8 +81,7 @@ namespace Axe
 				method
 					= (	type[ boost::bind( &SLAxeParser::add_default_out_argument, parser, _1, _2 ) ] >> 
 					name[ boost::bind( &SLAxeParser::set_method_name, parser, _1, _2 ) ] >> 
-					'(' >> !method_argument_list >> ')'	
-					>> boost::spirit::ch_p(';') )[ boost::bind( &SLAxeParser::add_method, parser, _1, _2 ) ]
+					'(' >> !method_argument_list >> ')'	>> ';' )[ boost::bind( &SLAxeParser::add_method, parser, _1, _2 ) ]
 				;
 
 				method_argument_list
@@ -90,22 +92,9 @@ namespace Axe
 					= type >> name[ boost::bind( &SLAxeParser::add_in_argument, parser, _1, _2 ) ] | "out" >> 
 					type >> name[ boost::bind( &SLAxeParser::add_out_argument, parser, _1, _2 ) ];
 
-
-				struct_name
-					= name[ boost::bind( &SLAxeParser::set_struct_name, parser, _1, _2 ) ]
-				;
-
-				class_name
-					= name[ boost::bind( &SLAxeParser::set_class_name, parser, _1, _2 ) ]
-				;
-
 				inheritance_type
 					= (boost::spirit::str_p("public") | boost::spirit::str_p("private") | boost::spirit::str_p("protected"))
 					[ boost::bind( &SLAxeParser::set_inheritance_type, parser, _1, _2 ) ]
-				;
-
-				parent_name
-					= name[ boost::bind( &SLAxeParser::set_parent_name, parser, _1, _2 ) ]
 				;
 
 				type_list
@@ -118,12 +107,8 @@ namespace Axe
 					;
 
 				type
-					= name[ boost::bind( &SLAxeParser::set_type_name, parser, _1, _2 ) ]
+					= boost::spirit::lexeme_d[name >> *("::" >> name)][ boost::bind( &SLAxeParser::set_type_name, parser, _1, _2 ) ]
 				;
-
-				template_type
-					= name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>')
-					;
 
 				name
 					= boost::spirit::lexeme_d[(boost::spirit::alpha_p | '_') >> *(boost::spirit::alnum_p | '_')]
@@ -137,12 +122,12 @@ namespace Axe
 
 		protected:
 			boost::spirit::rule<T> root, definition_frame, 
-				structs, sclass, typedefs, namespaces, 
+				structs, sclass, typedefs, namespaces,
 				parents, parent, struct_body, class_body,
 				inside_class_body, member, method, method_argument_list, method_argument,
 
-				type_list, complex_type, type, type_name, template_type,
-				struct_name, class_name, inheritance_type, parent_name, name;
+				type_list, complex_type, type, template_type,
+				inheritance_type, name;
 		};
 
 	};

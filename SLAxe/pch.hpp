@@ -4,7 +4,7 @@
 #	include <boost/bind.hpp>
 
 #	include <string>
-#	include <strstream>
+#	include <sstream>
 
 #	include <vector>
 #	include <set>

@@ -29,7 +29,12 @@ void main()
 	Axe::SLAxe slaxe;
 
 	const char * protocol = "grid.hpp";
-	const char * code = "../protocols/grid.hpp";
+	const char * path = "../protocols/";
 
-	slaxe.generate( protocol, code );
+	bool done = slaxe.generate( protocol, path, "grid" );
+
+	if( done == false )
+	{
+		printf("generate false\n");
+	}
 }

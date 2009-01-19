@@ -12,7 +12,7 @@ namespace Axe
 		SLAxe();
 
 	public:
-		bool generate( const char * _protocol, const char * _code ); 
+		bool generate( const char * _protocol, const char * _path, const char * _name ); 
 
 	protected:
 		SLAxeGrammar * m_grammar;

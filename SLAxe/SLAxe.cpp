@@ -12,7 +12,7 @@ namespace Axe
 		m_grammar = new SLAxeGrammar();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SLAxe::generate( const char * _protocol, const char * _code )
+	bool SLAxe::generate( const char * _protocol, const char * _path, const char * _name )
 	{
 		FILE * file_in = fopen( _protocol, "rb" );
 
@@ -49,18 +49,39 @@ namespace Axe
 
 		SLAxeGenerator generator( parser );
 
-		generator.run();
+		{
+			generator.generateHeader();
 
-		std::strstream & stream = generator.getStream();
+			std::stringstream & stream = generator.getStream();
 
-		char * str = stream.str();
+			std::string code_out = _path;
+			code_out += _name;
+			code_out += ".hpp";
 
-		std::streamsize stream_size = stream.pcount();
+			FILE * file_out = fopen( code_out.c_str(), "wb" );
 
-		FILE * file_out = fopen( _code, "wb" );
+			std::string stream_buff = stream.str();
 
-		fwrite( str, stream_size, 1, file_out );
-		fclose( file_out );
+			fwrite( stream_buff.c_str(), stream_buff.size(), 1, file_out );
+			fclose( file_out );
+		}
+
+
+		{
+			generator.generateImplement( _name );
+
+			std::stringstream & stream = generator.getStream();
+
+			std::string code_out = _path;
+			code_out += _name;
+			code_out += ".cpp";
+
+			FILE * file_out = fopen( code_out.c_str(), "wb" );
+
+			std::string stream_buff = stream.str();
+
+			fwrite( stream_buff.c_str(), stream_buff.size(), 1, file_out );
+			fclose( file_out );		}
 
 		//printf("%s\n", str );
 

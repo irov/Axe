@@ -11,14 +11,18 @@ namespace Axe
 	public:
 		SLAxeGenerator( SLAxeParser * _parser );
 
-	public:
-		void run();
+	protected:
+		void typegen( const Declaration::Namespace & ns );
 
 	public:
-		std::strstream & getStream();
+		void generateHeader();
+		void generateImplement( const std::string & _fileName );
+
+	public:
+		std::stringstream & getStream();
 
 	protected:
-		void generateHeader();
+		void generateHeaderNamespace( const Declaration::Namespace & _namespace );
 		void generateHeaderStruct( const Declaration::Struct & _struct );
 		void generateHeaderTypedef( const Declaration::Typedef & _typedef );
 
@@ -29,7 +33,7 @@ namespace Axe
 		void generateHeaderProxy( const Declaration::Class & _class );
 
 	protected:
-		void generateImplement();
+		void generateImplementNamespace( const Declaration::Namespace & _namespace );
 		void generateImplementStruct( const Declaration::Struct & _struct );
 		void generateImplementClass( const Declaration::Class & _class );
 		
@@ -51,8 +55,22 @@ namespace Axe
 		std::string writeTemplates( const std::string & _type );
 
 	protected:
+		void writeLine();
+
+
+	protected:
+		void increfTabs();
+		void decrefTabs();
+
+	protected:
+		std::stringstream & write();
+
+	protected:
 		SLAxeParser * m_parser;
-		std::strstream m_stream;
+		std::stringstream m_stream;
+
+		unsigned int m_tabs;
+		bool m_lockTabs;
 
 		typedef std::set<std::string> TSetTypes;
 		TSetTypes m_podTypes;

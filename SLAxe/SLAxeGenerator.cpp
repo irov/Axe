@@ -10,6 +10,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SLAxeGenerator::SLAxeGenerator( SLAxeParser * _parser )
 		: m_parser(_parser)
+		, m_tabs(0)
+		, m_lockTabs(false)
 	{
 		m_podTypes.insert("bool");
 		m_podTypes.insert("char");
@@ -24,7 +26,13 @@ namespace Axe
 		m_templatesTypes.insert("vector");
 		m_templatesTypes.insert("set");
 
-		const TVectorTypedefs & typedefs = m_parser->getTypedefs();
+		const Namespace & ns = m_parser->getNamespace();
+
+		typegen( ns );
+	}
+	void SLAxeGenerator::typegen( const Declaration::Namespace & ns )
+	{
+		const TVectorTypedefs & typedefs = ns.typedefs;
 
 		for( TVectorTypedefs::const_iterator
 			it_typedef = typedefs.begin(),
@@ -36,9 +44,8 @@ namespace Axe
 
 			m_typedefTypes.insert( td.name );
 		}
-		
 
-		const TVectorClasses & classes = m_parser->getClasses();
+		const TVectorClasses & classes = ns.classes;
 
 		for( TVectorClasses::const_iterator
 			it_class = classes.begin(),
@@ -51,7 +58,7 @@ namespace Axe
 			m_classTypes.insert(cl.name);
 		}
 
-		const TVectorStructs & structs = m_parser->getStructs();
+		const TVectorStructs & structs = ns.structs;
 
 		for( TVectorStructs::const_iterator
 			it_struct = structs.begin(),
@@ -62,40 +69,57 @@ namespace Axe
 			const Struct & st = *it_struct;
 
 			m_structTypes.insert(st.name);
+		};
+
+		const TVectorNamespaces & namespaces = ns.namespaces;
+
+		for( TVectorNamespaces::const_iterator
+			it_namespace = namespaces.begin(),
+			it_namespace_end = namespaces.end();
+		it_namespace != it_namespace_end;
+		++it_namespace )
+		{
+			this->typegen( *it_namespace );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::run()
-	{
-		generateHeader();
-
-		m_stream << std::endl;
-		m_stream << std::endl;
-		m_stream << std::endl;
-		m_stream << std::endl;
-		m_stream << std::endl;
-
-		generateImplement();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::strstream & SLAxeGenerator::getStream()
+	std::stringstream & SLAxeGenerator::getStream()
 	{
 		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeader()
 	{
+		m_stream.str("");
+
 		m_stream << "#	pragma once" << std::endl;
+		m_stream << std::endl;
 
-		const TVectorOrder & order = m_parser->getOrder();
+		const Namespace & ns = m_parser->getNamespace();
 
-		const TVectorTypedefs & typedefs = m_parser->getTypedefs();
-		const TVectorStructs & structs = m_parser->getStructs();
-		const TVectorClasses & classes = m_parser->getClasses();
+		generateHeaderNamespace( ns );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateHeaderNamespace( const Declaration::Namespace & _namespace )
+	{
+		if( _namespace.name.empty() == false )
+		{
+			write() << "namespace " << _namespace.name << std::endl;
+			write() << "{" << std::endl;
+			increfTabs();
+		}
+
+		const TVectorOrder & order = _namespace.order;
+
+		const TVectorTypedefs & typedefs = _namespace.typedefs;
+		const TVectorStructs & structs = _namespace.structs;
+		const TVectorClasses & classes = _namespace.classes;
+		const TVectorNamespaces & namespaces = _namespace.namespaces;
 
 		TVectorTypedefs::const_iterator it_typedef = typedefs.begin();
 		TVectorStructs::const_iterator it_struct = structs.begin();
 		TVectorClasses::const_iterator it_class = classes.begin();
+		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
 			it_order = order.begin(),
@@ -120,17 +144,28 @@ namespace Axe
 					generateHeaderClass( *it_class );
 					++it_class;
 				}break;
+			case DECL_NAMESPACE:
+				{
+					generateHeaderNamespace( *it_namespace );
+					++it_namespace;
+				}break;
 			}
+		}
+
+		if( _namespace.name.empty() == false )
+		{
+			decrefTabs();
+			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderStruct( const Struct & _struct )
 	{
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Struct & st = _struct;
 
-		m_stream << "struct " + st.name << std::endl;
+		write() << "struct " + st.name << std::endl;
 
 		TVectorParents::const_iterator
 			it_parent = st.parents.begin(),
@@ -138,18 +173,18 @@ namespace Axe
 
 		if( it_parent != it_parent_end )
 		{
-			m_stream << "	: " << it_parent->inheritance << " " << it_parent->name << std::endl;
+			write() << "	: " << it_parent->inheritance << " " << it_parent->name << std::endl;
 
 			for( ++it_parent ; it_parent != it_parent_end; ++it_parent )
 			{
 				const Parent & pr = *it_parent;
 
-				m_stream << "	, " << it_parent->inheritance << " " << it_parent->name << std::endl;
+				write() << "	, " << it_parent->inheritance << " " << it_parent->name << std::endl;
 			}
 		}
 
 
-		m_stream <<	"{" << std::endl;
+		write() <<	"{" << std::endl;
 
 		for( TVectorMembers::const_iterator
 			it_member = st.members.begin(),
@@ -159,19 +194,19 @@ namespace Axe
 		{
 			const Member & mb = *it_member;
 
-			m_stream << "	" << writeMemberType( mb.type.name ) << " " << mb.name << ";" << std::endl;
+			write() << "	" << writeMemberType( mb.type.name ) << " " << mb.name << ";" << std::endl;
 		}
 
-		m_stream << "};" << std::endl;
+		write() << "};" << std::endl;
 
-		m_stream << std::endl;
+		write() << std::endl;
 
-		m_stream << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
+		write() << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderTypedef( const Typedef & _typedef )
 	{
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Typedef & td = _typedef;
 
@@ -211,7 +246,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderBellhop( const Class & _class )
 	{
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
@@ -225,14 +260,14 @@ namespace Axe
 
 			std::string bellhop_name = writeBellhopeName( cl.name, mt.name );
 
-			m_stream << "class " << bellhop_name << std::endl;
-			m_stream << "	: public Axe::Bellhop" << std::endl;
-			m_stream << "{" << std::endl;
-			m_stream << "public:" << std::endl;
-			m_stream << "	" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );" << std::endl;
-			m_stream << std::endl;
-			m_stream << "public:" << std::endl;
-			m_stream << "	void response(";
+			write() << "class " << bellhop_name << std::endl;
+			write() << "	: public Axe::Bellhop" << std::endl;
+			write() << "{" << std::endl;
+			write() << "public:" << std::endl;
+			write() << "	" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );" << std::endl;
+			write() << std::endl;
+			write() << "public:" << std::endl;
+			write() << "	void response(";
 
 			TVectorArguments::const_iterator 
 				it_args = mt.outArguments.begin(),
@@ -255,9 +290,9 @@ namespace Axe
 			}
 
 			m_stream << ");" << std::endl;
-			m_stream << "};" << std::endl;
-			m_stream << std::endl;
-			m_stream << "typedef Axe::SharedPtr<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
+			write() << "};" << std::endl;
+			write() << std::endl;
+			write() << "typedef Axe::SharedPtr<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -274,17 +309,17 @@ namespace Axe
 		//	void call_method( std::size_t _methodId , std::size_t _requestId , adapter_session * _session ) override;
 		//};
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
 		std::string servant_name = writeServantName( cl.name );
 
-		m_stream << "class " << servant_name << std::endl;
+		write() << "class " << servant_name << std::endl;
 
 		if( cl.parents.empty() == true )
 		{
-			m_stream << "	: virtual public Axe::Servant" << std::endl;
+			write() << "	: virtual public Axe::Servant" << std::endl;
 		}
 		else
 		{
@@ -298,7 +333,7 @@ namespace Axe
 
 				std::string parent_name = writeServantName( pr.name );
 
-				m_stream << "	:	" << pr.inheritance << " " << parent_name << std::endl;
+				write() << "	:	" << pr.inheritance << " " << parent_name << std::endl;
 
 				for( ++it_parent; it_parent != it_parent_end; ++it_parent )
 				{
@@ -306,13 +341,13 @@ namespace Axe
 
 					std::string parent_name = writeServantName( pr.name );
 
-					m_stream << "	,	" << pr.inheritance << " " << parent_name << std::endl;
+					write() << "	,	" << pr.inheritance << " " << parent_name << std::endl;
 				}
 			}
 		}
 
-		m_stream << "{" << std::endl;
-		m_stream << "public:" << std::endl;
+		write() << "{" << std::endl;
+		write() << "public:" << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -324,7 +359,7 @@ namespace Axe
 
 			std::string bellhop_name = writeBellhopeName( cl.name, mt.name ) + "Ptr";
 
-			m_stream << "	virtual void " << mt.name << "( const " << bellhop_name << " & _cb";
+			write() << "	virtual void " << mt.name << "( const " << bellhop_name << " & _cb";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -340,12 +375,12 @@ namespace Axe
 			m_stream << " ) = 0;" << std::endl;
 		}
 
-		m_stream << std::endl;
-		m_stream << "private:" << std::endl;
-		m_stream << "	void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
-		m_stream << "};" << std::endl;
-		m_stream << std::endl;
-		m_stream << "typedef Axe::SharedPtr<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
+		write() << std::endl;
+		write() << "private:" << std::endl;
+		write() << "	void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
+		write() << "};" << std::endl;
+		write() << std::endl;
+		write() << "typedef Axe::SharedPtr<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderResponse( const Declaration::Class & _class )
@@ -359,7 +394,7 @@ namespace Axe
 		//	void response_call( stream_read * _stream ) override;
 		//};
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
@@ -373,13 +408,13 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name );
 
-			m_stream << "class " << response_name << std::endl;
-			m_stream << "	: public Axe::Response" << std::endl;
+			write() << "class " << response_name << std::endl;
+			write() << "	: public Axe::Response" << std::endl;
 
-			m_stream << "{" << std::endl;
-			m_stream << "public:" << std::endl;
+			write() << "{" << std::endl;
+			write() << "public:" << std::endl;
 
-			m_stream << "	virtual void response(";
+			write() << "	virtual void response(";
 			
 			TVectorArguments::const_iterator 
 				it_args = mt.outArguments.begin(),
@@ -402,13 +437,13 @@ namespace Axe
 			}
 
 			m_stream << ") = 0;" << std::endl;
-			m_stream << std::endl;
-			m_stream << "private:" << std::endl;
-			m_stream << "	void process( stream_read * _stream ) override;" << std::endl;
-			m_stream << "};" << std::endl;
-			m_stream << std::endl;
-			m_stream << "typedef Axe::SharedPtr<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
-			m_stream << std::endl;
+			write() << std::endl;
+			write() << "private:" << std::endl;
+			write() << "	void process( stream_read * _stream ) override;" << std::endl;
+			write() << "};" << std::endl;
+			write() << std::endl;
+			write() << "typedef Axe::SharedPtr<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
+			write() << std::endl;
 		}
 	}
 	void SLAxeGenerator::generateHeaderProxy( const Declaration::Class & _class )
@@ -423,17 +458,17 @@ namespace Axe
 
 		//};
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
 		std::string proxy_name = writeProxyName( cl.name );
 
-		m_stream << "class " << proxy_name << std::endl;
+		write() << "class " << proxy_name << std::endl;
 
 		if( cl.parents.empty() == true )
 		{
-			m_stream << "	: virtual public Axe::Proxy" << std::endl;
+			write() << "	: virtual public Axe::Proxy" << std::endl;
 		}
 		else
 		{
@@ -447,7 +482,7 @@ namespace Axe
 
 				std::string parent_name = writeProxyName( pr.name );
 
-				m_stream << "	:	" << pr.inheritance << " " << parent_name << std::endl;
+				write() << "	:	" << pr.inheritance << " " << parent_name << std::endl;
 
 				for( ++it_parent; it_parent != it_parent_end; ++it_parent )
 				{
@@ -455,19 +490,19 @@ namespace Axe
 
 					std::string parent_name = writeProxyName( pr.name );
 
-					m_stream << "	,	" << pr.inheritance << " " << parent_name << std::endl;
+					write() << "	,	" << pr.inheritance << " " << parent_name << std::endl;
 				}
 			}
 		}
 
-		m_stream << "{" << std::endl;
-		m_stream << "public:" << std::endl;
-		m_stream << "	" << proxy_name << "( std::size_t _id, const Axe::ConnectionPtr & _connection );" << std::endl;
-		m_stream << std::endl;
-		m_stream << "protected:" << std::endl;
-		m_stream << "	" << proxy_name << "();" << std::endl;
-		m_stream << std::endl;
-		m_stream << "public:" << std::endl;
+		write() << "{" << std::endl;
+		write() << "public:" << std::endl;
+		write() << "	" << proxy_name << "( std::size_t _id, const Axe::ConnectionPtr & _connection );" << std::endl;
+		write() << std::endl;
+		write() << "protected:" << std::endl;
+		write() << "	" << proxy_name << "();" << std::endl;
+		write() << std::endl;
+		write() << "public:" << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -479,7 +514,7 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
-			m_stream << "	void " << mt.name << "(";
+			write() << "	void " << mt.name << "(";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -494,20 +529,42 @@ namespace Axe
 
 			m_stream << " const " << response_name << " & _response );" << std::endl;
 		}
+
 		m_stream << "};" << std::endl;
 
-		m_stream << "typedef Axe::SharedPtr<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
+		write() << "typedef Axe::SharedPtr<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplement()
+	void SLAxeGenerator::generateImplement( const std::string & _fileName )
 	{
-		const TVectorOrder & order = m_parser->getOrder();
+		m_stream.str("");
 
-		const TVectorStructs & structs = m_parser->getStructs();
-		const TVectorClasses & classes = m_parser->getClasses();
+		m_stream << "#	include <" << _fileName << ".hpp>" << std::endl;
+		m_stream << std::endl;
+
+		const Namespace & ns = m_parser->getNamespace();
+
+		generateImplementNamespace( ns );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateImplementNamespace( const Namespace & _namespace )
+	{
+		if( _namespace.name.empty() == false )
+		{
+			write() << "namespace " << _namespace.name << std::endl;
+			write() << "{" << std::endl;
+			increfTabs();
+		}
+
+		const TVectorOrder & order = _namespace.order;
+
+		const TVectorStructs & structs = _namespace.structs;
+		const TVectorClasses & classes = _namespace.classes;
+		const TVectorNamespaces & namespaces = _namespace.namespaces;
 
 		TVectorStructs::const_iterator it_struct = structs.begin();
 		TVectorClasses::const_iterator it_class = classes.begin();
+		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
 			it_order = order.begin(),
@@ -527,18 +584,30 @@ namespace Axe
 					generateImplementClass( *it_class );
 					++it_class;
 				}break;
+			case DECL_NAMESPACE:
+				{
+					generateImplementNamespace( *it_namespace );
+					++it_namespace;
+				}break;
 			}
+		}
+
+		if( _namespace.name.empty() == false )
+		{
+			decrefTabs();
+			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementStruct( const Struct & _struct )
 	{
-		m_stream <<	std::endl;
+		write() << std::endl;
 
 		const Struct & st = _struct;
 
-		m_stream << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
-		m_stream <<	"{" << std::endl;
+		writeLine();
+		write() << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
+		write() <<	"{" << std::endl;
 
 		for( TVectorParents::const_iterator
 			it_parent = st.parents.begin(),
@@ -548,7 +617,7 @@ namespace Axe
 		{
 			const Parent & pr = *it_parent;
 
-			m_stream << "	ar << static_cast<const " << pr.name << " &>( _value );" << std::endl;
+			write() << "	ar << static_cast<const " << pr.name << " &>( _value );" << std::endl;
 		}
 
 		for( TVectorMembers::const_iterator
@@ -559,10 +628,10 @@ namespace Axe
 		{
 			const Member & mb = *it_member;
 
-			m_stream << "	ar << _value." << mb.name << ";" << std::endl;
+			write() << "	ar << _value." << mb.name << ";" << std::endl;
 		}
 
-		m_stream << "}" << std::endl;
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementClass( const Class & _class )
@@ -584,7 +653,7 @@ namespace Axe
 		//	m_session->procces();
 		//}
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
@@ -598,13 +667,14 @@ namespace Axe
 
 			std::string bellhop_name = writeBellhopeName( cl.name, mt.name );
 
-			m_stream << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
-			m_stream <<	"	: Axe::Bellhope(_requestId, _session)" << std::endl;
-			m_stream << "{" << std::endl;
-			m_stream << "}" << std::endl;
-			m_stream << std::endl;
-
-			m_stream << "void " << bellhop_name << "::response(";
+			writeLine();
+			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
+			write() <<	"	: Axe::Bellhope(_requestId, _session)" << std::endl;
+			write() << "{" << std::endl;
+			write() << "}" << std::endl;
+			write() << std::endl;
+			writeLine();
+			write() << "void " << bellhop_name << "::response(";
 
 			unsigned int arg_enumerator = 0;
 
@@ -631,8 +701,8 @@ namespace Axe
 			}
 
 			m_stream << ")" << std::endl;
-			m_stream << "{" << std::endl;
-			m_stream << "	Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );" << std::endl;
 
 			arg_enumerator = 0;
 
@@ -644,12 +714,12 @@ namespace Axe
 			{
 				const Argument & ar = *it_args;
 
-				m_stream << "	ar << _arg" << arg_enumerator << ";" << std::endl;
+				write() << "	ar << _arg" << arg_enumerator << ";" << std::endl;
 				++arg_enumerator;
 			}
 
-			m_stream << "	m_session->procces();" << std::endl;
-			m_stream << "}" << std::endl;
+			write() << "	m_session->procces();" << std::endl;
+			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -673,15 +743,15 @@ namespace Axe
 	//		}
 	//	}
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
 		std::string servant_name = writeServantName( cl.name );
 
-		m_stream << "enum" << std::endl;
-		m_stream << "{" << std::endl;
-		m_stream << "	ESMD = 0" << std::endl;
+		write() << "enum" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	ESMD = 0" << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -690,21 +760,22 @@ namespace Axe
 		++it_method )
 		{
 			const Method & mt = *it_method;
-			m_stream << "	,	" << writeEnumMethodName( cl.name, mt.name ) << std::endl;
+			write() << "	,	" << writeEnumMethodName( cl.name, mt.name ) << std::endl;
 		}
 
-		m_stream << "};" << std::endl;
-		m_stream << std::endl;
+		write() << "};" << std::endl;
+		write() << std::endl;
 
-		m_stream << "void " << servant_name << "::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
-		m_stream << "{" << std::endl;
+		writeLine();
+		write() << "void " << servant_name << "::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
+		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
 		//		switch( _methodId ){
 
-		m_stream << "	Axe::ArchiveRead & ar = _session->getArhiveRead();" << std::endl;
-		m_stream << "	switch( _methodId )" << std::endl;
-		m_stream << "	{" << std::endl;
+		write() << "	Axe::ArchiveRead & ar = _session->getArhiveRead();" << std::endl;
+		write() << "	switch( _methodId )" << std::endl;
+		write() << "	{" << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -714,10 +785,10 @@ namespace Axe
 		{
 			const Method & mt = *it_method;
 
-			m_stream << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
-			m_stream << "		{" << std::endl;
-			m_stream << "			" << writeBellhopeName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopeName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
-			m_stream << std::endl;
+			write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
+			write() << "		{" << std::endl;
+			write() << "			" << writeBellhopeName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopeName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
+			write() << std::endl;
 
 			unsigned int bellhop_args = 0;
 
@@ -729,12 +800,12 @@ namespace Axe
 			{
 				const Argument & ar = *it_arg;
 
-				m_stream << "			" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
-				m_stream << "			ar >> arg" << bellhop_args << ";" << std::endl;
+				write() << "			" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
+				write() << "			ar >> arg" << bellhop_args << ";" << std::endl;
 				++bellhop_args;
 			}
 
-			m_stream << "			this->" << mt.name << "( bellhop";
+			write() << "			this->" << mt.name << "( bellhop";
 
 			bellhop_args = 0;
 
@@ -750,11 +821,11 @@ namespace Axe
 
 			m_stream << " );" << std::endl;
 
-			m_stream << "		}break;" << std::endl;
+			write() << "		}break;" << std::endl;
 		}
 
-		m_stream << "	}" << std::endl;
-		m_stream << "}" << std::endl;
+		write() << "	}" << std::endl;
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementResponse( const Class & _class )
@@ -767,7 +838,7 @@ namespace Axe
 		//	this->response( *a0 );
 		//}
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		const Class & cl = _class;
 
@@ -779,8 +850,9 @@ namespace Axe
 		{
 			const Method & mt = *it_method;
 
-			m_stream << "void " << writeResponseName( cl.name, mt.name ) << "::response_call( Axe::ArchiveRead & _ar )" << std::endl;
-			m_stream << "{" << std::endl;
+			writeLine();
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::response_call( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "{" << std::endl;
 			
 
 			unsigned int bellhop_args = 0;
@@ -793,12 +865,12 @@ namespace Axe
 			{
 				const Argument & ar = *it_arg;
 
-				m_stream << "	" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
-				m_stream << "	_ar >> arg" << bellhop_args << ";" << std::endl;
+				write() << "	" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
+				write() << "	_ar >> arg" << bellhop_args << ";" << std::endl;
 				++bellhop_args;
 			}
 
-			m_stream << "	response(";
+			write() << "	this->response(";
 
 			{
 				bellhop_args = 0;
@@ -823,7 +895,7 @@ namespace Axe
 			}
 
 			m_stream << ");" << std::endl;
-			m_stream << "}" << std::endl;
+			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -842,20 +914,22 @@ namespace Axe
 	//}
 		const Class & cl = _class;
 
-		m_stream << std::endl;
+		write() << std::endl;
 
-		m_stream << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "()" << std::endl;
-		m_stream << "{" << std::endl;
-		m_stream << "}" << std::endl;
+		writeLine();
+		write() << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "()" << std::endl;
+		write() << "{" << std::endl;
+		write() << "}" << std::endl;
 
-		m_stream << std::endl;
+		write() << std::endl;
 
-		m_stream << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "( std::size_t _id, const Axe::ConnectionPtr & _connection )" << std::endl;
-		m_stream << "	: Axe::Proxy( _id, _connection )" << std::endl;
-		m_stream << "{" << std::endl;
-		m_stream << "}" << std::endl;
+		writeLine();
+		write() << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "( std::size_t _id, const Axe::ConnectionPtr & _connection )" << std::endl;
+		write() << "	: Axe::Proxy( _id, _connection )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "}" << std::endl;
 
-		m_stream << std::endl;
+		write() << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -867,7 +941,8 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
-			m_stream << "void " << writeProxyName( cl.name ) << "::" << mt.name << "(";
+			writeLine();
+			write() << "void " << writeProxyName( cl.name ) << "::" << mt.name << "(";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -882,9 +957,9 @@ namespace Axe
 
 			m_stream << " const " << response_name << " & _response )" << std::endl;
 
-			m_stream << "{" << std::endl;
+			write() << "{" << std::endl;
 
-			m_stream << "	Axe::ArchiveWrite & ar = this->beginMessage( " << writeEnumMethodName( cl.name, mt.name ) << ", _response );" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = this->beginMessage( " << writeEnumMethodName( cl.name, mt.name ) << ", _response );" << std::endl;
 
 			for( TVectorArguments::const_iterator
 				it_arg = mt.inArguments.begin(),
@@ -894,13 +969,13 @@ namespace Axe
 			{
 				const Argument & ar = *it_arg;
 
-				m_stream << "	ar << " << ar.name << ";" << std::endl;
+				write() << "	ar << " << ar.name << ";" << std::endl;
 			}
 
-			m_stream << std::endl;
-			m_stream << "	this->process();" << std::endl;
-			m_stream << "}" << std::endl;
-			m_stream << std::endl;
+			write() << std::endl;
+			write() << "	this->process();" << std::endl;
+			write() << "}" << std::endl;
+			write() << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1045,5 +1120,29 @@ namespace Axe
 		}
 
 		return _type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::writeLine()
+	{
+		write() << "//////////////////////////////////////////////////////////////////////////" << std::endl;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::increfTabs()
+	{
+		++m_tabs;
+	}
+	void SLAxeGenerator::decrefTabs()
+	{
+		--m_tabs;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::stringstream & SLAxeGenerator::write()
+	{
+		for( std::size_t it = 0; it != m_tabs ; ++it )
+		{
+			m_stream << "	";
+		}
+
+		return m_stream;
 	}
 }

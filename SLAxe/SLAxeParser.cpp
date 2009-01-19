@@ -50,6 +50,10 @@ namespace Axe
 	void SLAxeParser::begin_namespace( char const* str, char const* end )
 	{
 		m_namespaces.push_back( Namespace() );
+
+		Namespace & nm = m_namespaces.back();
+
+		nm.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::end_namespace( char const* str, char const* end )
@@ -65,7 +69,7 @@ namespace Axe
 	void SLAxeParser::set_parent_name( char const* str, char const* end)
 	{
 		Parent parent;
-		parent.name = std::string( str, end );
+		parent.name.assign( str, end );
 		parent.inheritance = m_inheritance;
 
 		if( m_class.name.empty() == false )
@@ -80,14 +84,14 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_inheritance_type( char const* str, char const* end )
 	{
-		m_inheritance = std::string( str, end );
+		m_inheritance.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_member( char const* str, char const* end )
 	{
 		Member member;
 
-		member.name = std::string( str, end );
+		member.name.assign( str, end );
 		member.type = m_type;
 
 		if( m_class.name.empty() == false )
@@ -102,7 +106,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_type_name( char const* str, char const* end )
 	{
-		m_type.name = std::string(str, end);
+		m_type.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_typedef( char const* str, char const* end )
@@ -117,12 +121,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_typedef_name( char const* str, char const* end )
 	{
-		m_typedef.name = std::string( str, end );
+		m_typedef.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_typedef_type( char const* str, char const* end )
 	{
-		m_typedef.type = std::string( str, end );
+		m_typedef.type.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_type_to_template_list( char const* str, char const* end )
@@ -139,13 +143,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_method_name( char const* str, char const* end )
 	{
-		m_method.name = std::string(str, end);
+		m_method.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_in_argument( char const* str, char const* end )
 	{
 		Argument arg;
-		arg.name = std::string(str, end);
+		arg.name.assign( str, end );
 		arg.type = m_type;
 
 		m_method.inArguments.push_back( arg );
@@ -159,7 +163,7 @@ namespace Axe
 		}
 
 		Argument arg;
-		arg.name = std::string("__result__");
+		arg.name = "__result__";
 		arg.type = m_type;
 
 		m_method.outArguments.push_back( arg );
@@ -168,7 +172,7 @@ namespace Axe
 	void SLAxeParser::add_out_argument( char const* str, char const* end )
 	{
 		Argument arg;
-		arg.name = std::string(str, end);
+		arg.name.assign( str, end );
 		arg.type = m_type;
 
 		m_method.outArguments.push_back( arg );
