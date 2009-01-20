@@ -95,6 +95,25 @@ namespace Axe
 		m_stream << "#	pragma once" << std::endl;
 		m_stream << std::endl;
 
+		m_stream << "#	include <Axe/Bellhop.hpp>" << std::endl;
+		m_stream << "#	include <Axe/Servant.hpp>" << std::endl;
+		m_stream << "#	include <Axe/Response.hpp>" << std::endl;
+		m_stream << "#	include <Axe/Proxy.hpp>" << std::endl;
+		m_stream << "#	include <Axe/Response.hpp>" << std::endl;
+		
+		m_stream << std::endl;
+
+		m_stream << "#	include <string>" << std::endl;
+		m_stream << "#	include <vector>" << std::endl;
+		m_stream << std::endl;
+
+		m_stream << "namespace Axe" << std::endl;
+		m_stream << "{" << std::endl;
+		m_stream << "	class ArchiveWrite;" << std::endl;
+		m_stream << "	class ArchiveRead;" << std::endl;
+		m_stream << "}" << std::endl;
+		m_stream << std::endl;
+
 		const Namespace & ns = m_parser->getNamespace();
 
 		generateHeaderNamespace( ns );
@@ -201,8 +220,8 @@ namespace Axe
 
 		write() << std::endl;
 
-		write() << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
-		write() << "void operator >> ( ArchiveRead & ar, " << st.name << " & _value );" << std::endl;
+		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveRead & ar, " << st.name << " & _value );" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderTypedef( const Typedef & _typedef )
@@ -211,7 +230,7 @@ namespace Axe
 
 		const Typedef & td = _typedef;
 
-		m_stream << "typedef " << writeTemplates( td.type );
+		write() << "typedef " << writeTemplates( td.type );
 
 		if( td.templates.empty() == false )
 		{
@@ -259,7 +278,7 @@ namespace Axe
 		{
 			const Method & mt = *it_method;
 
-			std::string bellhop_name = writeBellhopeName( cl.name, mt.name );
+			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
 
 			write() << "class " << bellhop_name << std::endl;
 			write() << "	: public Axe::Bellhop" << std::endl;
@@ -293,7 +312,7 @@ namespace Axe
 			m_stream << ");" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
-			write() << "typedef Axe::SharedPtr<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
+			write() << "typedef AxeHandle<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -358,7 +377,7 @@ namespace Axe
 		{
 			const Method & mt = *it_method;
 
-			std::string bellhop_name = writeBellhopeName( cl.name, mt.name ) + "Ptr";
+			std::string bellhop_name = writeBellhopName( cl.name, mt.name ) + "Ptr";
 
 			write() << "	virtual void " << mt.name << "( const " << bellhop_name << " & _cb";
 
@@ -381,7 +400,7 @@ namespace Axe
 		write() << "	void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
-		write() << "typedef Axe::SharedPtr<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
+		write() << "typedef AxeHandle<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderResponse( const Declaration::Class & _class )
@@ -413,7 +432,7 @@ namespace Axe
 			write() << "	: public Axe::Response" << std::endl;
 
 			write() << "{" << std::endl;
-			write() << "public:" << std::endl;
+			write() << "protected:" << std::endl;
 
 			write() << "	virtual void response(";
 			
@@ -439,11 +458,11 @@ namespace Axe
 
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
-			write() << "private:" << std::endl;
-			write() << "	void process( stream_read * _stream ) override;" << std::endl;
+			write() << "public:" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
-			write() << "typedef Axe::SharedPtr<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
+			write() << "typedef AxeHandle<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
 			write() << std::endl;
 		}
 	}
@@ -500,9 +519,6 @@ namespace Axe
 		write() << "public:" << std::endl;
 		write() << "	" << proxy_name << "( std::size_t _id, const Axe::ConnectionPtr & _connection );" << std::endl;
 		write() << std::endl;
-		write() << "protected:" << std::endl;
-		write() << "	" << proxy_name << "();" << std::endl;
-		write() << std::endl;
 		write() << "public:" << std::endl;
 
 		for( TVectorMethods::const_iterator
@@ -531,16 +547,21 @@ namespace Axe
 			m_stream << " const " << response_name << " & _response );" << std::endl;
 		}
 
-		m_stream << "};" << std::endl;
+		write() << "};" << std::endl;
 
-		write() << "typedef Axe::SharedPtr<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
+		write() << "typedef AxeHandle<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplement( const std::string & _fileName )
 	{
 		m_stream.str("");
 
-		m_stream << "#	include <" << _fileName << ".hpp>" << std::endl;
+		m_stream << "#	include <Axe/pch.hpp>" << std::endl;
+		m_stream << std::endl;
+		m_stream << "#	include \"" << _fileName << ".hpp\"" << std::endl;
+		m_stream << std::endl;
+		m_stream << "#	include <Axe/ArchiveWrite.hpp>" << std::endl;
+		m_stream << "#	include <Axe/ArchiveRead.hpp>" << std::endl;
 		m_stream << std::endl;
 
 		const Namespace & ns = m_parser->getNamespace();
@@ -607,7 +628,7 @@ namespace Axe
 		const Struct & st = _struct;
 
 		writeLine();
-		write() << "void operator << ( ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
+		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
 		write() <<	"{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -635,7 +656,7 @@ namespace Axe
 		write() << "}" << std::endl;
 
 		writeLine();
-		write() << "void operator >> ( ArchiveRead & ar, " << st.name << " & _value )" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveRead & ar, " << st.name << " & _value )" << std::endl;
 		write() <<	"{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -694,11 +715,11 @@ namespace Axe
 		{
 			const Method & mt = *it_method;
 
-			std::string bellhop_name = writeBellhopeName( cl.name, mt.name );
+			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
 
 			writeLine();
 			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
-			write() <<	"	: Axe::Bellhope(_requestId, _session)" << std::endl;
+			write() <<	"	: Axe::Bellhop(_requestId, _session)" << std::endl;
 			write() << "{" << std::endl;
 			write() << "}" << std::endl;
 			write() << std::endl;
@@ -780,7 +801,7 @@ namespace Axe
 
 		write() << "enum" << std::endl;
 		write() << "{" << std::endl;
-		write() << "	ESMD = 0" << std::endl;
+		write() << "	ESMD_" << cl.name << " = 0" << std::endl;
 
 		for( TVectorMethods::const_iterator
 			it_method = cl.methods.begin(),
@@ -816,14 +837,14 @@ namespace Axe
 
 			write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
 			write() << "		{" << std::endl;
-			write() << "			" << writeBellhopeName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopeName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
+			write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
 			write() << std::endl;
 
 			unsigned int bellhop_args = 0;
 
 			for( TVectorArguments::const_iterator
-				it_arg = mt.outArguments.begin(),
-				it_arg_end = mt.outArguments.end();
+				it_arg = mt.inArguments.begin(),
+				it_arg_end = mt.inArguments.end();
 			it_arg != it_arg_end;
 			++it_arg )
 			{
@@ -839,8 +860,8 @@ namespace Axe
 			bellhop_args = 0;
 
 			for( TVectorArguments::const_iterator
-				it_arg = mt.outArguments.begin(),
-				it_arg_end = mt.outArguments.end();
+				it_arg = mt.inArguments.begin(),
+				it_arg_end = mt.inArguments.end();
 			it_arg != it_arg_end;
 			++it_arg )
 			{
@@ -880,7 +901,7 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::response_call( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar )" << std::endl;
 			write() << "{" << std::endl;
 			
 
@@ -946,15 +967,23 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "()" << std::endl;
-		write() << "{" << std::endl;
-		write() << "}" << std::endl;
-
-		write() << std::endl;
-
-		writeLine();
 		write() << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "( std::size_t _id, const Axe::ConnectionPtr & _connection )" << std::endl;
-		write() << "	: Axe::Proxy( _id, _connection )" << std::endl;
+		
+		write() << "	: Axe::Proxy(_id, _connection)" << std::endl;
+
+		for( TVectorParents::const_iterator 
+			it_parent = cl.parents.begin(),
+			it_parent_end = cl.parents.end();
+		it_parent != it_parent_end;
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+
+			std::string parent_name = writeProxyName( pr.name );
+
+			write() << "	, " << parent_name << "(_id, _connection)" << std::endl;
+		}
+		
 		write() << "{" << std::endl;
 		write() << "}" << std::endl;
 
@@ -1008,7 +1037,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::string SLAxeGenerator::writeBellhopeName( const std::string & _class, const std::string & _method )
+	std::string SLAxeGenerator::writeBellhopName( const std::string & _class, const std::string & _method )
 	{
 		std::string bellhop_name = "Bellhop_" + _class + "_" + _method;
 		return bellhop_name;

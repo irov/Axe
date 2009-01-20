@@ -43,7 +43,7 @@ namespace Axe
 		void generateImplementProxy( const Declaration::Class & _class );
 
 	protected:
-		std::string writeBellhopeName( const std::string & _class, const std::string & _method );
+		std::string writeBellhopName( const std::string & _class, const std::string & _method );
 		std::string writeServantName( const std::string & _class );
 		std::string writeEnumMethodName( const std::string & _class, const std::string & _method );
 		std::string writeResponseName( const std::string & _class, const std::string & _method );

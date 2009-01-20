@@ -13,7 +13,7 @@ namespace Axe
 		template<class T>
 		void read( T & _t )
 		{
-			readBuffer( &_t, sizeof(T) );
+			readBuffer( (void *)&_t, sizeof(T) );
 		}
 
 		void readBuffer( void * _begin, std::size_t _size );
@@ -46,6 +46,6 @@ namespace Axe
 	template<class T>
 	void operator >> ( ArchiveRead & ar, T & _value )
 	{
-		ar.read_t( _value );
+		ar.read( _value );
 	}
 }

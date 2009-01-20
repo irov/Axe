@@ -49,4 +49,6 @@ namespace Axe
 
 		boost::asio::ip::tcp::socket m_socket;
 	};
+
+	typedef AxeHandle<Session> SessionPtr;
 }

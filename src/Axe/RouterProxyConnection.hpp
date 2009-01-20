@@ -17,7 +17,7 @@ namespace Axe
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
-		void procces() override;
+		void process() override;
 
 	protected:
 		RouterConnectionPtr m_base;

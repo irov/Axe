@@ -41,6 +41,6 @@ namespace Axe
 	template<class T>
 	void operator << ( ArchiveWrite & ar, const T & _value )
 	{
-		ar.write_t( _value );
+		ar.write( _value );
 	}
 }

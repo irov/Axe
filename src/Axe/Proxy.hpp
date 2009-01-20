@@ -2,10 +2,12 @@
 
 #	include "Shared.hpp"
 
+#	include "Connection.hpp"
+
 namespace Axe
 {
 	typedef AxeHandle<class Response> ResponsePtr;
-	typedef AxeHandle<class Connection> ConnectionPtr;
+	//typedef AxeHandle<class Connection> ConnectionPtr;
 
 	class ArchiveWrite;
 
@@ -17,7 +19,7 @@ namespace Axe
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
-		void procces();
+		void process();
 
 	public:
 		std::size_t getServantId() const;

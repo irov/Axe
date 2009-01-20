@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "session.hpp"
+#	include "Shared.hpp"
 
 namespace Axe
 {
@@ -15,6 +15,8 @@ namespace Axe
 		virtual ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) = 0;
 
 	public:
-		virtual void procces() = 0;
+		virtual void process() = 0;
 	};
+
+	typedef AxeHandle<Connection> ConnectionPtr;
 }

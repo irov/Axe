@@ -1,11 +1,14 @@
 #	pragma once
 
 #	include "Connection.hpp"
+#	include "Session.hpp"
 
 namespace Axe
 {
+	class ArchiveRead;
+
 	typedef AxeHandle<class Response> ResponsePtr;
-	typedef AxeHandle<class Session> SessionPtr;
+	//typedef AxeHandle<class Session> SessionPtr;
 
 	class AdapterConnection
 		: public Connection

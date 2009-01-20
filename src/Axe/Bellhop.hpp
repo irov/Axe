@@ -18,4 +18,6 @@ namespace Axe
 		std::size_t m_requestId;
 		AdapterSessionPtr m_session;
 	};
+
+	typedef AxeHandle<Bellhop> BellhopPtr;	
 }
