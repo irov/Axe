@@ -12,7 +12,7 @@ namespace Axe
 		: public Host
 	{
 	public:
-		Adapter( std::size_t _id, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Adapter( boost::asio::io_service & _service, std::size_t _id, const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		void initialize();

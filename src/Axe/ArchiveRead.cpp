@@ -44,6 +44,17 @@ namespace Axe
 		readBuffer( &*_value.begin(), size );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const Archive::value_type * ArchiveRead::selectBuffer( std::size_t _size )
+	{
+		std::advance( m_seek, _size );
+		return &*m_seek;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ArchiveRead::clear()
+	{
+		m_archive.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::seek( std::size_t _pos )
 	{
 		std::advance( m_seek, _pos );

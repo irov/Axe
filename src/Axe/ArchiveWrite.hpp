@@ -20,6 +20,7 @@ namespace Axe
 
 		void writeSize( std::size_t _size );
 		void writeString( const std::string & _value );
+		void writeArchive( const Archive::value_type * _buffer, std::size_t _size );
 
 	protected:
 		void writeBuffer( const void * _begin, const void * _end );

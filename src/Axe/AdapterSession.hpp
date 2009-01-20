@@ -4,13 +4,13 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Router> RouterPtr;
+	typedef AxeHandle<class Adapter> AdapterPtr;
 
-	class RouterSession
+	class AdapterSession
 		: public Session
 	{
 	public:
-		RouterSession( boost::asio::io_service & _service, const RouterPtr & _rt );
+		AdapterSession( boost::asio::io_service & _service, const AdapterPtr & _adapter );
 
 	public:
 		ArchiveWrite & beginResponse( std::size_t _responseId );
@@ -19,6 +19,6 @@ namespace Axe
 		void dispatchMessage( std::size_t _size ) override;
 
 	protected:
-		RouterPtr m_router;
+		AdapterPtr m_adapter;
 	};
 }

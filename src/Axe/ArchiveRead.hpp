@@ -23,7 +23,10 @@ namespace Axe
 		void readSize( std::size_t & _value );
 		void readString( std::string & _value );
 
+		const Archive::value_type * selectBuffer( std::size_t _size );
+
 	public:
+		void clear();
 		void seek( std::size_t _pos );
 		bool eof() const;
 

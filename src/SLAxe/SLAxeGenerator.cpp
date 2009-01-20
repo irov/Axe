@@ -802,7 +802,7 @@ namespace Axe
 		//		stream_read * stream = _session->get_streamIn();
 		//		switch( _methodId ){
 
-		write() << "	Axe::ArchiveRead & ar = _session->getArhiveRead();" << std::endl;
+		write() << "	Axe::ArchiveRead & ar = _session->getArchiveRead();" << std::endl;
 		write() << "	switch( _methodId )" << std::endl;
 		write() << "	{" << std::endl;
 

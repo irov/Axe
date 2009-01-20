@@ -15,7 +15,7 @@ namespace Axe
 		RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _id );
 
 	public:
-		ArchiveWrite & begin_message( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
+		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
 		void procces() override;
 

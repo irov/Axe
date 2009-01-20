@@ -191,17 +191,37 @@
 			Name="Adapter"
 			>
 			<File
+				RelativePath=".\Adapter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Adapter.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AdapterConnection.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\AdapterConnection.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\AdapterSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AdapterSession.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Bellhop"
 			>
+			<File
+				RelativePath=".\Bellhop.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\Bellhop.hpp"
 				>
@@ -227,6 +247,10 @@
 			Name="Host"
 			>
 			<File
+				RelativePath=".\Host.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Host.hpp"
 				>
 			</File>
@@ -234,6 +258,10 @@
 		<Filter
 			Name="Proxy"
 			>
+			<File
+				RelativePath=".\Proxy.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\Proxy.hpp"
 				>
@@ -251,6 +279,10 @@
 			Name="Router"
 			>
 			<File
+				RelativePath=".\Router.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Router.hpp"
 				>
 			</File>
@@ -260,6 +292,10 @@
 			</File>
 			<File
 				RelativePath=".\RouterProxyConnection.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterResponse.cpp"
 				>
 			</File>
 			<File

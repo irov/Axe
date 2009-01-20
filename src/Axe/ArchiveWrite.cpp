@@ -36,6 +36,11 @@ namespace Axe
 		writeBuffer( buff, buff + size );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ArchiveWrite::writeArchive( const Archive::value_type * _buffer, std::size_t _size )
+	{
+		writeBuffer( _buffer, _buffer + size );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeBuffer( const void * _begin, const void * _end )
 	{
 		std::size_t old_size = m_archive.size();
