@@ -5,6 +5,7 @@
 #	include "Router.hpp"
 
 #	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
@@ -20,7 +21,7 @@ namespace Axe
 		m_streamWrite->begin();
 		m_streamWrite->writeSize( _responseId );
 
-		return m_streamWrite;
+		return *m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterSession::dispatchMessage( std::size_t _size )

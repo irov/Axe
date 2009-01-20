@@ -3,26 +3,52 @@
 #	include "AdapterConnection.hpp"
 
 #	include "Session.hpp"
-#	include "ArchiveWrite.hpp"
 #	include "Adapter.hpp"
 #	include "Response.hpp"
+
+#	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
+	class AdapterSessionConnection
+		: public Session
+	{
+	public:
+		AdapterSessionConnection( boost::asio::io_service & _service, AdapterConnection * _base )
+			: Session( _service )
+			, m_base(_base)
+		{
+		}
+		
+	public:
+		void dispatchMessage( std::size_t _size ) override
+		{
+			ArchiveRead & _read = this->getArchiveRead();
+			m_base->dispatchMessage( _read, _size );
+		}
+
+	protected:
+		AdapterConnection * m_base;
+	};
+	
+	//////////////////////////////////////////////////////////////////////////
 	AdapterConnection::AdapterConnection( boost::asio::io_service & _service )
-		: SessionConnection(_service)
+		: m_session( new AdapterSessionConnection( _service, this ) )
 		, m_messageEnum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		m_streamWrite->begin();
+		ArchiveWrite & ar = m_session->getArchiveWrite();
+		
+		ar.begin();
 
-		this->write_body( _servantId, _methodId, _response );
+		this->writeBody( ar, _servantId, _methodId, _response );
 
-		return *m_streamWrite;
+		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
@@ -38,27 +64,27 @@ namespace Axe
 		return m_messageEnum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::writeBody( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	void AdapterConnection::writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		std::size_t messageId = this->add_dispatch( _response );
+		std::size_t messageId = this->addDispatch( _response );
 
-		m_streamWrite->write_t( _servantId );
-		m_streamWrite->writeSize( _methodId );
-		m_streamWrite->writeSize( messageId );
+		_archive.write( _servantId );
+		_archive.writeSize( _methodId );
+		_archive.writeSize( messageId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::dispatchMessage( std::size_t _size )
+	void AdapterConnection::dispatchMessage( ArchiveRead & _read, std::size_t _size )
 	{
 		std::size_t responseId;
-		m_streamIn->readSize( responseId );
+		_read.readSize( responseId );
 
 		TMapResponse::iterator it_found = m_dispatch.find( responseId );
 
 		const ResponsePtr & response = it_found->second;
-		response->response_call( m_streamIn );
+		response->responseCall( _read );
 
 		m_dispatch.erase( it_found );
 
-		m_streamIn->clear();
+		_read.clear();
 	}
 }

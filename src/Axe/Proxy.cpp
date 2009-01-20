@@ -12,9 +12,9 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Proxy::begin_message( std::size_t _methodId, const ResponsePtr & _response )
+	ArchiveWrite & Proxy::beginMessage( std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & ar = m_connection->begin_message( m_servantId, _methodId, _response );
+		ArchiveWrite & ar = m_connection->beginMessage( m_servantId, _methodId, _response );
 
 		return ar;
 	}

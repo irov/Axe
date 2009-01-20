@@ -21,4 +21,6 @@ namespace Axe
 	protected:
 		AdapterPtr m_adapter;
 	};
+
+	typedef AxeHandle<AdapterSession> AdapterSessionPtr;
 }

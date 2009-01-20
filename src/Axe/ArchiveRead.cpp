@@ -3,11 +3,6 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveRead::ArchiveRead( const Archive & _archive )
-		: m_archive(_archive)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
 		m_seek = m_archive.begin();
@@ -23,11 +18,11 @@ namespace Axe
 	void ArchiveRead::readSize( std::size_t & _value )
 	{
 		char low_size;
-		read_t( low_size );
+		read( low_size );
 
 		if( low_size == 255 )
 		{
-			read_t( _value );
+			read( _value );
 		}
 		else
 		{
@@ -48,6 +43,14 @@ namespace Axe
 	{
 		std::advance( m_seek, _size );
 		return &*m_seek;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Archive::value_type * ArchiveRead::keepBuffer( std::size_t _size )
+	{
+		Archive::size_type size = m_archive.size();
+		m_archive.resize( size + _size );
+
+		return &m_archive[size];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::clear()

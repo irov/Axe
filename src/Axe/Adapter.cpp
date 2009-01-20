@@ -1,7 +1,6 @@
 #	include "pch.hpp"
 #	include "Adapter.hpp"
 
-#	include "Communicator.hpp"
 #	include "AdapterSession.hpp"
 #	include "Servant.hpp"
 

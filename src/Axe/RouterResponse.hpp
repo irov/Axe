@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "host.hpp"
-#	include "response_base.hpp"
+#	include "Response.hpp"
 
 namespace Axe
 {
@@ -18,6 +17,6 @@ namespace Axe
 
 	protected:
 		std::size_t m_requestId;
-		router_session * m_session;
+		RouterSessionPtr m_session;
 	};
 }

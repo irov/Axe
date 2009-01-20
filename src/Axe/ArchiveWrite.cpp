@@ -3,27 +3,28 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite::ArchiveWrite( Archive & _archive )
-	: m_archive(_archive)
+	void ArchiveWrite::begin()
 	{
-		m_begin = _archive.size();
+		m_archive.clear();
+
+		m_begin = 0;
 
 		std::size_t size = 0;
-		write_t( size );
+		write( size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeSize( std::size_t _size )
 	{
 		if( _size < 255 )
 		{
-			unsigned char ch_size = _size;
-			write_t( ch_size );
+			unsigned char ch_size = (unsigned char)_size;
+			write( ch_size );
 		}
 		else
 		{
 			unsigned char ch_size = 255;
-			write_t( ch_size );
-			write_t( _size );
+			write( ch_size );
+			write( _size );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeArchive( const Archive::value_type * _buffer, std::size_t _size )
 	{
-		writeBuffer( _buffer, _buffer + size );
+		writeBuffer( _buffer, _buffer + _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeBuffer( const void * _begin, const void * _end )
@@ -53,6 +54,21 @@ namespace Axe
 		std::size_t new_size = m_archive.size();
 
 		*(std::size_t*)(&m_archive[m_begin]) += new_size - old_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Archive & ArchiveWrite::getArchive() const
+	{
+		return m_archive;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ArchiveWrite::clear()
+	{
+		m_archive.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ArchiveWrite::empty() const
+	{
+		return m_archive.empty();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( ArchiveWrite & ar, const std::string & _value )

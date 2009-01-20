@@ -1,10 +1,12 @@
 #	include "pch.hpp"
 
 #	include "Router.hpp"
+#	include "RouterResponse.hpp"
 #	include "RouterSession.hpp"
 
 #	include "Connection.hpp"
-#	include "Stream.hpp"
+#	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
@@ -27,7 +29,7 @@ namespace Axe
 		return session;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSession & _session )
+	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _session )
 	{
 		TMapRouming::iterator it_find = m_rouming.find( _endpointId );
 
@@ -42,9 +44,9 @@ namespace Axe
 
 		ArchiveRead & read = _session->getArchiveRead();
 
-		TBlobject::value_type * args_buff = read->selectBuffer( _sizeArgs );
+		const Archive::value_type * args_buff = read.selectBuffer( _sizeArgs );
 
-		write->writeArchive( args_buff, _sizeArgs );
+		write.writeArchive( args_buff, _sizeArgs );
 
 		cn->procces();
 	}

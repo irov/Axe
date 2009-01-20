@@ -2,9 +2,11 @@
 
 #	include "Shared.hpp"
 
+#	include "AdapterSession.hpp"
+
 namespace Axe
 {
-	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
+	//typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
 
 	class Bellhop
 		: public Shared

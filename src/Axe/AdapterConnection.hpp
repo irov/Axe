@@ -1,13 +1,14 @@
 #	pragma once
 
-#	include "SessionConnection.hpp"
+#	include "Connection.hpp"
 
 namespace Axe
 {
 	typedef AxeHandle<class Response> ResponsePtr;
+	typedef AxeHandle<class Session> SessionPtr;
 
 	class AdapterConnection
-		: public SessionConnection
+		: public Connection
 	{
 	public:
 		AdapterConnection( boost::asio::io_service & _service );
@@ -16,13 +17,15 @@ namespace Axe
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
 	public:
-		void dispatchMessage( std::size_t _size ) override;
+		virtual void dispatchMessage( ArchiveRead & _read, std::size_t _size );
 
 	protected:
 		std::size_t addDispatch( const ResponsePtr & _response );
-		void writeBody( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
+		void writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 
 	protected:
+		SessionPtr m_session; 
+
 		typedef std::map<std::size_t, ResponsePtr> TMapResponse;
 		TMapResponse m_dispatch;
 

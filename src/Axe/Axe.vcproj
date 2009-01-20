@@ -179,11 +179,11 @@
 			Name="Session"
 			>
 			<File
-				RelativePath=".\Session.hpp"
+				RelativePath=".\Session.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SessionConnection.hpp"
+				RelativePath=".\Session.hpp"
 				>
 			</File>
 		</Filter>
@@ -287,7 +287,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RouterConnection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RouterConnection.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterProxyConnection.cpp"
 				>
 			</File>
 			<File
@@ -300,6 +308,10 @@
 			</File>
 			<File
 				RelativePath=".\RouterResponse.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RouterSession.cpp"
 				>
 			</File>
 			<File

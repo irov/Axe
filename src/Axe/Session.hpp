@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "blobject_stream.hpp"
+#	include "Shared.hpp"
+#	include "Archive.hpp"
 
 namespace Axe
 {
@@ -32,7 +33,7 @@ namespace Axe
 
 	protected:
 		void handleReadSize( const boost::system::error_code & _ec, std::size_t * _size );
-		void handleReadBody( const boost::system::error_code & _ec, TBlobject::value_type * _blob );
+		void handleReadBody( const boost::system::error_code & _ec, Archive::value_type * _blob );
 
 	protected:
 		void run();

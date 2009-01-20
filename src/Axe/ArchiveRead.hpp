@@ -7,14 +7,11 @@ namespace Axe
 	class ArchiveRead
 	{
 	public:
-		ArchiveRead( const Archive & _archive );
-
-	public:
 		void begin();
 
 	public:
 		template<class T>
-		void read_t( T & _t )
+		void read( T & _t )
 		{
 			readBuffer( &_t, sizeof(T) );
 		}
@@ -25,13 +22,22 @@ namespace Axe
 
 		const Archive::value_type * selectBuffer( std::size_t _size );
 
+		Archive::value_type * keepBuffer( std::size_t _size );
+
+		template<class T>
+		T * keep()
+		{
+			return (T*)keepBuffer( sizeof(T) );
+		}
+
+
 	public:
 		void clear();
 		void seek( std::size_t _pos );
 		bool eof() const;
 
 	protected:
-		const Archive & m_archive;
+		Archive m_archive;
 		Archive::const_iterator m_seek;
 	};
 

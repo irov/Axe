@@ -5,6 +5,7 @@
 #	include "Adapter.hpp"
 
 #	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
@@ -29,7 +30,7 @@ namespace Axe
 		std::size_t methodId;
 		std::size_t requestId;
 
-		m_streamIn->read_t( servantId);
+		m_streamIn->read( servantId);
 		m_streamIn->readSize( methodId);
 		m_streamIn->readSize( requestId);
 

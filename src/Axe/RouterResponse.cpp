@@ -14,7 +14,7 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterResponse::response_call( ArchiveRead & _ar )
+	void RouterResponse::responseCall( ArchiveRead & _ar )
 	{
 		//_cn->
 	}

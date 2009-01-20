@@ -9,11 +9,11 @@ namespace Axe
 	class ArchiveWrite
 	{
 	public:
-		ArchiveWrite( Archive & _archive );
+		void begin();
 
 	public:
 		template<class T>
-		void write_t( const T & _value )
+		void write( const T & _value )
 		{
 			writeBuffer( &_value,  &_value + 1 );
 		}
@@ -22,12 +22,18 @@ namespace Axe
 		void writeString( const std::string & _value );
 		void writeArchive( const Archive::value_type * _buffer, std::size_t _size );
 
+	public:
+		const Archive & getArchive() const;
+
+		void clear();
+		bool empty() const;
+
 	protected:
 		void writeBuffer( const void * _begin, const void * _end );
 
 	protected:
 		std::size_t m_begin;
-		Archive & m_archive;	
+		Archive m_archive;	
 	};
 
 	void operator << ( ArchiveWrite & ar, const std::string & _value );
