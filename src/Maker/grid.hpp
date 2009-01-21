@@ -31,9 +31,13 @@ namespace Protocol
 		float y;
 	};
 
+	class Client
+	{
+		Player onConnect( Player _player );
+	};
+
 	class Player
 	{
-		void login();
 		void moveTo( vec2f _vec );
 		void teleportTo( vec2f _vec );
 	};

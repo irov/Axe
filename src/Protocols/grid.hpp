@@ -57,7 +57,7 @@ namespace Protocol
 		virtual void get_servand_endpoint( const Bellhop_grid_get_servand_endpointPtr & _cb, const std::string & _name, const vector_int & vec ) = 0;
 	
 	private:
-		void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
 	};
 	
 	typedef AxeHandle<Servant_grid> Servant_gridPtr;
@@ -84,6 +84,10 @@ namespace Protocol
 	public:
 		void get_servand_endpoint( const std::string & _name, const vector_int & vec, const Response_grid_get_servand_endpointPtr & _response );
 	};
+	
+	void operator << ( Axe::ArchiveWrite & ar, const Proxy_grid & _value );
+	void operator >> ( Axe::ArchiveRead & ar, Proxy_grid & _value );
+	
 	typedef AxeHandle<Proxy_grid> Proxy_gridPtr;
 	
 	class Bellhop_box_add
@@ -105,7 +109,7 @@ namespace Protocol
 		virtual void add( const Bellhop_box_addPtr & _cb ) = 0;
 	
 	private:
-		void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
 	};
 	
 	typedef AxeHandle<Servant_box> Servant_boxPtr;
@@ -132,6 +136,10 @@ namespace Protocol
 	public:
 		void add( const Response_box_addPtr & _response );
 	};
+	
+	void operator << ( Axe::ArchiveWrite & ar, const Proxy_box & _value );
+	void operator >> ( Axe::ArchiveRead & ar, Proxy_box & _value );
+	
 	typedef AxeHandle<Proxy_box> Proxy_boxPtr;
 	
 	struct vec2f
@@ -143,17 +151,58 @@ namespace Protocol
 	void operator << ( Axe::ArchiveWrite & ar, const vec2f & _value );
 	void operator >> ( Axe::ArchiveRead & ar, vec2f & _value );
 	
-	class Bellhop_Player_login
+	class Bellhop_Client_onConnect
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_Player_login( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );
+		Bellhop_Client_onConnect( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );
 	
 	public:
-		void response();
+		void response( const Proxy_PlayerPtr & );
 	};
 	
-	typedef AxeHandle<Bellhop_Player_login> Bellhop_Player_loginPtr;
+	typedef AxeHandle<Bellhop_Client_onConnect> Bellhop_Client_onConnectPtr;
+	
+	class Servant_Client
+		: virtual public Axe::Servant
+	{
+	public:
+		virtual void onConnect( const Bellhop_Client_onConnectPtr & _cb, const Proxy_PlayerPtr & _player ) = 0;
+	
+	private:
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
+	};
+	
+	typedef AxeHandle<Servant_Client> Servant_ClientPtr;
+	
+	class Response_Client_onConnect
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( const Proxy_PlayerPtr & ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveRead & _ar ) override;
+	};
+	
+	typedef AxeHandle<Response_Client_onConnect> Response_Client_onConnectPtr;
+	
+	
+	class Proxy_Client
+		: virtual public Axe::Proxy
+	{
+	public:
+		Proxy_Client( std::size_t _id, const Axe::ConnectionPtr & _connection );
+	
+	public:
+		void onConnect( const Proxy_PlayerPtr & _player, const Response_Client_onConnectPtr & _response );
+	};
+	
+	void operator << ( Axe::ArchiveWrite & ar, const Proxy_Client & _value );
+	void operator >> ( Axe::ArchiveRead & ar, Proxy_Client & _value );
+	
+	typedef AxeHandle<Proxy_Client> Proxy_ClientPtr;
+	
 	class Bellhop_Player_moveTo
 		: public Axe::Bellhop
 	{
@@ -181,27 +230,14 @@ namespace Protocol
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void login( const Bellhop_Player_loginPtr & _cb ) = 0;
 		virtual void moveTo( const Bellhop_Player_moveToPtr & _cb, const vec2f & _vec ) = 0;
 		virtual void teleportTo( const Bellhop_Player_teleportToPtr & _cb, const vec2f & _vec ) = 0;
 	
 	private:
-		void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
-	
-	class Response_Player_login
-		: public Axe::Response
-	{
-	protected:
-		virtual void response() = 0;
-	
-	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-	};
-	
-	typedef AxeHandle<Response_Player_login> Response_Player_loginPtr;
 	
 	class Response_Player_moveTo
 		: public Axe::Response
@@ -235,9 +271,12 @@ namespace Protocol
 		Proxy_Player( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void login( const Response_Player_loginPtr & _response );
 		void moveTo( const vec2f & _vec, const Response_Player_moveToPtr & _response );
 		void teleportTo( const vec2f & _vec, const Response_Player_teleportToPtr & _response );
 	};
+	
+	void operator << ( Axe::ArchiveWrite & ar, const Proxy_Player & _value );
+	void operator >> ( Axe::ArchiveRead & ar, Proxy_Player & _value );
+	
 	typedef AxeHandle<Proxy_Player> Proxy_PlayerPtr;
 }

@@ -42,6 +42,10 @@ namespace Axe
 		void generateImplementResponse( const Declaration::Class & _class );
 		void generateImplementProxy( const Declaration::Class & _class );
 
+
+	protected:
+		void writeTypedefHandle( const std::string & _type );
+
 	protected:
 		std::string writeBellhopName( const std::string & _class, const std::string & _method );
 		std::string writeServantName( const std::string & _class );
@@ -55,6 +59,7 @@ namespace Axe
 		std::string writeTemplates( const std::string & _type );
 
 	protected:
+		void writeSelectType( const std::string & _type, std::size_t _enum );
 		void writeLine();
 
 

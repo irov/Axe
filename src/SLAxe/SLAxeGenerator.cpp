@@ -312,7 +312,7 @@ namespace Axe
 			m_stream << ");" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
-			write() << "typedef AxeHandle<" << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl; 
+			writeTypedefHandle( bellhop_name );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -397,10 +397,10 @@ namespace Axe
 
 		write() << std::endl;
 		write() << "private:" << std::endl;
-		write() << "	void call_method( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
+		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
-		write() << "typedef AxeHandle<" << servant_name << "> " << servant_name << "Ptr;" << std::endl;
+		writeTypedefHandle( servant_name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderResponse( const Declaration::Class & _class )
@@ -462,7 +462,7 @@ namespace Axe
 			write() << "	void responseCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
-			write() << "typedef AxeHandle<" << response_name << "> " << response_name << "Ptr;" << std::endl; 
+			writeTypedefHandle( response_name );
 			write() << std::endl;
 		}
 	}
@@ -548,8 +548,13 @@ namespace Axe
 		}
 
 		write() << "};" << std::endl;
+		write() << std::endl;
 
-		write() << "typedef AxeHandle<" << proxy_name << "> " << proxy_name << "Ptr;" << std::endl;
+		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value );" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+
+		write() << std::endl;
+		writeTypedefHandle( proxy_name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplement( const std::string & _fileName )
@@ -817,7 +822,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
 		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
@@ -850,8 +855,8 @@ namespace Axe
 			{
 				const Argument & ar = *it_arg;
 
-				write() << "			" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
-				write() << "			ar >> arg" << bellhop_args << ";" << std::endl;
+				write() << "			";
+				writeSelectType( ar.type.name, bellhop_args );
 				++bellhop_args;
 			}
 
@@ -915,8 +920,8 @@ namespace Axe
 			{
 				const Argument & ar = *it_arg;
 
-				write() << "	" << writeMemberType( ar.type.name ) << " arg" << bellhop_args << ";" << std::endl;
-				write() << "	_ar >> arg" << bellhop_args << ";" << std::endl;
+				write() << "	";
+				writeSelectType( ar.type.name, bellhop_args );
 				++bellhop_args;
 			}
 
@@ -1037,6 +1042,11 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::writeTypedefHandle( const std::string & _type )
+	{
+		write() << "typedef AxeHandle<" << _type << "> " << _type << "Ptr;" << std::endl;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeBellhopName( const std::string & _class, const std::string & _method )
 	{
 		std::string bellhop_name = "Bellhop_" + _class + "_" + _method;
@@ -1117,8 +1127,8 @@ namespace Axe
 		if( it_class_found != m_classTypes.end() )
 		{
 			std::string ret_type = "const ";
-			ret_type += _type;
-			ret_type += "Prx &";
+			ret_type += writeProxyName(_type);
+			ret_type += "Ptr &";
 
 			return ret_type;
 		}
@@ -1146,8 +1156,8 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			std::string ret_type = _type;
-			ret_type += "Prx";
+			std::string ret_type = writeProxyName(_type);
+			ret_type += "Ptr";
 
 			return ret_type;
 		}
@@ -1171,13 +1181,26 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			std::string ret_type = _type;
-			ret_type += "Prx";
+			std::string ret_type = writeProxyName(_type);
+			ret_type += "Ptr";
 
 			return ret_type;
 		}
 
 		return _type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::writeSelectType( const std::string & _type, std::size_t _enum )
+	{
+		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
+
+		if( it_class_found != m_classTypes.end() )
+		{
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = _session->makeProxy<" << writeProxyName( _type ) << ">( ar );" << std::endl;
+			return;
+		}
+		
+		m_stream << writeMemberType( _type ) << " arg" << _enum << "; ar >> arg" << _enum << ";" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::writeLine()

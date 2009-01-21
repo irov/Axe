@@ -55,7 +55,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_grid::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_grid::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -64,10 +64,8 @@ namespace Protocol
 			{
 				Bellhop_grid_get_servand_endpointPtr bellhop = new Bellhop_grid_get_servand_endpoint( _requestId, _session );
 	
-				std::string arg0;
-				ar >> arg0;
-				vector_int arg1;
-				ar >> arg1;
+				std::string arg0; ar >> arg0;
+				vector_int arg1; ar >> arg1;
 				this->get_servand_endpoint( bellhop, arg0, arg1 );
 			}break;
 		}
@@ -76,8 +74,7 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Response_grid_get_servand_endpoint::responseCall( Axe::ArchiveRead & _ar )
 	{
-		servant_info arg0;
-		_ar >> arg0;
+		servant_info arg0; ar >> arg0;
 		this->response( arg0 );
 	}
 	
@@ -118,7 +115,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_box::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_box::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -168,17 +165,64 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Player_login::Bellhop_Player_login( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_Client_onConnect::Bellhop_Client_onConnect( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_Player_login::response()
+	void Bellhop_Client_onConnect::response( const Proxy_PlayerPtr & _arg0 )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		ar << _arg0;
 		m_session->procces();
 	}
+	
+	enum
+	{
+		ESMD_Client = 0
+		,	ESMD_Client_onConnect
+	};
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_Client::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	{
+		Axe::ArchiveRead & ar = _session->getArchiveRead();
+		switch( _methodId )
+		{
+		case ESMD_Client_onConnect:
+			{
+				Bellhop_Client_onConnectPtr bellhop = new Bellhop_Client_onConnect( _requestId, _session );
+	
+				Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar );
+				this->onConnect( bellhop, arg0 );
+			}break;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Response_Client_onConnect::responseCall( Axe::ArchiveRead & _ar )
+	{
+		Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar );
+		this->response( arg0 );
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	Proxy_Client::Proxy_Client( std::size_t _id, const Axe::ConnectionPtr & _connection )
+		: Axe::Proxy(_id, _connection)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_Client::onConnect( const Proxy_PlayerPtr & _player, const Response_Client_onConnectPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Client_onConnect, _response );
+		ar << _player;
+	
+		this->process();
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Player_moveTo::Bellhop_Player_moveTo( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
@@ -207,47 +251,33 @@ namespace Protocol
 	enum
 	{
 		ESMD_Player = 0
-		,	ESMD_Player_login
 		,	ESMD_Player_moveTo
 		,	ESMD_Player_teleportTo
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::call_method( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
 		{
-		case ESMD_Player_login:
-			{
-				Bellhop_Player_loginPtr bellhop = new Bellhop_Player_login( _requestId, _session );
-	
-				this->login( bellhop );
-			}break;
 		case ESMD_Player_moveTo:
 			{
 				Bellhop_Player_moveToPtr bellhop = new Bellhop_Player_moveTo( _requestId, _session );
 	
-				vec2f arg0;
-				ar >> arg0;
+				vec2f arg0; ar >> arg0;
 				this->moveTo( bellhop, arg0 );
 			}break;
 		case ESMD_Player_teleportTo:
 			{
 				Bellhop_Player_teleportToPtr bellhop = new Bellhop_Player_teleportTo( _requestId, _session );
 	
-				vec2f arg0;
-				ar >> arg0;
+				vec2f arg0; ar >> arg0;
 				this->teleportTo( bellhop, arg0 );
 			}break;
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_login::responseCall( Axe::ArchiveRead & _ar )
-	{
-		this->response();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_Player_moveTo::responseCall( Axe::ArchiveRead & _ar )
 	{
@@ -263,14 +293,6 @@ namespace Protocol
 	Proxy_Player::Proxy_Player( std::size_t _id, const Axe::ConnectionPtr & _connection )
 		: Axe::Proxy(_id, _connection)
 	{
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Proxy_Player::login( const Response_Player_loginPtr & _response )
-	{
-		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_login, _response );
-	
-		this->process();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
