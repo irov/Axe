@@ -239,6 +239,10 @@
 			Name="Connection"
 			>
 			<File
+				RelativePath=".\Connection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Connection.hpp"
 				>
 			</File>
@@ -324,6 +328,18 @@
 			>
 			<File
 				RelativePath=".\Shared.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Reception"
+			>
+			<File
+				RelativePath=".\Reception.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Reception.hpp"
 				>
 			</File>
 		</Filter>

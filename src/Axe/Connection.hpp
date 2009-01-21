@@ -12,10 +12,19 @@ namespace Axe
 		:	public Shared
 	{
 	public:
+		Connection( std::size_t _endpointId );
+
+	public:
 		virtual ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) = 0;
 
 	public:
 		virtual void process() = 0;
+
+	public:
+		std::size_t getEndpointId() const;
+
+	protected:
+		std::size_t m_endpointId;
 	};
 
 	typedef AxeHandle<Connection> ConnectionPtr;

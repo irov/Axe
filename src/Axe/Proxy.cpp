@@ -3,6 +3,8 @@
 #	include "Proxy.hpp"
 #	include "Connection.hpp"
 
+#	include "ArchiveWrite.hpp"
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -27,5 +29,20 @@ namespace Axe
 	std::size_t Proxy::getServantId() const
 	{
 		return m_servantId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionPtr & Proxy::getConnection() const
+	{
+		return m_connection;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value )
+	{
+		std::size_t servantId = _value->getServantId();
+		ar.write( servantId );
+
+		const ConnectionPtr & connection = _value->getConnection();
+		std::size_t endpointId = connection->getEndpointId();
+		ar.writeSize( endpointId );
 	}
 }

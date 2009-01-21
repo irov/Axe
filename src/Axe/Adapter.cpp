@@ -38,7 +38,7 @@ namespace Axe
 
 		const ServantPtr & servant = it_find->second;
 
-		servant->call_method( _methodId, _requestId, _session );
+		servant->callMethod( _methodId, _requestId, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()

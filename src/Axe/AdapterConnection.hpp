@@ -14,7 +14,10 @@ namespace Axe
 		: public Connection
 	{
 	public:
-		AdapterConnection( boost::asio::io_service & _service );
+		AdapterConnection( boost::asio::io_service & _service, std::size_t _endpointId );
+
+	public:
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;

@@ -10,6 +10,6 @@ namespace Axe
 		:	public Shared
 	{
 	public:
-		virtual void call_method( std::size_t _id, std::size_t _requestId, const AdapterSessionPtr & _session ) = 0;
+		virtual void callMethod( std::size_t _id, std::size_t _requestId, const AdapterSessionPtr & _session ) = 0;
 	};
 }

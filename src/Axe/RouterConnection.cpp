@@ -16,18 +16,36 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterConnection::dispatchMessage( ArchiveRead & _read, std::size_t _size )
+	class CreateSessionResponse
+		: public Response
 	{
-		std::size_t responseId;
-		_read.readSize( responseId );
+	public:
+		CreateSessionResponse( const ClientPtr & _client )
+			: m_client(_client)
+		{
+		}
 
-		TMapResponse::iterator it_found = m_dispatch.find( responseId );
+	public:
+		void responseCall( ArchiveRead & _ar ) override
+		{
 
-		const ResponsePtr & response = it_found->second;
+			_ar 	
+		}
 
-		response->responseCall( _read );
+	protected:
+		ClientPtr m_client;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void RouterConnection::createSession( const std::string & _login, const std::string & _password, const ClientPtr & _client )
+	{
+		ArchiveWrite & ar = m_session->getArchiveWrite();
 
-		_read.clear();
+		ar.begin();
+		
+		ar << _login;
+		ar << _password;
+		
+		std::size_t dispatchId = this->addDispatch( const ResponsePtr & _response );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RouterProxyConnectionPtr & RouterConnection::getConnection( std::size_t _id )

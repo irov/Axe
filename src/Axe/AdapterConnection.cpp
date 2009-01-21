@@ -34,10 +34,16 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service )
-		: m_session( new AdapterSessionConnection( _service, this ) )
+	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _endpointId )
+		: Connection( _endpointId ) 
+		, m_session( new AdapterSessionConnection( _service, this ) )
 		, m_messageEnum(0)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		m_session->connect( _endpoint );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
