@@ -1,11 +1,10 @@
 #	pragma once
 
 #	include "Session.hpp"
+#	include "Router.hpp"
 
 namespace Axe
 {
-	typedef AxeHandle<class Router> RouterPtr;
-
 	class RouterSession
 		: public Session
 	{

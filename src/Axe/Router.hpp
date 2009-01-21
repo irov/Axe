@@ -27,4 +27,6 @@ namespace Axe
 		typedef std::map<std::size_t, ConnectionPtr> TMapRouming;
 		TMapRouming m_rouming;
 	};
+
+	typedef AxeHandle<Router> RouterPtr;
 }

@@ -2,8 +2,6 @@
 
 #	include "RouterSession.hpp"
 
-#	include "Router.hpp"
-
 #	include "ArchiveWrite.hpp"
 #	include "ArchiveRead.hpp"
 
