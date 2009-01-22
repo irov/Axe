@@ -64,7 +64,7 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::procces()
+	void Session::process()
 	{
 		if( m_streamSend->empty() )
 		{
@@ -85,7 +85,7 @@ namespace Axe
 
 		if( m_streamWrite->empty() == false )
 		{
-			this->procces();
+			this->process();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

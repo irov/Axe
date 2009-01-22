@@ -13,7 +13,7 @@ namespace Axe
 		Reception();
 
 	public:
-		void connect( const std::string & _login, const std::string & _password, const boost::asio::ip::tcp::endpoint & _endpoint, const ClientPtr & _client );
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client );
 		void run();
 
 	protected:

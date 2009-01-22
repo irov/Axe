@@ -103,10 +103,6 @@ namespace Axe
 		
 		m_stream << std::endl;
 
-		m_stream << "#	include <string>" << std::endl;
-		m_stream << "#	include <vector>" << std::endl;
-		m_stream << std::endl;
-
 		m_stream << "namespace Axe" << std::endl;
 		m_stream << "{" << std::endl;
 		m_stream << "	class ArchiveWrite;" << std::endl;
@@ -397,7 +393,7 @@ namespace Axe
 
 		write() << std::endl;
 		write() << "private:" << std::endl;
-		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session ) override;" << std::endl;
+		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
@@ -773,7 +769,7 @@ namespace Axe
 				++arg_enumerator;
 			}
 
-			write() << "	m_session->procces();" << std::endl;
+			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
 		}
 	}
@@ -822,7 +818,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )" << std::endl;
 		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
@@ -856,7 +852,7 @@ namespace Axe
 				const Argument & ar = *it_arg;
 
 				write() << "			";
-				writeSelectType( ar.type.name, bellhop_args );
+				writeSelectType( "ar", ar.type.name, bellhop_args );
 				++bellhop_args;
 			}
 
@@ -921,7 +917,7 @@ namespace Axe
 				const Argument & ar = *it_arg;
 
 				write() << "	";
-				writeSelectType( ar.type.name, bellhop_args );
+				writeSelectType( "_ar", ar.type.name, bellhop_args );
 				++bellhop_args;
 			}
 
@@ -1190,17 +1186,17 @@ namespace Axe
 		return _type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::writeSelectType( const std::string & _type, std::size_t _enum )
+	void SLAxeGenerator::writeSelectType( const std::string & _ar, const std::string & _type, std::size_t _enum )
 	{
 		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = _session->makeProxy<" << writeProxyName( _type ) << ">( ar );" << std::endl;
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = _session->makeProxy<" << writeProxyName( _type ) << ">( " << _ar << ", _connectionCache );" << std::endl;
 			return;
 		}
 		
-		m_stream << writeMemberType( _type ) << " arg" << _enum << "; ar >> arg" << _enum << ";" << std::endl;
+		m_stream << writeMemberType( _type ) << " arg" << _enum << "; " << _ar << " >> arg" << _enum << ";" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::writeLine()

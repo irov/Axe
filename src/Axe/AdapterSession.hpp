@@ -5,6 +5,8 @@
 
 namespace Axe
 {
+	class ArchiveWrite;
+
 	class AdapterSession
 		: public Session
 	{

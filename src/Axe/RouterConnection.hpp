@@ -1,26 +1,28 @@
 #	pragma once
 
 #	include "AdapterConnection.hpp"
+#	include "ConnectionCache.hpp"
 
 namespace Axe
 {
-	typedef AxeHandle<class Connection> ConnectionPtr;
-	typedef AxeHandle<class RouterProxyConnection> RouterProxyConnectionPtr;
-	
+	typedef AxeHandle<class Client> ClientPtr;
+
 	class RouterConnection
 		: public AdapterConnection
+		, public ConnectionProvider
 	{
 	public:
 		RouterConnection( boost::asio::io_service & _service );
 
 	public:
-		void createSession( const std::string & _login, const std::string & _password, const ClientPtr & _client );
+		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client );
 
 	protected:
-		const RouterProxyConnectionPtr & getConnection( std::size_t _id );
+		ConnectionPtr createConnection( std::size_t _endpointId ) override;
 
 	protected:
-		typedef std::map<std::size_t, RouterProxyConnectionPtr> TMapRouterConnections;
-		TMapRouterConnections m_connections;
+		ConnectionCachePtr m_connectionCache;
 	};
+
+	typedef AxeHandle<RouterConnection> RouterConnectionPtr;
 }

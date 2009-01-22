@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Protocols"
-	ProjectGUID="{1325E404-D5CF-4D7B-9A92-53F1D1A010E3}"
-	RootNamespace="Protocols"
+	Name="AxeProtocols"
+	ProjectGUID="{0815A219-E9A5-4E3A-9A1B-6CD74B3CBC49}"
+	RootNamespace="AxeProtocols"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -143,14 +143,14 @@
 	</References>
 	<Files>
 		<Filter
-			Name="grid"
+			Name="Player"
 			>
 			<File
-				RelativePath=".\grid.cpp"
+				RelativePath=".\Player.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\grid.hpp"
+				RelativePath=".\Player.hpp"
 				>
 			</File>
 		</Filter>

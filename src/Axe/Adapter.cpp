@@ -2,6 +2,8 @@
 #	include "Adapter.hpp"
 
 #	include "AdapterSession.hpp"
+#	include "AdapterConnection.hpp"
+
 #	include "Servant.hpp"
 
 namespace Axe
@@ -11,6 +13,7 @@ namespace Axe
 		: Host(_service, _endpoint)
 		, m_id(_id)
 	{
+		m_connectionCache = new ConnectionCache( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::initialize()
@@ -38,7 +41,7 @@ namespace Axe
 
 		const ServantPtr & servant = it_find->second;
 
-		servant->callMethod( _methodId, _requestId, _session );
+		servant->callMethod( _methodId, _requestId, _session, m_connectionCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()
@@ -46,5 +49,12 @@ namespace Axe
 		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this );
 
 		return session;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ConnectionPtr Adapter::createConnection( std::size_t _endpointId )
+	{
+		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), _endpointId );
+
+		return connection;
 	}
 }

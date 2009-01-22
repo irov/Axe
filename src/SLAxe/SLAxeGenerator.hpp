@@ -59,7 +59,7 @@ namespace Axe
 		std::string writeTemplates( const std::string & _type );
 
 	protected:
-		void writeSelectType( const std::string & _type, std::size_t _enum );
+		void writeSelectType( const std::string & _ar, const std::string & _type, std::size_t _enum );
 		void writeLine();
 
 

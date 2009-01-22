@@ -6,8 +6,10 @@
 
 namespace Axe
 {
+	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	typedef AxeHandle<class Response> ResponsePtr;
 
+	class ArchiveRead;
 	class ArchiveWrite;
 
 	class Proxy
@@ -40,21 +42,18 @@ namespace Axe
 		return new T( servantId, connection );
 	}
 
+	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, const ConnectionCachePtr & _connectionCache, std::size_t & servantId );
+
 	template<class T>
-	AxeHandle<T> makeProxy( ArchiveWrite & ar )
+	AxeHandle<T> makeProxy( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		std::size_t servantId;
-		std::size_t endpointId;
-
-		ar >> servantId;
-		ar >> endpointId;
 
 		const ConnectionPtr & connection = 
-			this->getConnection( endpointId );
+			makeProxyInfo( _ar, _connectionCache, servantId );
 
 		return new T( servantId, connection );
 	}
-
 
 	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value );	
 }

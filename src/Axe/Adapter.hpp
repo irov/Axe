@@ -2,6 +2,8 @@
 
 #	include "Host.hpp"
 
+#	include "ConnectionCache.hpp"
+
 namespace Axe
 {
 	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
@@ -10,6 +12,7 @@ namespace Axe
 
 	class Adapter
 		: public Host
+		, public ConnectionProvider
 	{
 	public:
 		Adapter( boost::asio::io_service & _service, std::size_t _id, const boost::asio::ip::tcp::endpoint & _endpoint );
@@ -26,10 +29,15 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
+		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+
+	protected:
 		std::size_t m_id;
 
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
 		TMapServants m_servants;
+
+		ConnectionCachePtr m_connectionCache;
 	};
 
 	typedef AxeHandle<Adapter> AdapterPtr;

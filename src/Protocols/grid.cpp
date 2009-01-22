@@ -45,7 +45,7 @@ namespace Protocol
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
 		ar << _arg0;
-		m_session->procces();
+		m_session->process();
 	}
 	
 	enum
@@ -55,7 +55,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_grid::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_grid::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -74,7 +74,7 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Response_grid_get_servand_endpoint::responseCall( Axe::ArchiveRead & _ar )
 	{
-		servant_info arg0; ar >> arg0;
+		servant_info arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	
@@ -105,7 +105,7 @@ namespace Protocol
 	void Bellhop_box_add::response()
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
-		m_session->procces();
+		m_session->process();
 	}
 	
 	enum
@@ -115,7 +115,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_box::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_box::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -165,65 +165,6 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Client_onConnect::Bellhop_Client_onConnect( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
-		: Axe::Bellhop(_requestId, _session)
-	{
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_Client_onConnect::response( const Proxy_PlayerPtr & _arg0 )
-	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
-		ar << _arg0;
-		m_session->procces();
-	}
-	
-	enum
-	{
-		ESMD_Client = 0
-		,	ESMD_Client_onConnect
-	};
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Servant_Client::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
-	{
-		Axe::ArchiveRead & ar = _session->getArchiveRead();
-		switch( _methodId )
-		{
-		case ESMD_Client_onConnect:
-			{
-				Bellhop_Client_onConnectPtr bellhop = new Bellhop_Client_onConnect( _requestId, _session );
-	
-				Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar );
-				this->onConnect( bellhop, arg0 );
-			}break;
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Response_Client_onConnect::responseCall( Axe::ArchiveRead & _ar )
-	{
-		Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar );
-		this->response( arg0 );
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_Client::Proxy_Client( std::size_t _id, const Axe::ConnectionPtr & _connection )
-		: Axe::Proxy(_id, _connection)
-	{
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Proxy_Client::onConnect( const Proxy_PlayerPtr & _player, const Response_Client_onConnectPtr & _response )
-	{
-		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Client_onConnect, _response );
-		ar << _player;
-	
-		this->process();
-	}
-	
-	
-	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Player_moveTo::Bellhop_Player_moveTo( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -233,7 +174,7 @@ namespace Protocol
 	void Bellhop_Player_moveTo::response()
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
-		m_session->procces();
+		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Player_teleportTo::Bellhop_Player_teleportTo( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
@@ -245,7 +186,7 @@ namespace Protocol
 	void Bellhop_Player_teleportTo::response()
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
-		m_session->procces();
+		m_session->process();
 	}
 	
 	enum
@@ -256,7 +197,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -309,6 +250,63 @@ namespace Protocol
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_teleportTo, _response );
 		ar << _vec;
+	
+		this->process();
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_Client_onConnect::Bellhop_Client_onConnect( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_Client_onConnect::response()
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		m_session->process();
+	}
+	
+	enum
+	{
+		ESMD_Client = 0
+		,	ESMD_Client_onConnect
+	};
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_Client::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	{
+		Axe::ArchiveRead & ar = _session->getArchiveRead();
+		switch( _methodId )
+		{
+		case ESMD_Client_onConnect:
+			{
+				Bellhop_Client_onConnectPtr bellhop = new Bellhop_Client_onConnect( _requestId, _session );
+	
+				Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar, _connectionCache );
+				this->onConnect( bellhop, arg0 );
+			}break;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Response_Client_onConnect::responseCall( Axe::ArchiveRead & _ar )
+	{
+		this->response();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	Proxy_Client::Proxy_Client( std::size_t _id, const Axe::ConnectionPtr & _connection )
+		: Axe::Proxy(_id, _connection)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_Client::onConnect( const Proxy_PlayerPtr & _player, const Response_Client_onConnectPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Client_onConnect, _response );
+		ar << _player;
 	
 		this->process();
 	}

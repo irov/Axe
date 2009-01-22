@@ -4,8 +4,10 @@
 
 namespace Axe
 {
+	typedef AxeHandle<class Proxy_Player> Proxy_PlayerPtr;
+
 	class Client
-		: public Servant
+		: public Shared
 	{
 	public:
 		virtual void onConnect( const Proxy_PlayerPtr & _player ) = 0;

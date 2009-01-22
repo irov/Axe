@@ -57,6 +57,11 @@ namespace Axe
 		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::process()
+	{
+		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
 	{
 		if( m_dispatch.empty() )
@@ -93,4 +98,15 @@ namespace Axe
 
 		_read.clear();
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//const ConnectionPtr & AdapterConnection::getConnection( std::size_t _id )
+	//{
+	//	TMapConnections::const_iterator it_found = m_connections.find( _id );
+	//	
+	//	if( it_found == m_connections.end() )
+	//	{
+	//		return 0;
+	//	}
+	//	return it_found->second;
+	//}
 }

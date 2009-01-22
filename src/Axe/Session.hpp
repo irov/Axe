@@ -17,7 +17,7 @@ namespace Axe
 	public:
 		void accept();
 		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
-		void procces();
+		void process();
 
 	public:
 		boost::asio::ip::tcp::socket & getSocket();

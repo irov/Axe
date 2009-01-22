@@ -9,7 +9,7 @@ namespace Axe
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class Connection
-		:	public Shared
+		: public Shared
 	{
 	public:
 		Connection( std::size_t _endpointId );

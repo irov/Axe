@@ -1,9 +1,11 @@
 #	include "pch.hpp"
 
 #	include "Proxy.hpp"
-#	include "Connection.hpp"
+
+#	include "ConnectionCache.hpp"
 
 #	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
@@ -34,6 +36,19 @@ namespace Axe
 	const ConnectionPtr & Proxy::getConnection() const
 	{
 		return m_connection;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionPtr & makeProxyInfo( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache, std::size_t & _servantId )
+	{
+		_ar.read( _servantId );
+
+		std::size_t endpointId;
+		_ar.readSize( endpointId );
+
+		const ConnectionPtr & connection = 
+			_connectionCache->getConnection( endpointId );
+		
+		return connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value )
