@@ -1,18 +1,25 @@
 #	pragma once
 
-#	include "Shared.hpp"
+#	include "RouterConnection.hpp"
 
 namespace Axe
 {
-	typedef AxeHandle<class Proxy_Player> Proxy_PlayerPtr;
+	typedef AxeHandle<class Client> ClientPtr;
 
-	class ClientResponse
-		: public Shared
+	class Reception
+		:	public Shared
 	{
 	public:
-		virtual void onConnect( const Proxy_PlayerPtr & _player ) = 0;
+		Reception();
+
+	public:
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client );
+		void run();
+
+	protected:
+		boost::asio::io_service m_service;
+		RouterConnectionPtr m_router;
 	};
 
-	typedef AxeHandle<Client> ClientPtr;
-
+	typedef AxeHandle<Reception> ReceptionPtr;
 }
