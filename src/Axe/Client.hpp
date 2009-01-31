@@ -6,7 +6,7 @@ namespace Axe
 {
 	typedef AxeHandle<class Proxy_Player> Proxy_PlayerPtr;
 
-	class Client
+	class ClientResponse
 		: public Shared
 	{
 	public:

@@ -15,7 +15,7 @@ namespace Axe
 		, public ConnectionProvider
 	{
 	public:
-		Adapter( boost::asio::io_service & _service, std::size_t _id, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Adapter( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		void initialize();
@@ -32,6 +32,7 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _endpointId ) override;
 
 	protected:
+		std::string m_name;
 		std::size_t m_id;
 
 		typedef std::map<std::size_t, ServantPtr> TMapServants;

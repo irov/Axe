@@ -10,7 +10,7 @@ namespace Axe
 		: public Shared
 	{
 	public:
-		Host( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Host( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	protected:
 		virtual SessionPtr makeSession() = 0;
@@ -22,6 +22,7 @@ namespace Axe
 		void accept( const boost::system::error_code & _ec, const SessionPtr & _sn );
 
 	protected:
+		boost::asio::io_service m_service;
 		boost::asio::ip::tcp::acceptor m_acceptor;
 	};
 }

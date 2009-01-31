@@ -16,10 +16,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & RouterSession::beginResponse( std::size_t _responseId )
 	{
-		m_streamWrite->begin();
-		m_streamWrite->writeSize( _responseId );
+		ArchiveWrite & ar = this->beginResponse();
+		
+		ar.writeSize( _responseId );
 
-		return *m_streamWrite;
+		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterSession::dispatchMessage( std::size_t _size )

@@ -352,6 +352,42 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Communicator"
+			>
+			<File
+				RelativePath=".\Communicator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Communicator.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Grid"
+			>
+			<File
+				RelativePath=".\Grid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Grid.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GridSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GridSession.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PermissionVerifier"
+			>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

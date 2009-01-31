@@ -20,4 +20,6 @@ namespace Axe
 	protected:
 		RouterPtr m_router;
 	};
+
+	typedef AxeHandle<RouterSession> RouterSessionPtr;
 }

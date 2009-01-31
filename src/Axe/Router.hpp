@@ -12,7 +12,7 @@ namespace Axe
 		: public Host
 	{
 	public:
-		Router( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Router( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		void initialize();

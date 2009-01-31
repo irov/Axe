@@ -9,9 +9,10 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Adapter::Adapter( boost::asio::io_service & _service, std::size_t _id, const boost::asio::ip::tcp::endpoint & _endpoint )
-		: Host(_service, _endpoint)
-		, m_id(_id)
+	Adapter::Adapter( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
+		: Host(_endpoint)
+		, m_name(_name)
+		, m_id(0)
 	{
 		m_connectionCache = new ConnectionCache( this );
 	}

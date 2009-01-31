@@ -11,8 +11,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Router::Router( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint )
-		: Host(_service, _endpoint)
+	Router::Router( const boost::asio::ip::tcp::endpoint & _endpoint )
+		: Host( _endpoint)
 	{
 
 	}
@@ -24,7 +24,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Router::makeSession()
 	{
-		RouterSessionPtr session = new RouterSession( m_acceptor.get_io_service(), this );
+		RouterSessionPtr session = new RouterSession( m_service, this );
 
 		return session;
 	}

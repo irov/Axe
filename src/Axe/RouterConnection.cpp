@@ -56,7 +56,9 @@ namespace Axe
 
 		std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
 
-		ar.writeSize( dispatchId );		
+		ar.writeSize( dispatchId );
+
+		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr RouterConnection::createConnection( std::size_t _endpointId )

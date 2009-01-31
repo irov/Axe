@@ -19,8 +19,7 @@ protected:
 
 void main()
 {
-	Axe::AdapterPtr adapter = new Axe::Adapter()
-	Axe::ReceptionPtr rc = new Axe::Reception;
+	Axe::AdapterPtr adapter = new Axe::Adapter();
 
 	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12000);
 

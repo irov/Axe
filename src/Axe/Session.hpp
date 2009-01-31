@@ -20,6 +20,9 @@ namespace Axe
 		void process();
 
 	public:
+		ArchiveWrite & beginResponse();
+
+	public:
 		boost::asio::ip::tcp::socket & getSocket();
 
 		ArchiveRead & getArchiveRead();
@@ -32,14 +35,18 @@ namespace Axe
 		void handleWriteStream( const boost::system::error_code & _ec );
 
 	protected:
-		void handleReadSize( const boost::system::error_code & _ec, std::size_t * _size );
+		void handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size );
 		void handleReadBody( const boost::system::error_code & _ec, Archive::value_type * _blob );
+
+		void handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size );
+		void handleReadPermission( const boost::system::error_code & _ec, Archive::value_type * _blob );
 
 	protected:
 		void run();
 
 	public:
-		virtual void dispatchMessage( std::size_t _size ) = 0;
+		virtual void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) = 0;
+		virtual void permissionVerify( ArchiveRead & _ar, std::size_t _size ) = 0;
 
 	protected:
 		ArchiveWrite * m_streamWrite;

@@ -19,6 +19,9 @@ namespace Axe
 		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
+		void 
+
+	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 		void process() override;
 
