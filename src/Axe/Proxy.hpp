@@ -13,7 +13,7 @@ namespace Axe
 	class ArchiveWrite;
 
 	class Proxy
-		: public Shared
+		: virtual public Shared
 	{
 	public:
 		Proxy( std::size_t _servantId, const ConnectionPtr & _connection );

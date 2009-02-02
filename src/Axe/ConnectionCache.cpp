@@ -7,7 +7,7 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionCache::ConnectionCache( ConnectionProvider * _provider )
+	ConnectionCache::ConnectionCache( const ConnectionProviderPtr & _provider )
 		: m_provider(_provider)
 	{
 	}

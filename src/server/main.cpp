@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "../Axe/pch.hpp"
-#	include "../Axe/Reception.hpp"
+#	include "../Axe/Client.hpp"
 #	include "../Axe/Client.hpp"
 #	include "../AxeProtocols/Player.hpp"
 

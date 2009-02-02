@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "../Axe/pch.hpp"
-#	include "../Axe/Reception.hpp"
+#	include "../Axe/Client.hpp"
 #	include "../Axe/Client.hpp"
 #	include "../AxeProtocols/Player.hpp"
 
@@ -19,7 +19,7 @@ protected:
 
 void main()
 {
-	Axe::ReceptionPtr rc = new Axe::Reception;
+	Axe::ReceptionPtr rc = new Axe::Client;
 
 	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12000);
 

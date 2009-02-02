@@ -16,17 +16,22 @@ namespace Axe
 		: public Session
 	{
 	public:
-		AdapterSessionConnection( boost::asio::io_service & _service, AdapterConnection * _base )
-			: Session( _service )
-			, m_base(_base)
+		AdapterSessionConnection( boost::asio::io_service & _service, AdapterConnection * _connection )
+			: Session(_service)
+			, m_connection(_connection)
 		{
 		}
 		
 	public:
-		void dispatchMessage( std::size_t _size ) override
+		void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) override
 		{
-			ArchiveRead & _read = this->getArchiveRead();
-			m_base->dispatchMessage( _read, _size );
+			m_connection->dispatchMessage( _ar, _size );
+		}
+
+	public:
+		void permissionVerify( ArchiveRead & _ar, std::size_t _size ) override
+		{
+			m_connection->permissionVerify( _ar, _size );
 		}
 
 	protected:
@@ -44,6 +49,14 @@ namespace Axe
 	void AdapterConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		m_session->connect( _endpoint );
+	}
+	ArchiveWrite & AdapterConnection::beginConnection()
+	{
+		ArchiveWrite & ar = m_session->getArchiveWrite();
+
+		ar.begin();
+
+		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
@@ -98,15 +111,11 @@ namespace Axe
 
 		_read.clear();
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//const ConnectionPtr & AdapterConnection::getConnection( std::size_t _id )
-	//{
-	//	TMapConnections::const_iterator it_found = m_connections.find( _id );
-	//	
-	//	if( it_found == m_connections.end() )
-	//	{
-	//		return 0;
-	//	}
-	//	return it_found->second;
-	//}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	{
+		ArchiveWrite & ar = m_session->getArchiveWrite();
+
+		ar.begin();
+	}
 }

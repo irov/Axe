@@ -1,6 +1,6 @@
 #	include "pch.hpp"
 
-#	include "Session.hpp"
+#	include "Dispatcher.hpp"
 
 #	include "ArchiveWrite.hpp"
 #	include "ArchiveRead.hpp"
@@ -8,57 +8,63 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Session::Session( boost::asio::io_service & _service )
+	Dispatcher::Dispatcher( boost::asio::io_service & _service )
 		: m_socket(_service)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	boost::asio::ip::tcp::socket & Session::getSocket()
+	boost::asio::ip::tcp::socket & Dispatcher::getSocket()
 	{
 		return m_socket;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveRead & Session::getArchiveRead()
+	ArchiveRead & Dispatcher::getArchiveRead()
 	{
 		return *m_streamIn;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::getArchiveWrite()
+	ArchiveWrite & Dispatcher::getArchiveWrite()
 	{
 		return *m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::accept()
+	void Dispatcher::run()
 	{
 		std::size_t * size = m_streamIn->keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Session::handleReadPermissionSize, this, boost::asio::placeholders::error, size )
+			, boost::bind( &Dispatcher::handleReadBodySize, this, boost::asio::placeholders::error, size )
 			);
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Session::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
-	//{
-	//	m_socket.async_connect( _endpoint
-	//		, boost::bind( &Session::handleConnect, this, boost::asio::placeholders::error ) 
-	//		);
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginResponse()
+	void Dispatcher::process()
 	{
-		m_streamWrite->begin();
+		if( m_streamSend->empty() )
+		{
+			std::swap( m_streamWrite, m_streamSend );
 
-		return *m_streamWrite;
+			const Archive & blob = m_streamSend->getArchive();
+
+			boost::asio::async_write( m_socket
+				, boost::asio::buffer( blob )
+				, boost::bind( &Dispatcher::handleWriteStream, this, boost::asio::placeholders::error )
+				);
+		}
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Session::handleConnect( const boost::system::error_code & _ec )
-	//{
-	//	this->run();
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size )
+	void Dispatcher::handleWriteStream( const boost::system::error_code & _ec )
+	{
+		m_streamSend->clear();
+
+		if( m_streamWrite->empty() == false )
+		{
+			this->process();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Dispatcher::handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size )
 	{
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
@@ -67,11 +73,11 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Session::handleReadPermission, this, boost::asio::placeholders::error, blob )
+			, boost::bind( &Dispatcher::handleReadBody, this, boost::asio::placeholders::error, blob )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::handleReadPermission( const boost::system::error_code & _ec, Archive::value_type * _blob )
+	void Dispatcher::handleReadBody( const boost::system::error_code & _ec, Archive::value_type * _blob )
 	{
 		if( !_ec )
 		{
@@ -80,8 +86,14 @@ namespace Axe
 			std::size_t size;
 			m_streamIn->read( size );
 
-			this->permissionVerify( *m_streamIn, size );
+			this->dispatchMessage( *m_streamIn, size );
+			this->run();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Dispatcher::handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait )
+	{
+		return ( _read >= _wait );
+	}
+
 }

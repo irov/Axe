@@ -7,7 +7,7 @@ namespace Axe
 	typedef AxeHandle<class Session> SessionPtr;
 
 	class Host
-		: public Shared
+		: virtual public Shared
 	{
 	public:
 		Host( const boost::asio::ip::tcp::endpoint & _endpoint );

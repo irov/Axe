@@ -9,7 +9,7 @@ namespace Axe
 	//typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
 
 	class Bellhop
-		: public Shared
+		: virtual public Shared
 	{
 	public:
 		Bellhop( std::size_t _requestId, const AdapterSessionPtr & _session );

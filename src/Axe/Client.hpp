@@ -4,16 +4,14 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Client> ClientPtr;
-
-	class Reception
-		:	public Shared
+	class Client
+		: virtual public Shared
 	{
 	public:
-		Reception();
+		Client();
 
 	public:
-		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client );
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _client );
 		void run();
 
 	protected:
@@ -21,5 +19,5 @@ namespace Axe
 		RouterConnectionPtr m_router;
 	};
 
-	typedef AxeHandle<Reception> ReceptionPtr;
+	typedef AxeHandle<Client> ReceptionPtr;
 }

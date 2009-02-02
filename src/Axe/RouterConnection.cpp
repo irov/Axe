@@ -27,6 +27,7 @@ namespace Axe
 	public:
 		CreateSessionResponse( const ClientPtr & _client, const ConnectionCachePtr & _connectionCache )
 			: m_client(_client)
+			, m_connectionCache(_connectionCache)
 		{
 		}
 
@@ -47,16 +48,14 @@ namespace Axe
 	{
 		this->connect( _endpoint );
 
-		ArchiveWrite & ar = m_session->getArchiveWrite();
-
-		ar.begin();
+		ArchiveWrite & ar = this->beginConnection();
 		
 		ar.writeString( _login );
 		ar.writeString( _password );
 
-		std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
+		//std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
 
-		ar.writeSize( dispatchId );
+		//ar.writeSize( dispatchId );
 
 		m_session->process();
 	}

@@ -19,7 +19,7 @@ namespace Axe
 		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
-		void 
+		ArchiveWrite & beginConnection();
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
@@ -27,22 +27,17 @@ namespace Axe
 
 	public:
 		virtual void dispatchMessage( ArchiveRead & _read, std::size_t _size );
+		virtual void permissionVerify( ArchiveRead & _ar, std::size_t _size );
 
 	protected:
 		std::size_t addDispatch( const ResponsePtr & _response );
 		void writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 
 	protected:
-		//const ConnectionPtr & getConnection( std::size_t _id );
-
-	protected:
 		SessionPtr m_session;
 
 		typedef std::map<std::size_t, ResponsePtr> TMapResponse;
 		TMapResponse m_dispatch;
-
-		//typedef std::map<std::size_t, ConnectionPtr> TMapConnections;
-		//TMapConnections m_connections;
 
 		std::size_t m_messageEnum;
 	};

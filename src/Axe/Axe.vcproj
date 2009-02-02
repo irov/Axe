@@ -232,6 +232,10 @@
 			Name="Client"
 			>
 			<File
+				RelativePath=".\Client.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Client.hpp"
 				>
 			</File>
@@ -341,18 +345,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Reception"
-			>
-			<File
-				RelativePath=".\Reception.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Reception.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Communicator"
 			>
 			<File
@@ -387,6 +379,18 @@
 		<Filter
 			Name="PermissionVerifier"
 			>
+		</Filter>
+		<Filter
+			Name="Socket"
+			>
+			<File
+				RelativePath=".\Dispatcher.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dispatcher.hpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
