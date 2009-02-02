@@ -381,7 +381,7 @@
 			>
 		</Filter>
 		<Filter
-			Name="Socket"
+			Name="Dispatcher"
 			>
 			<File
 				RelativePath=".\Dispatcher.cpp"
@@ -389,6 +389,18 @@
 			</File>
 			<File
 				RelativePath=".\Dispatcher.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Invocation"
+			>
+			<File
+				RelativePath=".\Invocation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Invocation.hpp"
 				>
 			</File>
 		</Filter>

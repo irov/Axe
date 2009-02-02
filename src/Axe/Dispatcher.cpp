@@ -20,17 +20,17 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveRead & Dispatcher::getArchiveRead()
 	{
-		return *m_streamIn;
+		return m_streamIn;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & Dispatcher::getArchiveWrite()
 	{
-		return *m_streamWrite;
+		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::run()
 	{
-		std::size_t * size = m_streamIn->keep<std::size_t>();
+		std::size_t * size = m_streamIn.keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
@@ -39,13 +39,18 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Dispatcher::close()
+	{
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::process()
 	{
-		if( m_streamSend->empty() )
+		if( m_streamSend.empty() )
 		{
 			std::swap( m_streamWrite, m_streamSend );
 
-			const Archive & blob = m_streamSend->getArchive();
+			const Archive & blob = m_streamSend.getArchive();
 
 			boost::asio::async_write( m_socket
 				, boost::asio::buffer( blob )
@@ -56,9 +61,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::handleWriteStream( const boost::system::error_code & _ec )
 	{
-		m_streamSend->clear();
+		m_streamSend.clear();
 
-		if( m_streamWrite->empty() == false )
+		if( m_streamWrite.empty() == false )
 		{
 			this->process();
 		}
@@ -68,7 +73,7 @@ namespace Axe
 	{
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
-		Archive::value_type * blob = m_streamIn->keepBuffer( size_blob );
+		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
@@ -81,12 +86,12 @@ namespace Axe
 	{
 		if( !_ec )
 		{
-			m_streamIn->begin();
+			m_streamIn.begin();
 
 			std::size_t size;
-			m_streamIn->read( size );
+			m_streamIn.read( size );
 
-			this->dispatchMessage( *m_streamIn, size );
+			this->dispatchMessage( m_streamIn, size );
 			this->run();
 		}
 	}

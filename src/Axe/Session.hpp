@@ -12,14 +12,10 @@ namespace Axe
 
 	public:
 		void accept();
-		//void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
-		//void process();
 
 	public:
+		ArchiveWrite & beginConnect( bool _successful );
 		ArchiveWrite & beginResponse();
-
-	//protected:
-	//	void handleConnect( const boost::system::error_code & _ec );
 
 	protected:
 		void handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size );

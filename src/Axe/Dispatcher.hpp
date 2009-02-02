@@ -25,6 +25,7 @@ namespace Axe
 
 	protected:
 		void run();
+		void close();
 
 	protected:
 		void handleWriteStream( const boost::system::error_code & _ec );
@@ -40,10 +41,10 @@ namespace Axe
 		static bool handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait );
 
 	protected:
-		ArchiveWrite * m_streamWrite;
-		ArchiveWrite * m_streamSend;
+		ArchiveWrite m_streamWrite;
+		ArchiveWrite m_streamSend;
 
-		ArchiveRead * m_streamIn;
+		ArchiveRead m_streamIn;
 
 		boost::asio::ip::tcp::socket m_socket;
 	};

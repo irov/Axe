@@ -50,6 +50,7 @@ namespace Axe
 	{
 		m_session->connect( _endpoint );
 	}
+	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & AdapterConnection::beginConnection()
 	{
 		ArchiveWrite & ar = m_session->getArchiveWrite();

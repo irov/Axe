@@ -50,4 +50,28 @@ namespace Axe
 
 		cn->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	class RouterResponse_SessionManager_login
+		: public Response_SessionManager_login
+	{
+	public:
+		RouterResponse_SessionManager_login( const SessionPtr & _session )
+			: m_session(_session)
+		{
+		}
+
+	public:
+		void response( const Proxy_PlayerPtr & ) override
+		{
+
+		}
+
+	protected:
+
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
+	{
+		m_sessionManager->login( _login, _password,  )
+	}
 }

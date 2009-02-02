@@ -9,5 +9,4 @@ namespace Axe
 	{
 		Player login( string _login, string _password );
 	};
-
 }

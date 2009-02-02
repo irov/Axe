@@ -49,13 +49,13 @@ namespace Axe
 		this->connect( _endpoint );
 
 		ArchiveWrite & ar = this->beginConnection();
-		
+
+		std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
+
+		ar.writeSize( dispatchId );
+
 		ar.writeString( _login );
 		ar.writeString( _password );
-
-		//std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
-
-		//ar.writeSize( dispatchId );
 
 		m_session->process();
 	}
