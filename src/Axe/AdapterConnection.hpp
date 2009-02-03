@@ -1,7 +1,9 @@
 #	pragma once
 
-#	include "Connection.hpp"
-#	include "Session.hpp"
+
+#	include "Invocation.hpp"
+
+#	include "ConnectionCache.hpp"
 
 namespace Axe
 {
@@ -10,36 +12,31 @@ namespace Axe
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class AdapterConnection
-		: public Connection
+		: public Invocation
 	{
 	public:
-		AdapterConnection( boost::asio::io_service & _service, std::size_t _endpointId );
-
-	public:
-		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
-
-	public:
-		ArchiveWrite & beginConnection();
+		AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _endpointId );
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
-		void process() override;
 
 	public:
-		virtual void dispatchMessage( ArchiveRead & _read, std::size_t _size );
-		virtual void permissionVerify( ArchiveRead & _ar, std::size_t _size );
+		void dispatchMessage( ArchiveRead & _read, std::size_t _size ) override;
+		
+		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
+		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
 
 	protected:
 		std::size_t addDispatch( const ResponsePtr & _response );
 		void writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 
 	protected:
-		SessionPtr m_session;
-
 		typedef std::map<std::size_t, ResponsePtr> TMapResponse;
 		TMapResponse m_dispatch;
 
 		std::size_t m_messageEnum;
+
+		ConnectionCachePtr m_connectionCache;
 	};
 
 	typedef AxeHandle<AdapterConnection> AdapterConnectionPtr;

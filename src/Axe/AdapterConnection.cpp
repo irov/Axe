@@ -12,68 +12,22 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	class AdapterSessionConnection
-		: public Session
-	{
-	public:
-		AdapterSessionConnection( boost::asio::io_service & _service, AdapterConnection * _connection )
-			: Session(_service)
-			, m_connection(_connection)
-		{
-		}
-		
-	public:
-		void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) override
-		{
-			m_connection->dispatchMessage( _ar, _size );
-		}
-
-	public:
-		void permissionVerify( ArchiveRead & _ar, std::size_t _size ) override
-		{
-			m_connection->permissionVerify( _ar, _size );
-		}
-
-	protected:
-		AdapterConnection * m_base;
-	};
-	
-	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _endpointId )
-		: Connection( _endpointId ) 
-		, m_session( new AdapterSessionConnection( _service, this ) )
+	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _endpointId )
+		: Invocation( _service, _endpointId )
 		, m_messageEnum(0)
+		, m_connectionCache(_connectionCache)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
-	{
-		m_session->connect( _endpoint );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & AdapterConnection::beginConnection()
-	{
-		ArchiveWrite & ar = m_session->getArchiveWrite();
-
-		ar.begin();
-
-		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & ar = m_session->getArchiveWrite();
+		ArchiveWrite & ar = this->getArchiveWrite();
 		
 		ar.begin();
 
 		this->writeBody( ar, _servantId, _methodId, _response );
 
 		return ar;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::process()
-	{
-		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
@@ -98,25 +52,28 @@ namespace Axe
 		_archive.writeSize( messageId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::dispatchMessage( ArchiveRead & _read, std::size_t _size )
+	void AdapterConnection::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t responseId;
-		_read.readSize( responseId );
+		_ar.readSize( responseId );
 
 		TMapResponse::iterator it_found = m_dispatch.find( responseId );
 
 		const ResponsePtr & response = it_found->second;
-		response->responseCall( _read );
+		response->responseCall( _ar, m_connectionCache );
 
 		m_dispatch.erase( it_found );
 
-		_read.clear();
+		_ar.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	void AdapterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
-		ArchiveWrite & ar = m_session->getArchiveWrite();
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
+	{
 
-		ar.begin();
 	}
 }

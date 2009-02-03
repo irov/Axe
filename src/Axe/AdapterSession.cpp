@@ -23,21 +23,24 @@ namespace Axe
 		ar.begin();
 		ar.writeSize( _responseId );
 
-		return *m_streamWrite;
+		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterSession::dispatchMessage( std::size_t _size )
+	void AdapterSession::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
 	{
-		ArchiveRead & ar = this->getArchiveRead();
-
 		std::size_t servantId;
 		std::size_t methodId;
 		std::size_t requestId;
 
-		ar.read( servantId);
-		ar.readSize( methodId);
-		ar.readSize( requestId);
+		_ar.read( servantId);
+		_ar.readSize( methodId);
+		_ar.readSize( requestId);
 
 		m_adapter->dispatchMethod( servantId, methodId, requestId, this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	{
+		this->beginConnect( true );
 	}
 }

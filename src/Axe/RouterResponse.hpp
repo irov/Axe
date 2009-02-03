@@ -12,7 +12,7 @@ namespace Axe
 		RouterResponse( std::size_t _requestId, const RouterSessionPtr & _session );
 
 	public:
-		void responseCall( ArchiveRead & _ar ) override;
+		void responseCall( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache  ) override;
 
 	protected:
 		std::size_t m_requestId;

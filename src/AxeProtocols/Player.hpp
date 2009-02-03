@@ -46,7 +46,7 @@ namespace Axe
 		virtual void response( int ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_Player_test> Response_Player_testPtr;
@@ -98,7 +98,7 @@ namespace Axe
 		virtual void response( const Proxy_PlayerPtr & ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_SessionManager_login> Response_SessionManager_loginPtr;

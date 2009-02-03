@@ -239,6 +239,10 @@
 				RelativePath=".\Client.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ClientConnectResponse.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Connection"
@@ -375,10 +379,6 @@
 				RelativePath=".\GridSession.hpp"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="PermissionVerifier"
-			>
 		</Filter>
 		<Filter
 			Name="Dispatcher"

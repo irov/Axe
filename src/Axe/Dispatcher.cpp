@@ -2,9 +2,6 @@
 
 #	include "Dispatcher.hpp"
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
-
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////

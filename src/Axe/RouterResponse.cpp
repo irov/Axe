@@ -14,7 +14,7 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterResponse::responseCall( ArchiveRead & _ar )
+	void RouterResponse::responseCall( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		//_cn->
 	}

@@ -14,11 +14,15 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
+	ArchiveWrite & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		m_socket.async_connect( _endpoint
 			, boost::bind( &Session::handleConnect, this, boost::asio::placeholders::error ) 
 			);
+
+		m_streamWrite.begin();
+
+		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::handleConnect( const boost::system::error_code & _ec )

@@ -16,48 +16,32 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	RouterConnection::RouterConnection( boost::asio::io_service & _service )
-		: AdapterConnection( _service, 0 )
+		: AdapterConnection( _service, m_connectionCache )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class CreateSessionResponse
-		: public Response
-	{
-	public:
-		CreateSessionResponse( const ClientPtr & _client, const ConnectionCachePtr & _connectionCache )
-			: m_client(_client)
-			, m_connectionCache(_connectionCache)
-		{
-		}
-
-	public:
-		void responseCall( ArchiveRead & _ar ) override
-		{
-			Proxy_PlayerPtr player = makeProxy<Proxy_Player>( _ar, m_connectionCache );
-			
-			m_client->onConnect( player );
-		}
-
-	protected:
-		ClientPtr m_client;
-		ConnectionCachePtr m_connectionCache;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client )
 	{
-		this->connect( _endpoint );
+		m_clientResponse = _client;
 
-		ArchiveWrite & ar = this->beginConnection();
-
-		std::size_t dispatchId = this->addDispatch( new CreateSessionResponse( _client, m_connectionCache ) );
-
-		ar.writeSize( dispatchId );
+		ArchiveWrite & ar = this->connect( _endpoint );
 
 		ar.writeString( _login );
 		ar.writeString( _password );
 
 		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
+	{
+		Proxy_PlayerPtr proxy = makeProxy<Proxy_Player>( _ar, m_connectionCache );
+
+		_client->connectSuccessful( proxy );
+	}
+	void RouterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
+	{
+		_client->connectFailed();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr RouterConnection::createConnection( std::size_t _endpointId )

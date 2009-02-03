@@ -46,7 +46,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar )
+	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		int arg0; _ar >> arg0;
 		this->response( arg0 );
@@ -107,9 +107,9 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_login::responseCall( Axe::ArchiveRead & _ar )
+	void Response_SessionManager_login::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
-		Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( _ar, _connectionCache );
+		Proxy_PlayerPtr arg0 = makeProxy<Proxy_Player>( _ar, _connectionCache );
 		this->response( arg0 );
 	}
 	

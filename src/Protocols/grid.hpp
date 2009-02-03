@@ -66,7 +66,7 @@ namespace Protocol
 		virtual void response( const servant_info & ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_grid_get_servand_endpoint> Response_grid_get_servand_endpointPtr;
@@ -118,7 +118,7 @@ namespace Protocol
 		virtual void response() = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_box_add> Response_box_addPtr;
@@ -191,7 +191,7 @@ namespace Protocol
 		virtual void response() = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_Player_moveTo> Response_Player_moveToPtr;
@@ -203,7 +203,7 @@ namespace Protocol
 		virtual void response() = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_Player_teleportTo> Response_Player_teleportToPtr;
@@ -256,7 +256,7 @@ namespace Protocol
 		virtual void response() = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_Client_onConnect> Response_Client_onConnectPtr;

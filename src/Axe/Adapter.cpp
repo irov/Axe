@@ -54,7 +54,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Adapter::createConnection( std::size_t _endpointId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), _endpointId );
+		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _endpointId );
 
 		return connection;
 	}

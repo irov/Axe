@@ -5,9 +5,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::begin()
 	{
-		m_archive.clear();
-
-		m_begin = 0;
+		m_begin = m_archive.size();
 
 		std::size_t size = 0;
 		write( size );

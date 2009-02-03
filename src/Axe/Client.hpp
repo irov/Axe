@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "ClientConnectResponse.hpp"
 #	include "RouterConnection.hpp"
 
 namespace Axe
@@ -17,6 +18,7 @@ namespace Axe
 	protected:
 		boost::asio::io_service m_service;
 		RouterConnectionPtr m_router;
+		ClientConnectResponsePtr m_response;
 	};
 
 	typedef AxeHandle<Client> ReceptionPtr;

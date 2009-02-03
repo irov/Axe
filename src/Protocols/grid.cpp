@@ -72,7 +72,7 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_grid_get_servand_endpoint::responseCall( Axe::ArchiveRead & _ar )
+	void Response_grid_get_servand_endpoint::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		servant_info arg0; _ar >> arg0;
 		this->response( arg0 );
@@ -130,7 +130,7 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_box_add::responseCall( Axe::ArchiveRead & _ar )
+	void Response_box_add::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
 	}
@@ -220,12 +220,12 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_moveTo::responseCall( Axe::ArchiveRead & _ar )
+	void Response_Player_moveTo::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_teleportTo::responseCall( Axe::ArchiveRead & _ar )
+	void Response_Player_teleportTo::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
 	}
@@ -284,14 +284,14 @@ namespace Protocol
 			{
 				Bellhop_Client_onConnectPtr bellhop = new Bellhop_Client_onConnect( _requestId, _session );
 	
-				Proxy_PlayerPtr arg0 = _session->makeProxy<Proxy_Player>( ar, _connectionCache );
+				Proxy_PlayerPtr arg0 = makeProxy<Proxy_Player>( ar, _connectionCache );
 				this->onConnect( bellhop, arg0 );
 			}break;
 		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Client_onConnect::responseCall( Axe::ArchiveRead & _ar )
+	void Response_Client_onConnect::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
 	}

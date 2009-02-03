@@ -1,13 +1,11 @@
 #	pragma once
 
 #	include "Shared.hpp"
-#	include "Archive.hpp"
+#	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
 
 namespace Axe
 {
-	class ArchiveWrite;
-	class ArchiveRead;
-
 	class Dispatcher
 		: virtual public Shared
 	{

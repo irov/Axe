@@ -13,7 +13,7 @@ namespace Axe
 		Invocation( boost::asio::io_service & _service, std::size_t _endpointId );
 
 	public:
-		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
+		ArchiveWrite & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	protected:
 		void handleConnect( const boost::system::error_code & _ec );
@@ -25,6 +25,4 @@ namespace Axe
 		virtual void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) = 0;
 		virtual void connectionFailed( ArchiveRead & _ar, std::size_t _size ) = 0;
 	};
-
-	typedef AxeHandle<Session> SessionPtr;
 }

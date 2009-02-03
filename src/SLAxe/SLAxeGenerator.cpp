@@ -455,7 +455,7 @@ namespace Axe
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void responseCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -902,7 +902,7 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )" << std::endl;
 			write() << "{" << std::endl;
 			
 
@@ -1192,7 +1192,7 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = _session->makeProxy<" << writeProxyName( _type ) << ">( " << _ar << ", _connectionCache );" << std::endl;
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = makeProxy<" << writeProxyName( _type ) << ">( " << _ar << ", _connectionCache );" << std::endl;
 			return;
 		}
 		
