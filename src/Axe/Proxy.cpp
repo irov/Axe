@@ -23,9 +23,9 @@ namespace Axe
 		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy::process()
+	void Proxy::processMessage()
 	{
-		m_connection->process();
+		m_connection->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Proxy::getServantId() const

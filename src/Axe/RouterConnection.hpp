@@ -16,7 +16,7 @@ namespace Axe
 		RouterConnection( boost::asio::io_service & _service );
 
 	public:
-		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _client );
+		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _connectResponse );
 
 	protected:
 		ConnectionPtr createConnection( std::size_t _endpointId ) override;
@@ -26,7 +26,7 @@ namespace Axe
 		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
 
 	protected:
-		ClientConnectResponsePtr m_clientResponse;
+		ClientConnectResponsePtr m_connectResponse;
 		ConnectionCachePtr m_connectionCache;
 	};
 

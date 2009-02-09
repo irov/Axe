@@ -91,7 +91,7 @@ namespace Protocol
 		ar << _name;
 		ar << vec;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 	
@@ -147,7 +147,7 @@ namespace Protocol
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_box_add, _response );
 	
-		this->process();
+		this->processMessage();
 	}
 	
 	
@@ -242,7 +242,7 @@ namespace Protocol
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_moveTo, _response );
 		ar << _vec;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ namespace Protocol
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_teleportTo, _response );
 		ar << _vec;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 	
@@ -308,7 +308,7 @@ namespace Protocol
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Client_onConnect, _response );
 		ar << _player;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 }

@@ -65,7 +65,7 @@ namespace Axe
 		ar << name;
 		ar << id;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 	
@@ -126,7 +126,7 @@ namespace Axe
 		ar << _login;
 		ar << _password;
 	
-		this->process();
+		this->processMessage();
 	}
 	
 }

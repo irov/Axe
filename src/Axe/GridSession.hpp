@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Session.hpp"
+
 namespace Axe
 {
 	class GridSession
@@ -12,7 +14,8 @@ namespace Axe
 		ArchiveWrite & beginResponse( std::size_t _responseId );
 
 	public:
-		void dispatchMessage( std::size_t _size ) override;
+		void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) override;
+		void permissionVerify( ArchiveRead & _ar, std::size_t _size ) override;
 
 	protected:
 		GridPtr m_grid;

@@ -18,7 +18,7 @@ namespace Axe
 		AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _endpointId );
 
 	public:
-		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
+		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;		
 
 	public:
 		void dispatchMessage( ArchiveRead & _read, std::size_t _size ) override;

@@ -17,12 +17,17 @@ namespace Axe
 	ArchiveWrite & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		m_socket.async_connect( _endpoint
-			, boost::bind( &Session::handleConnect, this, boost::asio::placeholders::error ) 
+			, boost::bind( &Invocation::handleConnect, this, boost::asio::placeholders::error ) 
 			);
 
 		m_streamWrite.begin();
 
 		return m_streamWrite;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Invocation::processMessage()
+	{
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::handleConnect( const boost::system::error_code & _ec )
@@ -32,7 +37,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Session::handleReadConnectSize, this, boost::asio::placeholders::error, size )
+			, boost::bind( &Invocation::handleReadConnectSize, this, boost::asio::placeholders::error, size )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,7 +50,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Session::handleReadConnect, this, boost::asio::placeholders::error, blob )
+			, boost::bind( &Invocation::handleReadConnect, this, boost::asio::placeholders::error, blob )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

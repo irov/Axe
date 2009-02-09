@@ -349,18 +349,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Communicator"
-			>
-			<File
-				RelativePath=".\Communicator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Communicator.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Grid"
 			>
 			<File

@@ -23,7 +23,7 @@ namespace Axe
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterProxyConnection::process()
+	void RouterProxyConnection::processMessage()
 	{
 		m_base->process();
 	}

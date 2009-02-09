@@ -21,7 +21,7 @@ namespace Axe
 
 	public:
 		void dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _sn );
-		void permissionVerify( ArchiveRead & _ar, std::size_t _size, const SessionPtr & _session );
+		void permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session );
 
 	protected:
 		SessionPtr makeSession() override;

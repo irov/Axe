@@ -16,32 +16,32 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	RouterConnection::RouterConnection( boost::asio::io_service & _service )
-		: AdapterConnection( _service, m_connectionCache )
+		: AdapterConnection( _service, m_connectionCache, 0 )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientPtr & _client )
+	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _connectResponse )
 	{
-		m_clientResponse = _client;
+		m_connectResponse = _connectResponse;
 
 		ArchiveWrite & ar = this->connect( _endpoint );
 
 		ar.writeString( _login );
 		ar.writeString( _password );
 
-		m_session->process();
+		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_PlayerPtr proxy = makeProxy<Proxy_Player>( _ar, m_connectionCache );
 
-		_client->connectSuccessful( proxy );
+		m_connectResponse->connectSuccessful( proxy );
 	}
 	void RouterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
 	{
-		_client->connectFailed();
+		m_connectResponse->connectFailed();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr RouterConnection::createConnection( std::size_t _endpointId )

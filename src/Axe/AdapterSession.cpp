@@ -42,5 +42,6 @@ namespace Axe
 	void AdapterSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
 	{
 		this->beginConnect( true );
+		this->process();
 	}
 }

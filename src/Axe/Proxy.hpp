@@ -20,7 +20,7 @@ namespace Axe
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
-		void process();
+		void processMessage();
 
 	public:
 		std::size_t getServantId() const;

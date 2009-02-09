@@ -16,7 +16,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & RouterSession::beginResponse( std::size_t _responseId )
 	{
-		ArchiveWrite & ar = this->beginResponse();
+		ArchiveWrite & ar = Session::beginResponse();
 		
 		ar.writeSize( _responseId );
 

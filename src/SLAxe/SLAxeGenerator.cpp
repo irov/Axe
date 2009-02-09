@@ -1032,7 +1032,7 @@ namespace Axe
 			}
 
 			write() << std::endl;
-			write() << "	this->process();" << std::endl;
+			write() << "	this->processMessage();" << std::endl;
 			write() << "}" << std::endl;
 			write() << std::endl;
 		}

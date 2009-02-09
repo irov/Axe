@@ -48,7 +48,7 @@ namespace Axe
 
 		write.writeArchive( args_buff, _sizeArgs );
 
-		cn->process();
+		cn->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class RouterResponse_SessionManager_login
@@ -61,17 +61,19 @@ namespace Axe
 		}
 
 	public:
-		void response( const Proxy_PlayerPtr & ) override
+		void response( const Proxy_PlayerPtr & _player ) override
 		{
-
+			ArchiveWrite & ar = m_session->beginConnect( true );
+			ar << _player;
+			m_session->process();
 		}
 
 	protected:
-
+		SessionPtr m_session;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
-		m_sessionManager->login( _login, _password,  )
+		m_sessionManager->login( _login, _password, new RouterResponse_SessionManager_login( _session ) );
 	}
 }

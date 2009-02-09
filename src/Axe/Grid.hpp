@@ -8,14 +8,13 @@ namespace Axe
 		: public Host
 	{	
 	public:
-		Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Grid( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		void initialize();
 
 	protected:
 		SessionPtr makeSession() override;
-
 	};
 
 	typedef AxeHandle<Grid> GridPtr;
