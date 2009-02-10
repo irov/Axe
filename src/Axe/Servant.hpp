@@ -13,4 +13,6 @@ namespace Axe
 	public:
 		virtual void callMethod( std::size_t _id, std::size_t _requestId, const AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) = 0;
 	};
+
+	typedef AxeHandle<Servant> ServantPtr;
 }

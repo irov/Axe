@@ -7,14 +7,22 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Grid::Grid( const boost::asio::ip::tcp::endpoint & _endpoint )
-		: Host( _endpoint)
+		: Adapter( "Grid", _endpoint)
+		, m_enumeratorID(0)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid::initialize()
+	std::size_t Grid::addAdapter( const std::string & _adapter )
 	{
-		this->run();
+		TMapAdapterIDs::const_iterator it_found = m_adapterIds.find( _adapter );
+
+		if( it_found == m_adapterIds.end() )
+		{
+			it_found = 
+				m_adapterIds.insert( std::make_pair( _adapter, ++m_enumeratorID ) ).first;
+		}
+
+		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Grid::makeSession()

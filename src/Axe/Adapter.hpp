@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Host.hpp"
+#	include "Servant.hpp"
 
 #	include "ConnectionCache.hpp"
 
@@ -8,7 +9,6 @@ namespace Axe
 {
 	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
 	typedef AxeHandle<class Connection> ConnectionPtr;
-	typedef AxeHandle<class Servant> ServantPtr;
 
 	class Adapter
 		: public Host

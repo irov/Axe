@@ -30,5 +30,14 @@ namespace Axe
 		std::size_t m_refcount;
 	};
 
-	#	define AxeHandle boost::intrusive_ptr 
+	#	define AxeHandle boost::intrusive_ptr
+
+	template<class T, class Y>
+	inline T handleCast( const AxeHandle<Y> & _handle )
+	{
+		Y * y = _handle.get();
+		T ptr = static_cast<typename T::element_type *>(y);
+
+		return ptr;
+	}
 }
