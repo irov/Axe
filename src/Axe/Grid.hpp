@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "Adapter.hpp"
+#	include "Host.hpp"
 
 namespace Axe
 {
 	class Grid
-		: public Adapter
+		: public Host
 	{	
 	public:
 		Grid( const boost::asio::ip::tcp::endpoint & _endpoint );

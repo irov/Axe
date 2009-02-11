@@ -1,12 +1,14 @@
 #	pragma once
 
-#	include "ClientConnectResponse.hpp"
 #	include "RouterConnection.hpp"
+#	include "ConnectionCache.hpp"
+#	include "ClientConnectResponse.hpp"
 
 namespace Axe
 {
 	class Client
 		: virtual public Shared
+		, public ConnectionProvider
 	{
 	public:
 		Client();
@@ -16,8 +18,13 @@ namespace Axe
 		void run();
 
 	protected:
+		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+
+	protected:
 		boost::asio::io_service m_service;
 		RouterConnectionPtr m_router;
+
+		ConnectionCachePtr m_connectionCache;
 		ClientConnectResponsePtr m_response;
 	};
 

@@ -12,6 +12,10 @@ namespace Axe
 		{
 		}
 
+		virtual ~Shared()
+		{
+		}
+
 	public:
 		friend inline void intrusive_ptr_add_ref( Shared * p )
 		{

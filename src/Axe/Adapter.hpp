@@ -5,6 +5,9 @@
 
 #	include "ConnectionCache.hpp"
 
+#	include "GridConnection.hpp"
+#	include "AdapterConnectResponse.hpp"
+
 namespace Axe
 {
 	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
@@ -13,12 +16,13 @@ namespace Axe
 	class Adapter
 		: public Host
 		, public ConnectionProvider
+		, public AdapterConnectResponse
 	{
 	public:
 		Adapter( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
-		void initialize();
+		void initialize( const boost::asio::ip::tcp::endpoint & _grid );
 
 	public:
 		std::size_t addServant( const ServantPtr & _servant );
@@ -32,11 +36,17 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _endpointId ) override;
 
 	protected:
+		void connectSuccessful( std::size_t _enumeratorID ) override;
+		void connectFailed() override;
+
+	protected:
 		std::string m_name;
 		std::size_t m_id;
 
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
 		TMapServants m_servants;
+
+		GridConnectionPtr m_gridConnection;
 
 		ConnectionCachePtr m_connectionCache;
 	};

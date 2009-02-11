@@ -10,24 +10,22 @@ namespace Axe
 
 	class RouterConnection
 		: public AdapterConnection
-		, public ConnectionProvider
 	{
 	public:
-		RouterConnection( boost::asio::io_service & _service );
+		RouterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse );
 
 	public:
-		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _connectResponse );
+		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password );
 
-	protected:
-		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+	public:
+		ConnectionPtr createProxyConnection( std::size_t _endpointId );
 
 	protected:
 		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
 		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
 
 	protected:
-		ClientConnectResponsePtr m_connectResponse;
-		ConnectionCachePtr m_connectionCache;
+		ClientConnectResponsePtr m_connectResponse;		
 	};
 
 	typedef AxeHandle<RouterConnection> RouterConnectionPtr;

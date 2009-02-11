@@ -1,29 +1,19 @@
 #	pragma once
 
 #	include "../Axe/pch.hpp"
-#	include "../Axe/Client.hpp"
-#	include "../Axe/Client.hpp"
-#	include "../AxeProtocols/Player.hpp"
+#	include "../Axe/Adapter.hpp"
 
 #	include <stdio.h>
 
-class MyClient
-	:	public Axe::Client
-{
-protected:
-	void onConnect( const Axe::Proxy_PlayerPtr & _player ) override
-	{
-		printf("fdsfs");
-	}
-};
-
 void main()
 {
-	Axe::AdapterPtr adapter = new Axe::Adapter();
+	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12002);
 
-	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12000);
+	Axe::AdapterPtr adapter = new Axe::Adapter( "Test", ep );
 
-	rc->connect( ep, "login", "password", new MyClient );
+	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 
-	rc->run();
+	adapter->initialize( grid_ep );
+
+	adapter->run();
 }

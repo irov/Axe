@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AdapterConnectResponse.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AdapterSession.cpp"
 				>
 			</File>
@@ -357,6 +361,14 @@
 			</File>
 			<File
 				RelativePath=".\Grid.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GridConnection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GridConnection.hpp"
 				>
 			</File>
 			<File

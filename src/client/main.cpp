@@ -8,12 +8,17 @@
 #	include <stdio.h>
 
 class MyClient
-	:	public Axe::Client
+	:	public Axe::ClientConnectResponse
 {
 protected:
-	void onConnect( const Axe::Proxy_PlayerPtr & _player ) override
+	void connectSuccessful( const Axe::Proxy_PlayerPtr & _player ) override
 	{
-		printf("fdsfs");
+		printf("connectSuccessful");
+	}
+
+	void connectFailed() override
+	{
+		printf("connectFailed");
 	}
 };
 

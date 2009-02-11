@@ -14,12 +14,13 @@ namespace Axe
 		, m_name(_name)
 		, m_id(0)
 	{
+		m_gridConnection = new GridConnection( m_service, this );
 		m_connectionCache = new ConnectionCache( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::initialize()
-	{
-		this->run();
+	void Adapter::initialize( const boost::asio::ip::tcp::endpoint & _grid )
+	{		
+		m_gridConnection->registerAdapter( _grid, m_name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Adapter::addServant( const ServantPtr & _servant )
@@ -57,5 +58,17 @@ namespace Axe
 		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _endpointId );
 
 		return connection;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::connectSuccessful( std::size_t _enumeratorID )
+	{
+		m_id = _enumeratorID;
+
+		this->accept();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::connectFailed()
+	{
+		
 	}
 }

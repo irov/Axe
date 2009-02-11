@@ -15,17 +15,24 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Host::run()
 	{
+		m_service.run();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Host::accept()
+	{
 		SessionPtr session = this->makeSession();
 
 		m_acceptor.async_accept( session->getSocket()
-			, boost::bind( &Host::accept, this, boost::asio::placeholders::error, session )
+			, boost::bind( &Host::acceptHandle, this, boost::asio::placeholders::error, session )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::accept( const boost::system::error_code & _ec, const SessionPtr & _session )
+	void Host::acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _session )
 	{
+		m_sessions.push_back( _session );
+
 		_session->accept();
 
-		this->run();
+		this->accept();
 	}
 }
