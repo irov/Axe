@@ -25,6 +25,8 @@ namespace Axe
 		
 		void set_parent_name( char const* str, char const* end);
 		void set_inheritance_type( char const* str, char const* end );
+		void set_member_type( char const* str, char const* end );
+		void set_member_name( char const* str, char const* end );
 		void add_member( char const* str, char const* end );
 		void set_type_name( char const* str, char const* end );
 
@@ -47,6 +49,7 @@ namespace Axe
 		Declaration::Class m_class;
 		Declaration::Struct m_struct;
 		Declaration::Method m_method;
+		Declaration::Member m_member;
 		Declaration::Typedef m_typedef;
 		Declaration::Type m_type;
 	};

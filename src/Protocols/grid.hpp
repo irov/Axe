@@ -53,6 +53,8 @@ namespace Protocol
 	public:
 		virtual void get_servand_endpoint( const Bellhop_grid_get_servand_endpointPtr & _cb, const std::string & _name, const vector_int & vec ) = 0;
 	
+	protected:
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
 	};
@@ -104,6 +106,8 @@ namespace Protocol
 	{
 	public:
 		virtual void add( const Bellhop_box_addPtr & _cb ) = 0;
+	
+	protected:
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
@@ -178,6 +182,8 @@ namespace Protocol
 		virtual void moveTo( const Bellhop_Player_moveToPtr & _cb, const vec2f & _vec ) = 0;
 		virtual void teleportTo( const Bellhop_Player_teleportToPtr & _cb, const vec2f & _vec ) = 0;
 	
+	protected:
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
 	};
@@ -242,6 +248,8 @@ namespace Protocol
 	{
 	public:
 		virtual void onConnect( const Bellhop_Client_onConnectPtr & _cb, const Proxy_PlayerPtr & _player ) = 0;
+	
+	protected:
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;

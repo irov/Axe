@@ -75,7 +75,8 @@ namespace Axe
 					;
 
 				member
-					= type >> name[ boost::bind( &SLAxeParser::add_member, parser, _1, _2 ) ] >> ';'
+					= ( type[ boost::bind( &SLAxeParser::set_member_type, parser, _1, _2 ) ] >> name[ boost::bind( &SLAxeParser::set_member_name, parser, _1, _2 ) ] >> ';' )
+					[ boost::bind( &SLAxeParser::add_member, parser, _1, _2 ) ]
 					;
 
 				method

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Invocation.hpp"
+#	include "AdapterConnection.hpp"
 
 #	include "AdapterConnectResponse.hpp"
 
@@ -11,7 +11,7 @@ namespace Axe
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class GridConnection
-		: public Invocation
+		: public AdapterConnection
 	{
 	public:
 		GridConnection( boost::asio::io_service & _service, const AdapterConnectResponsePtr & _connectResponse );

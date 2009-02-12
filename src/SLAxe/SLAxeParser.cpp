@@ -87,20 +87,25 @@ namespace Axe
 		m_inheritance.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::set_member_type( char const* str, char const* end )
+	{
+		m_member.type.name.assign( str, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::set_member_name( char const* str, char const* end )
+	{
+		m_member.name.assign( str, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_member( char const* str, char const* end )
 	{
-		Member member;
-
-		member.name.assign( str, end );
-		member.type = m_type;
-
 		if( m_class.name.empty() == false )
 		{
-			m_class.members.push_back( member );
+			m_class.members.push_back( m_member );
 		}
 		else if( m_struct.name.empty() == false )
 		{
-			m_struct.members.push_back( member );
+			m_struct.members.push_back( m_member );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

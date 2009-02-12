@@ -391,6 +391,19 @@ namespace Axe
 			m_stream << " ) = 0;" << std::endl;
 		}
 
+		
+		write() << std::endl;
+		write() << "protected:" << std::endl;
+
+		for( TVectorMembers::const_iterator
+			it_member = cl.members.begin(),
+			it_member_end = cl.members.end();
+		it_member != it_member_end;
+		++it_member )
+		{
+			write() << "	" << writeMemberType( it_member->type.name ) << " " << it_member->name << ";" << std::endl;
+		}
+		
 		write() << std::endl;
 		write() << "private:" << std::endl;
 		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;

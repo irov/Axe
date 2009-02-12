@@ -129,4 +129,63 @@ namespace Axe
 		this->processMessage();
 	}
 	
+	
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_addAdapter::response( std::size_t _arg0 )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		ar << _arg0;
+		m_session->process();
+	}
+	
+	enum
+	{
+		ESMD_GridManager = 0
+		,	ESMD_GridManager_addAdapter
+	};
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	{
+		Axe::ArchiveRead & ar = _session->getArchiveRead();
+		switch( _methodId )
+		{
+		case ESMD_GridManager_addAdapter:
+			{
+				Bellhop_GridManager_addAdapterPtr bellhop = new Bellhop_GridManager_addAdapter( _requestId, _session );
+	
+				std::string arg0; ar >> arg0;
+				this->addAdapter( bellhop, arg0 );
+			}break;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	{
+		std::size_t arg0; _ar >> arg0;
+		this->response( arg0 );
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	Proxy_GridManager::Proxy_GridManager( std::size_t _id, const Axe::ConnectionPtr & _connection )
+		: Axe::Proxy(_id, _connection)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_GridManager::addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addAdapter, _response );
+		ar << _name;
+	
+		this->processMessage();
+	}
+	
 }
