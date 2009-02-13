@@ -1,25 +1,31 @@
 #	pragma once
 
-#	include "Adapter.hpp"
+#	include "Host.hpp"
 
 #	include "AxeProtocols/Player.hpp"
 
 namespace Axe
 {
 	class Grid
-		: public Adapter
+		: public Host
 	{	
 	public:
-		Grid( const boost::asio::ip::tcp::endpoint & _endpoint );
+		Grid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
 		void initialize();
+
+	public:
+		const Servant_GridManagerPtr & getGridManager() const;
 
 	protected:
 		SessionPtr makeSession() override;
 
 	protected:
-		typedef std::map<std::string, std::size_t> TMapAdapterIDs;
+		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+
+	protected:
+		Servant_GridManagerPtr m_gridManager;
 	};
 
 	typedef AxeHandle<Grid> GridPtr;

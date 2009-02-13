@@ -146,6 +146,10 @@
 			Name="Servant"
 			>
 			<File
+				RelativePath=".\Servant.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Servant.hpp"
 				>
 			</File>
@@ -279,6 +283,14 @@
 				RelativePath=".\Host.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\HostSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HostSession.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Proxy"
@@ -409,6 +421,18 @@
 			</File>
 			<File
 				RelativePath=".\Invocation.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Service"
+			>
+			<File
+				RelativePath=".\Service.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Service.hpp"
 				>
 			</File>
 		</Filter>

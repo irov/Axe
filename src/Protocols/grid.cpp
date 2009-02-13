@@ -35,7 +35,7 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_grid_get_servand_endpoint::Bellhop_grid_get_servand_endpoint( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_grid_get_servand_endpoint::Bellhop_grid_get_servand_endpoint( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -43,7 +43,8 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_grid_get_servand_endpoint::response( const servant_info & _arg0 )
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
 	}
@@ -55,7 +56,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_grid::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_grid::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -96,7 +97,7 @@ namespace Protocol
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_box_add::Bellhop_box_add( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_box_add::Bellhop_box_add( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -104,7 +105,8 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_box_add::response()
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		m_session->process();
 	}
 	
@@ -115,7 +117,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_box::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_box::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -165,7 +167,7 @@ namespace Protocol
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Player_moveTo::Bellhop_Player_moveTo( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_Player_moveTo::Bellhop_Player_moveTo( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -173,11 +175,12 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Player_moveTo::response()
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Player_teleportTo::Bellhop_Player_teleportTo( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_Player_teleportTo::Bellhop_Player_teleportTo( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -185,7 +188,8 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Player_teleportTo::response()
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		m_session->process();
 	}
 	
@@ -197,7 +201,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -256,7 +260,7 @@ namespace Protocol
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Client_onConnect::Bellhop_Client_onConnect( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_Client_onConnect::Bellhop_Client_onConnect( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -264,7 +268,8 @@ namespace Protocol
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Client_onConnect::response()
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		m_session->process();
 	}
 	
@@ -275,7 +280,7 @@ namespace Protocol
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Client::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_Client::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )

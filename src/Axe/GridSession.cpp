@@ -6,15 +6,9 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	GridSession::GridSession( boost::asio::io_service & _service, const GridPtr & _grid )
-		: Session(_service)
-		, m_grid(_grid)
+	GridSession::GridSession( boost::asio::io_service & _service, const HostPtr & _host )
+		: HostSession(_service, _host)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void GridSession::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
@@ -23,10 +17,12 @@ namespace Axe
 
 		_ar.readString( name );
 
-		std::size_t id = m_grid->addAdapter( name );
+		GridPtr grid = handleCast<GridPtr>( m_host );
+
+		const Servant_GridManagerPtr & gridManager = grid->getGridManager();
 
 		ArchiveWrite & ar = this->beginConnect( true );
-		ar.write( id );
+		ar.write( gridManager );
 
 		this->process();
 	}

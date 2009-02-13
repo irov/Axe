@@ -1,38 +1,62 @@
 #	include "pch.hpp"
-
 #	include "Host.hpp"
 
-#	include "Session.hpp"
+#	include "AdapterSession.hpp"
+#	include "AdapterConnection.hpp"
+
+#	include "Servant.hpp"
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Host::Host( const boost::asio::ip::tcp::endpoint & _endpoint )
-		: m_acceptor(m_service, _endpoint)
+	Host::Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+		: Service(_endpoint, _name)
+		, m_endpointId(0)
 	{
-
+		m_connectionCache = new ConnectionCache( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::run()
+	std::size_t Host::addServant( const ServantPtr & _servant )
 	{
-		m_service.run();
+		std::size_t servantId = _servant->getServantId();
+
+		_servant->setEndpointId( m_endpointId );
+
+		m_servants.insert( std::make_pair( servantId, _servant ) );
+
+		return servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::accept()
+	void Host::setEndpointId( std::size_t _endpointId )
 	{
-		SessionPtr session = this->makeSession();
-
-		m_acceptor.async_accept( session->getSocket()
-			, boost::bind( &Host::acceptHandle, this, boost::asio::placeholders::error, session )
-			);
+		m_endpointId = _endpointId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _session )
+	void Host::refreshServantEndpoint( std::size_t _endpointId )
 	{
-		m_sessions.push_back( _session );
+		setEndpointId( _endpointId );
 
-		_session->accept();
+		for( TMapServants::iterator
+			it = m_servants.begin(),
+			it_end = m_servants.end();
+		it != it_end;
+		++it )
+		{
+			it->second->setEndpointId( m_endpointId );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Host::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )
+	{
+		TMapServants::iterator it_find = m_servants.find( _servantId );
 
-		this->accept();
+		if( it_find == m_servants.end() )
+		{
+			return;
+		}
+
+		const ServantPtr & servant = it_find->second;
+
+		servant->callMethod( _methodId, _requestId, _session, m_connectionCache );
 	}
 }

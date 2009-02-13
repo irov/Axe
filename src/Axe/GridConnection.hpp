@@ -14,17 +14,12 @@ namespace Axe
 		: public AdapterConnection
 	{
 	public:
-		GridConnection( boost::asio::io_service & _service, const AdapterConnectResponsePtr & _connectResponse );
+		GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const AdapterConnectResponsePtr & _connectResponse );
 
 	public:
 		void registerAdapter( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	protected:
-		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
-
-	protected:
-		void dispatchMessage( ArchiveRead & _read, std::size_t _size ) override;
-
 		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
 		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
 

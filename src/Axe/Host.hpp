@@ -1,34 +1,41 @@
 #	pragma once
 
-#	include "Shared.hpp"
+#	include "Service.hpp"
+#	include "Servant.hpp"
+
+#	include "ConnectionCache.hpp"
 
 namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
+	typedef AxeHandle<class Connection> ConnectionPtr;
 
 	class Host
-		: virtual public Shared
+		: public Service
+		, public ConnectionProvider
 	{
 	public:
-		Host( const boost::asio::ip::tcp::endpoint & _endpoint );
+		Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		void run();
+		std::size_t addServant( const ServantPtr & _servant );
+
+	public:
+		void setEndpointId( std::size_t _endpointId );
+
+		void refreshServantEndpoint( std::size_t _endpointId );
+
+	public:
+		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
 
 	protected:
-		virtual SessionPtr makeSession() = 0;
+		typedef std::map<std::size_t, ServantPtr> TMapServants;
+		TMapServants m_servants;
 
-	protected:
-		void accept();
+		std::size_t m_endpointId;
 
-	private:
-		void acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _sn );
-
-	protected:
-		boost::asio::io_service m_service;
-		boost::asio::ip::tcp::acceptor m_acceptor;
-
-		typedef std::list<SessionPtr> TListSessions;
-		TListSessions m_sessions;
+		ConnectionCachePtr m_connectionCache;
 	};
+
+	typedef AxeHandle<Host> HostPtr;
 }

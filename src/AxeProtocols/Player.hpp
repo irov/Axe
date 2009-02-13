@@ -19,7 +19,7 @@ namespace Axe
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_Player_test( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );
+		Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session );
 	
 	public:
 		void response( int );
@@ -36,7 +36,7 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
@@ -64,16 +64,13 @@ namespace Axe
 		void test( const std::string & name, int id, const Response_Player_testPtr & _response );
 	};
 	
-	void operator << ( Axe::ArchiveWrite & ar, const Proxy_Player & _value );
-	void operator >> ( Axe::ArchiveRead & ar, Proxy_Player & _value );
-	
 	typedef AxeHandle<Proxy_Player> Proxy_PlayerPtr;
 	
 	class Bellhop_SessionManager_login
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_SessionManager_login( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );
+		Bellhop_SessionManager_login( std::size_t _requestId, const Axe::SessionPtr & _session );
 	
 	public:
 		void response( const Proxy_PlayerPtr & );
@@ -90,7 +87,7 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
@@ -118,9 +115,6 @@ namespace Axe
 		void login( const std::string & _login, const std::string & _password, const Response_SessionManager_loginPtr & _response );
 	};
 	
-	void operator << ( Axe::ArchiveWrite & ar, const Proxy_SessionManager & _value );
-	void operator >> ( Axe::ArchiveRead & ar, Proxy_SessionManager & _value );
-	
 	typedef AxeHandle<Proxy_SessionManager> Proxy_SessionManagerPtr;
 	
 	typedef std::map<std::string, std::size_t> TMapAdapterIds;
@@ -129,7 +123,7 @@ namespace Axe
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );
+		Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session );
 	
 	public:
 		void response( std::size_t );
@@ -148,7 +142,7 @@ namespace Axe
 		std::size_t m_enumeratorID;
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
@@ -175,9 +169,6 @@ namespace Axe
 	public:
 		void addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response );
 	};
-	
-	void operator << ( Axe::ArchiveWrite & ar, const Proxy_GridManager & _value );
-	void operator >> ( Axe::ArchiveRead & ar, Proxy_GridManager & _value );
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;
 }

@@ -9,7 +9,7 @@ namespace Axe
 {
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_Player_test::Bellhop_Player_test( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_Player_test::Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -17,7 +17,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Player_test::response( int _arg0 )
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
 	}
@@ -29,7 +30,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -70,7 +71,7 @@ namespace Axe
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_SessionManager_login::Bellhop_SessionManager_login( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_SessionManager_login::Bellhop_SessionManager_login( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -78,7 +79,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_SessionManager_login::response( const Proxy_PlayerPtr & _arg0 )
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
 	}
@@ -90,7 +92,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -131,7 +133,7 @@ namespace Axe
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )
+	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
@@ -139,7 +141,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_GridManager_addAdapter::response( std::size_t _arg0 )
 	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
 	}
@@ -151,7 +154,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )

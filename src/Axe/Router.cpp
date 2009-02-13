@@ -12,13 +12,14 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Router::Router( const boost::asio::ip::tcp::endpoint & _endpoint )
-		: Host( _endpoint)
+		: Service( _endpoint)
 	{
-
+		m_gridConnection = new GridConnection( m_service, m_connectionCache, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::initialize()
+	void Router::initialize( const boost::asio::ip::tcp::endpoint & _grid )
 	{
+		m_gridConnection->registerAdapter( _grid, m_name );
 		this->run();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		virtual void connectSuccessful( std::size_t _enumeratorID ) = 0;
+		virtual void connectSuccessful( std::size_t _endpointId ) = 0;
 		virtual void connectFailed() = 0;
 	};
 

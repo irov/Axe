@@ -39,7 +39,7 @@ namespace Axe
 	template<class T, class Y>
 	inline T handleCast( const AxeHandle<Y> & _handle )
 	{
-		typedef typename R::element_type element_type;
+		typedef typename T::element_type element_type;
 		return boost::dynamic_pointer_cast<element_type>( _handle );
 	}
 }

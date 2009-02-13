@@ -12,8 +12,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	GridConnection::GridConnection( boost::asio::io_service & _service, const AdapterConnectResponsePtr & _connectResponse )
-		: Invocation( _service, 0 )
+	GridConnection::GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const AdapterConnectResponsePtr & _connectResponse )
+		: AdapterConnection( _service, _connectionCache, 0 )
 		, m_connectResponse(_connectResponse)
 	{
 	}
@@ -25,19 +25,6 @@ namespace Axe
 		ar.writeString( _name );
 
 		this->processMessage();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & GridConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
-	{
-		//Fake
-		ArchiveWrite & ar = this->getArchiveWrite();
-
-		return ar;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void GridConnection::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )

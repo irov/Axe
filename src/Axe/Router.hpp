@@ -1,7 +1,9 @@
 #	pragma once
 
-#	include "Host.hpp"
+#	include "Servant.hpp"
 #	include "Response.hpp"
+
+#	include "GridConnection.hpp"
 
 #	include "AxeProtocols/Player.hpp"
 
@@ -11,7 +13,7 @@ namespace Axe
 	typedef AxeHandle<class RouterSession> RouterSessionPtr;	
 
 	class Router
-		: public Host
+		: public Service
 	{
 	public:
 		Router( const boost::asio::ip::tcp::endpoint & _endpoint );
@@ -31,6 +33,7 @@ namespace Axe
 		TMapRouming m_rouming;
 
 		Proxy_SessionManagerPtr m_sessionManager;
+		GridConnectionPtr m_gridConnection;
 	};
 
 	typedef AxeHandle<Router> RouterPtr;

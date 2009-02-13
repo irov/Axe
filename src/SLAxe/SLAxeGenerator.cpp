@@ -280,7 +280,7 @@ namespace Axe
 			write() << "	: public Axe::Bellhop" << std::endl;
 			write() << "{" << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session );" << std::endl;
+			write() << "	" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session );" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void response(";
@@ -406,7 +406,7 @@ namespace Axe
 		
 		write() << std::endl;
 		write() << "private:" << std::endl;
-		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
+		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
@@ -559,10 +559,10 @@ namespace Axe
 		write() << "};" << std::endl;
 		write() << std::endl;
 
-		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value );" << std::endl;
-		write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+		//write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value );" << std::endl;
+		//write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+		/*write() << std::endl;*/
 
-		write() << std::endl;
 		writeTypedefHandle( proxy_name );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -732,7 +732,7 @@ namespace Axe
 			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
 
 			writeLine();
-			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::AdapterSessionPtr & _session )" << std::endl;
+			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
 			write() <<	"	: Axe::Bellhop(_requestId, _session)" << std::endl;
 			write() << "{" << std::endl;
 			write() << "}" << std::endl;
@@ -766,7 +766,8 @@ namespace Axe
 
 			m_stream << ")" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse();" << std::endl;
+			write() << "	ar.writeSize( m_requestId );" << std::endl;
 
 			arg_enumerator = 0;
 
@@ -831,7 +832,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::AdapterSessionPtr & _session, const ConnectionCachePtr & _connectionCache )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )" << std::endl;
 		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
@@ -980,8 +981,10 @@ namespace Axe
 
 		write() << std::endl;
 
+		std::string proxy_name = writeProxyName( cl.name );
+
 		writeLine();
-		write() << writeProxyName( cl.name ) << "::" << writeProxyName( cl.name ) << "( std::size_t _id, const Axe::ConnectionPtr & _connection )" << std::endl;
+		write() << proxy_name << "::" << proxy_name << "( std::size_t _id, const Axe::ConnectionPtr & _connection )" << std::endl;
 		
 		write() << "	: Axe::Proxy(_id, _connection)" << std::endl;
 
@@ -1014,7 +1017,7 @@ namespace Axe
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
 			writeLine();
-			write() << "void " << writeProxyName( cl.name ) << "::" << mt.name << "(";
+			write() << "void " << proxy_name << "::" << mt.name << "(";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -1049,6 +1052,18 @@ namespace Axe
 			write() << "}" << std::endl;
 			write() << std::endl;
 		}
+		//writeLine();
+		//write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value )" << std::endl;
+		//write() << "{" << std::endl;
+		//write() << "	std::size_t servantId = _value->getServantId();" << std::endl;
+		//write() << "	const ConnectionPtr & cn = _value->getConnection();" << std::endl;
+		//write() << "	std::size_t endpointId = cn->getEndpointId();" << std::endl;
+		//write() << "	ar.write( servantId );" << std::endl;
+		//write() << "	ar.write( endpointId );" << std::endl;
+		//write() << "}" << std::endl;
+		//writeLine();
+		//write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::writeTypedefHandle( const std::string & _type )

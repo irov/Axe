@@ -12,11 +12,11 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		Bellhop( std::size_t _requestId, const AdapterSessionPtr & _session );
+		Bellhop( std::size_t _requestId, const SessionPtr & _session );
 
 	protected:
 		std::size_t m_requestId;
-		AdapterSessionPtr m_session;
+		SessionPtr m_session;
 	};
 
 	typedef AxeHandle<Bellhop> BellhopPtr;	
