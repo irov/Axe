@@ -6,6 +6,8 @@
 
 #	include "Servant.hpp"
 
+#	include "AxeProtocols/Player.hpp"
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,7 +19,14 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::initialize( const boost::asio::ip::tcp::endpoint & _grid )
 	{
-		m_gridConnection->registerAdapter( _grid, m_name );
+		m_gridConnection->connect( _grid );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::start( std::size_t _endpointId )
+	{
+		this->refreshServantEndpoint( _endpointId );
+		
+		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()
@@ -34,11 +43,28 @@ namespace Axe
 		return connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::connectSuccessful( std::size_t _endpointId )
+	class AdapterGridRegistrationResponse
+		: public Response_GridManager_addAdapter
 	{
-		this->refreshServantEndpoint( _endpointId );
+	public:
+		AdapterGridRegistrationResponse( const AdapterPtr & _adapter )
+			: m_adapter(_adapter)
+		{
+		}
+		
+	public:
+		void response( std::size_t _id ) override
+		{
+			m_adapter->start( _id );
+		}
 
-		this->accept();
+	protected:
+		AdapterPtr m_adapter;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::connectSuccessful( const Proxy_GridManagerPtr & _gridManager )
+	{
+		_gridManager->addAdapter( m_name, new AdapterGridRegistrationResponse( this ) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::connectFailed()

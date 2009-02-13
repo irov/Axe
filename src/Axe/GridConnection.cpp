@@ -18,22 +18,13 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridConnection::registerAdapter( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-	{
-		ArchiveWrite & ar = this->connect( _endpoint );
-
-		ar.writeString( _name );
-
-		this->processMessage();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t id;
+		Proxy_GridManagerPtr gridManager;
 
-		_ar.read( id );
+		_ar.read( gridManager );
 
-		m_connectResponse->connectSuccessful( id );
+		m_connectResponse->connectSuccessful( gridManager );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
