@@ -9,7 +9,7 @@ void main()
 {
 	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12002);
 
-	Axe::AdapterPtr adapter = new Axe::Adapter( "Test", ep );
+	Axe::AdapterPtr adapter = new Axe::Adapter( ep, "Test" );
 
 	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 
