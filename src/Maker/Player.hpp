@@ -16,6 +16,8 @@ namespace Axe
 	{
 		size_t addAdapter( string _name );
 
+		SessionManager getSessionManager();
+
 		TMapAdapterIds m_adapterIds;
 		size_t m_enumeratorID;
 	};

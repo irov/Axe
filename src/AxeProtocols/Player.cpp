@@ -146,11 +146,26 @@ namespace Axe
 		ar << _arg0;
 		m_session->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_GridManager_getSessionManager::Bellhop_GridManager_getSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_getSessionManager::response( const Proxy_SessionManagerPtr & _arg0 )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
+		ar << _arg0;
+		m_session->process();
+	}
 	
 	enum
 	{
 		ESMD_GridManager = 0
 		,	ESMD_GridManager_addAdapter
+		,	ESMD_GridManager_getSessionManager
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -166,6 +181,12 @@ namespace Axe
 				std::string arg0; ar >> arg0;
 				this->addAdapter( bellhop, arg0 );
 			}break;
+		case ESMD_GridManager_getSessionManager:
+			{
+				Bellhop_GridManager_getSessionManagerPtr bellhop = new Bellhop_GridManager_getSessionManager( _requestId, _session );
+	
+				this->getSessionManager( bellhop );
+			}break;
 		}
 	}
 	
@@ -173,6 +194,12 @@ namespace Axe
 	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		std::size_t arg0; _ar >> arg0;
+		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getSessionManager::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	{
+		Proxy_SessionManagerPtr arg0 = makeProxy<Proxy_SessionManager>( _ar, _connectionCache );
 		this->response( arg0 );
 	}
 	
@@ -187,6 +214,14 @@ namespace Axe
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addAdapter, _response );
 		ar << _name;
+	
+		this->processMessage();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_GridManager::getSessionManager( const Response_GridManager_getSessionManagerPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getSessionManager, _response );
 	
 		this->processMessage();
 	}

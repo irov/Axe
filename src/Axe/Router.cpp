@@ -23,6 +23,13 @@ namespace Axe
 		m_gridConnection->connect( _grid );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Router::start( const Proxy_SessionManagerPtr & _sessionManager )
+	{
+		m_sessionManager = _sessionManager;
+
+		this->accept();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _session )
 	{
 		const ConnectionPtr & cn = m_connectionCache->getConnection( _endpointId );
@@ -64,7 +71,7 @@ namespace Axe
 		m_sessionManager->login( _login, _password, new RouterResponse_SessionManager_login( _session ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Router::createConnection( std::size_t _endpointId ) override
+	ConnectionPtr Router::createConnection( std::size_t _endpointId )
 	{
 		AdapterConnectionPtr cn = new AdapterConnection( m_service, m_connectionCache, _endpointId );
 
@@ -78,9 +85,30 @@ namespace Axe
 		return session;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	class RouterResponse_GridManager_getSessionManager
+		: public Response_GridManager_getSessionManager
+	{
+	public:
+		RouterResponse_GridManager_getSessionManager( const RouterPtr & _router )
+			: m_router(_router)
+		{
+		}
+
+	public:
+		void response( const Proxy_SessionManagerPtr & _sessionManager ) override
+		{
+			m_router->start( _sessionManager );
+		}
+
+	protected:
+		RouterPtr m_router;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void Router::connectSuccessful( const Proxy_GridManagerPtr & _gridManager )
 	{
 		m_gridManager = _gridManager;
+
+		m_gridManager->getSessionManager( new RouterResponse_GridManager_getSessionManager( this) );
 
 		this->accept();
 	}

@@ -130,12 +130,24 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
+	class Bellhop_GridManager_getSessionManager
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session );
+	
+	public:
+		void response( const Proxy_SessionManagerPtr & );
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getSessionManager> Bellhop_GridManager_getSessionManagerPtr;
 	
 	class Servant_GridManager
 		: virtual public Axe::Servant
 	{
 	public:
 		virtual void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name ) = 0;
+		virtual void getSessionManager( const Bellhop_GridManager_getSessionManagerPtr & _cb ) = 0;
 	
 	protected:
 		TMapAdapterIds m_adapterIds;
@@ -159,6 +171,18 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
 	
+	class Response_GridManager_getSessionManager
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( const Proxy_SessionManagerPtr & ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Response_GridManager_getSessionManager> Response_GridManager_getSessionManagerPtr;
+	
 	
 	class Proxy_GridManager
 		: virtual public Axe::Proxy
@@ -168,6 +192,7 @@ namespace Axe
 	
 	public:
 		void addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response );
+		void getSessionManager( const Response_GridManager_getSessionManagerPtr & _response );
 	};
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;

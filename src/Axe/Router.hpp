@@ -24,6 +24,9 @@ namespace Axe
 		void initialize( const boost::asio::ip::tcp::endpoint & _grid );
 
 	public:
+		void start( const Proxy_SessionManagerPtr & _sessionManager );
+
+	public:
 		void dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _sn );
 		void permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session );
 

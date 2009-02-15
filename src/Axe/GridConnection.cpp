@@ -12,7 +12,7 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	GridConnection::GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const AdapterConnectResponsePtr & _connectResponse )
+	GridConnection::GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const GridConnectResponsePtr & _connectResponse )
 		: AdapterConnection( _service, _connectionCache, 0 )
 		, m_connectResponse(_connectResponse)
 	{
