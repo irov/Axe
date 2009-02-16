@@ -40,7 +40,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
-		Proxy_PlayerPtr proxy = makeProxy<Proxy_Player>( _ar, m_connectionCache );
+		Proxy_PlayerPtr proxy = makeProxy<Proxy_PlayerPtr>( _ar, m_connectionCache );
 
 		m_connectResponse->connectSuccessful( proxy );
 	}

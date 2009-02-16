@@ -45,14 +45,16 @@ namespace Axe
 	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, const ConnectionCachePtr & _connectionCache, std::size_t & servantId );
 
 	template<class T>
-	AxeHandle<T> makeProxy( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	T makeProxy( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		std::size_t servantId;
 
 		const ConnectionPtr & connection = 
 			makeProxyInfo( _ar, _connectionCache, servantId );
 
-		return new T( servantId, connection );
+		typedef typename T::element_type El;
+
+		return new El( servantId, connection );
 	}
 
 	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value );	

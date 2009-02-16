@@ -289,7 +289,7 @@ namespace Protocol
 			{
 				Bellhop_Client_onConnectPtr bellhop = new Bellhop_Client_onConnect( _requestId, _session );
 	
-				Proxy_PlayerPtr arg0 = makeProxy<Proxy_Player>( ar, _connectionCache );
+				Proxy_PlayerPtr arg0 = makeProxy<Proxy_PlayerPtr>( ar, _connectionCache );
 				this->onConnect( bellhop, arg0 );
 			}break;
 		}

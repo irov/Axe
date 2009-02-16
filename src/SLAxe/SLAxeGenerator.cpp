@@ -1220,7 +1220,7 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = makeProxy<" << writeProxyName( _type ) << ">( " << _ar << ", _connectionCache );" << std::endl;
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << ", _connectionCache );" << std::endl;
 			return;
 		}
 		

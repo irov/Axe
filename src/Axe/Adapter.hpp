@@ -24,6 +24,9 @@ namespace Axe
 		void start( std::size_t _endpointId );
 
 	protected:
+		virtual void onStart();
+
+	protected:
 		SessionPtr makeSession() override;
 
 	protected:

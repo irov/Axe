@@ -9,6 +9,8 @@
 #	include "ArchiveWrite.hpp"
 #	include "ArchiveRead.hpp"
 
+#	include "AxeProtocols/Player.hpp"
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -20,7 +22,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
-		Proxy_GridManagerPtr gridManager;
+		Proxy_GridManagerPtr gridManager = 
+			makeProxy<Proxy_GridManagerPtr>( _ar, m_connectionCache );
 
 		_ar.read( gridManager );
 

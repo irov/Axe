@@ -17,6 +17,7 @@ namespace Axe
 		size_t addAdapter( string _name );
 
 		SessionManager getSessionManager();
+		void setSessionManager( SessionManager _sessionManager );
 
 		TMapAdapterIds m_adapterIds;
 		size_t m_enumeratorID;
