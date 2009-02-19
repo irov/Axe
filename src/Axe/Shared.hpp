@@ -17,21 +17,32 @@ namespace Axe
 		}
 
 	public:
-		friend inline void intrusive_ptr_add_ref( Shared * p )
+		friend inline void intrusive_ptr_add_ref( const Shared * p )
 		{
-			++p->m_refcount;
+			p->incref();
 		}
 
-		friend inline void intrusive_ptr_release( Shared * p )
+		friend inline void intrusive_ptr_release( const Shared * p )
 		{
-			if( --p->m_refcount == 0 )
+			p->decref();
+		}
+
+	private:
+		void incref() const
+		{
+			++m_refcount;
+		}
+
+		void decref() const
+		{
+			if( m_refcount == 0 )
 			{
-				delete p;
+				delete this;
 			}
 		}
 
 	protected:
-		std::size_t m_refcount;
+		mutable std::size_t m_refcount;
 	};
 
 	#	define AxeHandle boost::intrusive_ptr
