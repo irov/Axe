@@ -32,7 +32,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Dispatcher::handleReadBodySize, this, boost::asio::placeholders::error, size )
+			, boost::bind( &Dispatcher::handleReadBodySize, intrusivePtr(this), boost::asio::placeholders::error, size )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace Axe
 
 			boost::asio::async_write( m_socket
 				, boost::asio::buffer( blob )
-				, boost::bind( &Dispatcher::handleWriteStream, this, boost::asio::placeholders::error )
+				, boost::bind( &Dispatcher::handleWriteStream, intrusivePtr(this), boost::asio::placeholders::error )
 				);
 		}
 	}
@@ -75,7 +75,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Dispatcher::handleReadBody, this, boost::asio::placeholders::error, blob )
+			, boost::bind( &Dispatcher::handleReadBody, intrusivePtr(this), boost::asio::placeholders::error, blob )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -436,18 +436,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="SessionManager"
-			>
-			<File
-				RelativePath=".\SessionManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SessionManager.hpp"
-				>
-			</File>
-		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

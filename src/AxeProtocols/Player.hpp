@@ -66,23 +66,100 @@ namespace Axe
 	
 	typedef AxeHandle<Proxy_Player> Proxy_PlayerPtr;
 	
-	class Bellhop_SessionManager_login
+	
+	class Servant_Unique
+		: virtual public Axe::Servant
+	{
+	public:
+	
+	protected:
+	
+	private:
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Servant_Unique> Servant_UniquePtr;
+	
+	
+	class Proxy_Unique
+		: virtual public Axe::Proxy
+	{
+	public:
+		Proxy_Unique( std::size_t _id, const Axe::ConnectionPtr & _connection );
+	
+	public:
+	};
+	
+	typedef AxeHandle<Proxy_Unique> Proxy_UniquePtr;
+	
+	class Bellhop_PermissionsVerifier_checkPermissions
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_SessionManager_login( std::size_t _requestId, const Axe::SessionPtr & _session );
+		Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session );
+	
+	public:
+		void response( bool );
+	};
+	
+	typedef AxeHandle<Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
+	
+	class Servant_PermissionsVerifier
+		:	public Servant_Unique
+	{
+	public:
+		virtual void checkPermissions( const Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
+	
+	protected:
+	
+	private:
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
+	
+	class Response_PermissionsVerifier_checkPermissions
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( bool ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Response_PermissionsVerifier_checkPermissions> Response_PermissionsVerifier_checkPermissionsPtr;
+	
+	
+	class Proxy_PermissionsVerifier
+		:	public Proxy_Unique
+	{
+	public:
+		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ConnectionPtr & _connection );
+	
+	public:
+		void checkPermissions( const std::string & _login, const std::string & _password, const Response_PermissionsVerifier_checkPermissionsPtr & _response );
+	};
+	
+	typedef AxeHandle<Proxy_PermissionsVerifier> Proxy_PermissionsVerifierPtr;
+	
+	class Bellhop_SessionManager_create
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session );
 	
 	public:
 		void response( const Proxy_PlayerPtr & );
 	};
 	
-	typedef AxeHandle<Bellhop_SessionManager_login> Bellhop_SessionManager_loginPtr;
+	typedef AxeHandle<Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
 	
 	class Servant_SessionManager
-		: virtual public Axe::Servant
+		:	public Servant_Unique
 	{
 	public:
-		virtual void login( const Bellhop_SessionManager_loginPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
+		virtual void create( const Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) = 0;
 	
 	protected:
 	
@@ -92,7 +169,7 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
 	
-	class Response_SessionManager_login
+	class Response_SessionManager_create
 		: public Axe::Response
 	{
 	protected:
@@ -102,17 +179,17 @@ namespace Axe
 		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
-	typedef AxeHandle<Response_SessionManager_login> Response_SessionManager_loginPtr;
+	typedef AxeHandle<Response_SessionManager_create> Response_SessionManager_createPtr;
 	
 	
 	class Proxy_SessionManager
-		: virtual public Axe::Proxy
+		:	public Proxy_Unique
 	{
 	public:
 		Proxy_SessionManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void login( const std::string & _login, const std::string & _password, const Response_SessionManager_loginPtr & _response );
+		void create( const std::string & _login, const Response_SessionManager_createPtr & _response );
 	};
 	
 	typedef AxeHandle<Proxy_SessionManager> Proxy_SessionManagerPtr;
@@ -130,36 +207,36 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
-	class Bellhop_GridManager_getSessionManager
+	class Bellhop_GridManager_addUnique
 		: public Axe::Bellhop
 	{
 	public:
-		Bellhop_GridManager_getSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( const Proxy_SessionManagerPtr & );
-	};
-	
-	typedef AxeHandle<Bellhop_GridManager_getSessionManager> Bellhop_GridManager_getSessionManagerPtr;
-	class Bellhop_GridManager_setSessionManager
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_GridManager_setSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session );
+		Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session );
 	
 	public:
 		void response();
 	};
 	
-	typedef AxeHandle<Bellhop_GridManager_setSessionManager> Bellhop_GridManager_setSessionManagerPtr;
+	typedef AxeHandle<Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
+	class Bellhop_GridManager_getUnique
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session );
+	
+	public:
+		void response( const Proxy_UniquePtr & );
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
 	
 	class Servant_GridManager
 		: virtual public Axe::Servant
 	{
 	public:
 		virtual void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name ) = 0;
-		virtual void getSessionManager( const Bellhop_GridManager_getSessionManagerPtr & _cb ) = 0;
-		virtual void setSessionManager( const Bellhop_GridManager_setSessionManagerPtr & _cb, const Proxy_SessionManagerPtr & _sessionManager ) = 0;
+		virtual void addUnique( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) = 0;
+		virtual void getUnique( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
 	
 	protected:
 		TMapAdapterIds m_adapterIds;
@@ -183,19 +260,7 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
 	
-	class Response_GridManager_getSessionManager
-		: public Axe::Response
-	{
-	protected:
-		virtual void response( const Proxy_SessionManagerPtr & ) = 0;
-	
-	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
-	};
-	
-	typedef AxeHandle<Response_GridManager_getSessionManager> Response_GridManager_getSessionManagerPtr;
-	
-	class Response_GridManager_setSessionManager
+	class Response_GridManager_addUnique
 		: public Axe::Response
 	{
 	protected:
@@ -205,7 +270,19 @@ namespace Axe
 		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
 	};
 	
-	typedef AxeHandle<Response_GridManager_setSessionManager> Response_GridManager_setSessionManagerPtr;
+	typedef AxeHandle<Response_GridManager_addUnique> Response_GridManager_addUniquePtr;
+	
+	class Response_GridManager_getUnique
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( const Proxy_UniquePtr & ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Response_GridManager_getUnique> Response_GridManager_getUniquePtr;
 	
 	
 	class Proxy_GridManager
@@ -216,8 +293,8 @@ namespace Axe
 	
 	public:
 		void addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response );
-		void getSessionManager( const Response_GridManager_getSessionManagerPtr & _response );
-		void setSessionManager( const Proxy_SessionManagerPtr & _sessionManager, const Response_GridManager_setSessionManagerPtr & _response );
+		void addUnique( const std::string & _name, const Proxy_UniquePtr & _unique, const Response_GridManager_addUniquePtr & _response );
+		void getUnique( const std::string & _name, const Response_GridManager_getUniquePtr & _response );
 	};
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;

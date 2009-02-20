@@ -5,9 +5,20 @@ namespace Axe
 		int test( string name, int id );
 	};
 
-	class SessionManager
+	class Unique
 	{
-		Player login( string _login, string _password );
+	};
+
+	class PermissionsVerifier
+		: public Unique
+	{
+		bool checkPermissions( string _login, string _password );
+	};
+
+	class SessionManager
+		: public Unique
+	{
+		Player create( string _login );
 	};
 
 	typedef map<std::string, size_t> TMapAdapterIds;
@@ -16,8 +27,8 @@ namespace Axe
 	{
 		size_t addAdapter( string _name );
 
-		SessionManager getSessionManager();
-		void setSessionManager( SessionManager _sessionManager );
+		void addUnique( string _name, Unique _unique );
+		Unique getUnique( string _name );
 
 		TMapAdapterIds m_adapterIds;
 		size_t m_enumeratorID;

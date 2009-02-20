@@ -2,6 +2,7 @@
 
 #	include "Service.hpp"
 #	include "Servant.hpp"
+#	include "Proxy.hpp"
 
 #	include "ConnectionCache.hpp"
 
@@ -18,7 +19,7 @@ namespace Axe
 		Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		std::size_t addServant( const ServantPtr & _servant );
+		ProxyPtr addServant( const ServantPtr & _servant );
 
 	public:
 		void setEndpointId( std::size_t _endpointId );

@@ -38,6 +38,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "grid", "src\grid\grid.vcpro
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "router", "src\router\router.vcproj", "{82D1BDA2-8C54-401A-AF95-60A4FA99FDC9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{188ABE90-731A-48D5-9D39-8015CEBA83A8} = {188ABE90-731A-48D5-9D39-8015CEBA83A8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution

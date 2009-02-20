@@ -838,58 +838,61 @@ namespace Axe
 		//		stream_read * stream = _session->get_streamIn();
 		//		switch( _methodId ){
 
-		write() << "	Axe::ArchiveRead & ar = _session->getArchiveRead();" << std::endl;
-		write() << "	switch( _methodId )" << std::endl;
-		write() << "	{" << std::endl;
-
-		for( TVectorMethods::const_iterator
-			it_method = cl.methods.begin(),
-			it_method_end = cl.methods.end();
-		it_method != it_method_end;
-		++it_method )
+		if( cl.methods.empty() == false )
 		{
-			const Method & mt = *it_method;
+			write() << "	Axe::ArchiveRead & ar = _session->getArchiveRead();" << std::endl;
+			write() << "	switch( _methodId )" << std::endl;
+			write() << "	{" << std::endl;
 
-			write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
-			write() << "		{" << std::endl;
-			write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
-			write() << std::endl;
-
-			unsigned int bellhop_args = 0;
-
-			for( TVectorArguments::const_iterator
-				it_arg = mt.inArguments.begin(),
-				it_arg_end = mt.inArguments.end();
-			it_arg != it_arg_end;
-			++it_arg )
+			for( TVectorMethods::const_iterator
+				it_method = cl.methods.begin(),
+				it_method_end = cl.methods.end();
+			it_method != it_method_end;
+			++it_method )
 			{
-				const Argument & ar = *it_arg;
+				const Method & mt = *it_method;
 
-				write() << "			";
-				writeSelectType( "ar", ar.type.name, bellhop_args );
-				++bellhop_args;
+				write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
+				write() << "		{" << std::endl;
+				write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
+				write() << std::endl;
+
+				unsigned int bellhop_args = 0;
+
+				for( TVectorArguments::const_iterator
+					it_arg = mt.inArguments.begin(),
+					it_arg_end = mt.inArguments.end();
+				it_arg != it_arg_end;
+				++it_arg )
+				{
+					const Argument & ar = *it_arg;
+
+					write() << "			";
+					writeSelectType( "ar", ar.type.name, bellhop_args );
+					++bellhop_args;
+				}
+
+				write() << "			this->" << mt.name << "( bellhop";
+
+				bellhop_args = 0;
+
+				for( TVectorArguments::const_iterator
+					it_arg = mt.inArguments.begin(),
+					it_arg_end = mt.inArguments.end();
+				it_arg != it_arg_end;
+				++it_arg )
+				{
+					m_stream << ", arg" << bellhop_args;
+					++bellhop_args;
+				}
+
+				m_stream << " );" << std::endl;
+
+				write() << "		}break;" << std::endl;
 			}
 
-			write() << "			this->" << mt.name << "( bellhop";
-
-			bellhop_args = 0;
-
-			for( TVectorArguments::const_iterator
-				it_arg = mt.inArguments.begin(),
-				it_arg_end = mt.inArguments.end();
-			it_arg != it_arg_end;
-			++it_arg )
-			{
-				m_stream << ", arg" << bellhop_args;
-				++bellhop_args;
-			}
-
-			m_stream << " );" << std::endl;
-
-			write() << "		}break;" << std::endl;
+			write() << "	}" << std::endl;
 		}
-
-		write() << "	}" << std::endl;
 		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////

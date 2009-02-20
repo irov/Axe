@@ -47,7 +47,7 @@ namespace Axe
 
 		const ConnectionPtr & connection = 
 			_connectionCache->getConnection( endpointId );
-		
+
 		return connection;
 	}
 	//////////////////////////////////////////////////////////////////////////

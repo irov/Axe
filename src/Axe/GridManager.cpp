@@ -18,15 +18,18 @@ namespace Axe
 		_cb->response( it_found->second );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridManager::getSessionManager( const Bellhop_GridManager_getSessionManagerPtr & _cb )
+	void GridManager::addUnique( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique )
 	{
-		_cb->response( m_sessionManager );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void GridManager::setSessionManager( const Bellhop_GridManager_setSessionManagerPtr & _cb, const Proxy_SessionManagerPtr & _sessionManager )
-	{
-		m_sessionManager = _sessionManager;
+		m_uniques.insert( std::make_pair(_name, _unique) );
 
 		_cb->response();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridManager::getUnique( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name )
+	{
+		TMapUniques::const_iterator it_found = m_uniques.find( _name );
+
+		_cb->response( it_found->second );
+	}
+
 }

@@ -9,7 +9,7 @@ void main()
 {
 	boost::asio::ip::tcp::endpoint ep( boost::asio::ip::address::from_string("127.0.0.1"), 12001 );
 
-	Axe::GridPtr grid = new Axe::Grid( ep );
+	Axe::GridPtr grid = new Axe::Grid( ep, "Grid" );
 
 	grid->initialize();
 

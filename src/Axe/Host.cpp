@@ -16,7 +16,7 @@ namespace Axe
 		m_connectionCache = new ConnectionCache( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Host::addServant( const ServantPtr & _servant )
+	ProxyPtr Host::addServant( const ServantPtr & _servant )
 	{
 		std::size_t servantId = _servant->getServantId();
 
@@ -24,7 +24,11 @@ namespace Axe
 
 		m_servants.insert( std::make_pair( servantId, _servant ) );
 
-		return servantId;
+		const ConnectionPtr & cn = m_connectionCache->getConnection( m_endpointId );
+
+		ProxyPtr proxy = new Proxy( servantId, cn );
+
+		return proxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Host::setEndpointId( std::size_t _endpointId )

@@ -34,12 +34,14 @@ namespace Axe
 	typedef AxeHandle<Proxy> ProxyPtr;
 
 	template<class T>
-	inline AxeHandle<T> uncheckedCast( const ProxyPtr & _proxy )
+	inline T uncheckedCast( const ProxyPtr & _proxy )
 	{
 		std::size_t servantId = _proxy->getServantId();
 		const ConnectionPtr & connection = _proxy->getConnection();
 
-		return new T( servantId, connection );
+		typedef typename T::element_type element_type;
+
+		return new element_type( servantId, connection );
 	}
 
 	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, const ConnectionCachePtr & _connectionCache, std::size_t & servantId );

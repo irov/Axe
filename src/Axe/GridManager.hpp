@@ -10,10 +10,11 @@ namespace Axe
 	public:
 		void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name ) override;
 
-		void getSessionManager( const Bellhop_GridManager_getSessionManagerPtr & _cb ) override;
-		void setSessionManager( const Bellhop_GridManager_setSessionManagerPtr & _cb, const Proxy_SessionManagerPtr & _sessionManager ) override;
+		void addUnique( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) override;
+		void getUnique( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) override;		
 
 	protected:
-		Proxy_SessionManagerPtr m_sessionManager;
+		typedef std::map<std::string, Proxy_UniquePtr> TMapUniques;
+		TMapUniques m_uniques;
 	};
 }

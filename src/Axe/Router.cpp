@@ -45,30 +45,30 @@ namespace Axe
 		cn->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_SessionManager_login
-		: public Response_SessionManager_login
-	{
-	public:
-		RouterResponse_SessionManager_login( const SessionPtr & _session )
-			: m_session(_session)
-		{
-		}
+	//class RouterResponse_SessionManager_login
+	//	: public Response_SessionManager_login
+	//{
+	//public:
+	//	RouterResponse_SessionManager_login( const SessionPtr & _session )
+	//		: m_session(_session)
+	//	{
+	//	}
 
-	public:
-		void response( const Proxy_PlayerPtr & _player ) override
-		{
-			ArchiveWrite & ar = m_session->beginConnect( true );
-			ar << _player;
-			m_session->process();
-		}
+	//public:
+	//	void response( const Proxy_PlayerPtr & _player ) override
+	//	{
+	//		ArchiveWrite & ar = m_session->beginConnect( true );
+	//		ar << _player;
+	//		m_session->process();
+	//	}
 
-	protected:
-		SessionPtr m_session;
-	};
+	//protected:
+	//	SessionPtr m_session;
+	//};
 	//////////////////////////////////////////////////////////////////////////
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
-		m_sessionManager->login( _login, _password, new RouterResponse_SessionManager_login( _session ) );
+		//m_sessionManager->login( _login, _password, new RouterResponse_SessionManager_login( _session ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Router::createConnection( std::size_t _endpointId )
@@ -85,30 +85,30 @@ namespace Axe
 		return session;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_GridManager_getSessionManager
-		: public Response_GridManager_getSessionManager
-	{
-	public:
-		RouterResponse_GridManager_getSessionManager( const RouterPtr & _router )
-			: m_router(_router)
-		{
-		}
+	//class RouterResponse_GridManager_getSessionManager
+	//	: public Response_GridManager_getSessionManager
+	//{
+	//public:
+	//	RouterResponse_GridManager_getSessionManager( const RouterPtr & _router )
+	//		: m_router(_router)
+	//	{
+	//	}
 
-	public:
-		void response( const Proxy_SessionManagerPtr & _sessionManager ) override
-		{
-			m_router->start( _sessionManager );
-		}
+	//public:
+	//	void response( const Proxy_SessionManagerPtr & _sessionManager ) override
+	//	{
+	//		m_router->start( _sessionManager );
+	//	}
 
-	protected:
-		RouterPtr m_router;
-	};
+	//protected:
+	//	RouterPtr m_router;
+	//};
 	//////////////////////////////////////////////////////////////////////////
 	void Router::connectSuccessful( const Proxy_GridManagerPtr & _gridManager )
 	{
 		m_gridManager = _gridManager;
 
-		m_gridManager->getSessionManager( new RouterResponse_GridManager_getSessionManager( this) );
+		//m_gridManager->getSessionManager( new RouterResponse_GridManager_getSessionManager( this) );
 
 		this->accept();
 	}

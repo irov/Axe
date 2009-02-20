@@ -7,6 +7,8 @@ namespace Axe
 	class ArchiveWrite;
 
 	typedef AxeHandle<class Session> SessionPtr;
+	
+	typedef AxeHandle<class Proxy> ProxyPtr;
 	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	
 	class Servant
@@ -21,6 +23,8 @@ namespace Axe
 		
 		void setEndpointId( std::size_t _servantId );
 		std::size_t getEndpointId() const;
+
+		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
 	public:
 		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) = 0;

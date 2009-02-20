@@ -35,7 +35,7 @@ namespace Axe
 
 		void decref() const
 		{
-			if( m_refcount == 0 )
+			if( --m_refcount == 0 )
 			{
 				delete this;
 			}
@@ -52,5 +52,11 @@ namespace Axe
 	{
 		typedef typename T::element_type element_type;
 		return boost::dynamic_pointer_cast<element_type>( _handle );
+	}
+
+	template<class T>
+	inline AxeHandle<T> intrusivePtr( T * _t )
+	{
+		return AxeHandle<T>(_t);
 	}
 }

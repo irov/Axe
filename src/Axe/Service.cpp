@@ -28,7 +28,7 @@ namespace Axe
 		SessionPtr session = this->makeSession();
 
 		m_acceptor.async_accept( session->getSocket()
-			, boost::bind( &Service::acceptHandle, this, boost::asio::placeholders::error, session )
+			, boost::bind( &Service::acceptHandle, intrusivePtr(this), boost::asio::placeholders::error, session )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -70,14 +70,96 @@ namespace Axe
 	}
 	
 	
+	
+	enum
+	{
+		ESMD_Unique = 0
+	};
+	
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_SessionManager_login::Bellhop_SessionManager_login( std::size_t _requestId, const Axe::SessionPtr & _session )
+	void Servant_Unique::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	{
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	Proxy_Unique::Proxy_Unique( std::size_t _id, const Axe::ConnectionPtr & _connection )
+		: Axe::Proxy(_id, _connection)
+	{
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_PermissionsVerifier_checkPermissions::Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_SessionManager_login::response( const Proxy_PlayerPtr & _arg0 )
+	void Bellhop_PermissionsVerifier_checkPermissions::response( bool _arg0 )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
+		ar << _arg0;
+		m_session->process();
+	}
+	
+	enum
+	{
+		ESMD_PermissionsVerifier = 0
+		,	ESMD_PermissionsVerifier_checkPermissions
+	};
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )
+	{
+		Axe::ArchiveRead & ar = _session->getArchiveRead();
+		switch( _methodId )
+		{
+		case ESMD_PermissionsVerifier_checkPermissions:
+			{
+				Bellhop_PermissionsVerifier_checkPermissionsPtr bellhop = new Bellhop_PermissionsVerifier_checkPermissions( _requestId, _session );
+	
+				std::string arg0; ar >> arg0;
+				std::string arg1; ar >> arg1;
+				this->checkPermissions( bellhop, arg0, arg1 );
+			}break;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	{
+		bool arg0; _ar >> arg0;
+		this->response( arg0 );
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	Proxy_PermissionsVerifier::Proxy_PermissionsVerifier( std::size_t _id, const Axe::ConnectionPtr & _connection )
+		: Axe::Proxy(_id, _connection)
+		, Proxy_Unique(_id, _connection)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_PermissionsVerifier::checkPermissions( const std::string & _login, const std::string & _password, const Response_PermissionsVerifier_checkPermissionsPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_PermissionsVerifier_checkPermissions, _response );
+		ar << _login;
+		ar << _password;
+	
+		this->processMessage();
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_SessionManager_create::Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_SessionManager_create::response( const Proxy_PlayerPtr & _arg0 )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse();
 		ar.writeSize( m_requestId );
@@ -88,7 +170,7 @@ namespace Axe
 	enum
 	{
 		ESMD_SessionManager = 0
-		,	ESMD_SessionManager_login
+		,	ESMD_SessionManager_create
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -97,19 +179,18 @@ namespace Axe
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
 		{
-		case ESMD_SessionManager_login:
+		case ESMD_SessionManager_create:
 			{
-				Bellhop_SessionManager_loginPtr bellhop = new Bellhop_SessionManager_login( _requestId, _session );
+				Bellhop_SessionManager_createPtr bellhop = new Bellhop_SessionManager_create( _requestId, _session );
 	
 				std::string arg0; ar >> arg0;
-				std::string arg1; ar >> arg1;
-				this->login( bellhop, arg0, arg1 );
+				this->create( bellhop, arg0 );
 			}break;
 		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_login::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		Proxy_PlayerPtr arg0 = makeProxy<Proxy_PlayerPtr>( _ar, _connectionCache );
 		this->response( arg0 );
@@ -118,15 +199,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Proxy_SessionManager::Proxy_SessionManager( std::size_t _id, const Axe::ConnectionPtr & _connection )
 		: Axe::Proxy(_id, _connection)
+		, Proxy_Unique(_id, _connection)
 	{
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_SessionManager::login( const std::string & _login, const std::string & _password, const Response_SessionManager_loginPtr & _response )
+	void Proxy_SessionManager::create( const std::string & _login, const Response_SessionManager_createPtr & _response )
 	{
-		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_SessionManager_login, _response );
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_SessionManager_create, _response );
 		ar << _login;
-		ar << _password;
 	
 		this->processMessage();
 	}
@@ -147,30 +228,30 @@ namespace Axe
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Bellhop_GridManager_getSessionManager::Bellhop_GridManager_getSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session )
+	Bellhop_GridManager_addUnique::Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_GridManager_getSessionManager::response( const Proxy_SessionManagerPtr & _arg0 )
+	void Bellhop_GridManager_addUnique::response()
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
+		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Bellhop_GridManager_getUnique::Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_getUnique::response( const Proxy_UniquePtr & _arg0 )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginResponse();
 		ar.writeSize( m_requestId );
 		ar << _arg0;
-		m_session->process();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Bellhop_GridManager_setSessionManager::Bellhop_GridManager_setSessionManager( std::size_t _requestId, const Axe::SessionPtr & _session )
-		: Axe::Bellhop(_requestId, _session)
-	{
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_GridManager_setSessionManager::response()
-	{
-		Axe::ArchiveWrite & ar = m_session->beginResponse();
-		ar.writeSize( m_requestId );
 		m_session->process();
 	}
 	
@@ -178,8 +259,8 @@ namespace Axe
 	{
 		ESMD_GridManager = 0
 		,	ESMD_GridManager_addAdapter
-		,	ESMD_GridManager_getSessionManager
-		,	ESMD_GridManager_setSessionManager
+		,	ESMD_GridManager_addUnique
+		,	ESMD_GridManager_getUnique
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -195,18 +276,20 @@ namespace Axe
 				std::string arg0; ar >> arg0;
 				this->addAdapter( bellhop, arg0 );
 			}break;
-		case ESMD_GridManager_getSessionManager:
+		case ESMD_GridManager_addUnique:
 			{
-				Bellhop_GridManager_getSessionManagerPtr bellhop = new Bellhop_GridManager_getSessionManager( _requestId, _session );
+				Bellhop_GridManager_addUniquePtr bellhop = new Bellhop_GridManager_addUnique( _requestId, _session );
 	
-				this->getSessionManager( bellhop );
+				std::string arg0; ar >> arg0;
+				Proxy_UniquePtr arg1 = makeProxy<Proxy_UniquePtr>( ar, _connectionCache );
+				this->addUnique( bellhop, arg0, arg1 );
 			}break;
-		case ESMD_GridManager_setSessionManager:
+		case ESMD_GridManager_getUnique:
 			{
-				Bellhop_GridManager_setSessionManagerPtr bellhop = new Bellhop_GridManager_setSessionManager( _requestId, _session );
+				Bellhop_GridManager_getUniquePtr bellhop = new Bellhop_GridManager_getUnique( _requestId, _session );
 	
-				Proxy_SessionManagerPtr arg0 = makeProxy<Proxy_SessionManagerPtr>( ar, _connectionCache );
-				this->setSessionManager( bellhop, arg0 );
+				std::string arg0; ar >> arg0;
+				this->getUnique( bellhop, arg0 );
 			}break;
 		}
 	}
@@ -218,15 +301,15 @@ namespace Axe
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getSessionManager::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
-	{
-		Proxy_SessionManagerPtr arg0 = makeProxy<Proxy_SessionManagerPtr>( _ar, _connectionCache );
-		this->response( arg0 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_setSessionManager::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	{
+		Proxy_UniquePtr arg0 = makeProxy<Proxy_UniquePtr>( _ar, _connectionCache );
+		this->response( arg0 );
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -245,18 +328,20 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::getSessionManager( const Response_GridManager_getSessionManagerPtr & _response )
+	void Proxy_GridManager::addUnique( const std::string & _name, const Proxy_UniquePtr & _unique, const Response_GridManager_addUniquePtr & _response )
 	{
-		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getSessionManager, _response );
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addUnique, _response );
+		ar << _name;
+		ar << _unique;
 	
 		this->processMessage();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::setSessionManager( const Proxy_SessionManagerPtr & _sessionManager, const Response_GridManager_setSessionManagerPtr & _response )
+	void Proxy_GridManager::getUnique( const std::string & _name, const Response_GridManager_getUniquePtr & _response )
 	{
-		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_setSessionManager, _response );
-		ar << _sessionManager;
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getUnique, _response );
+		ar << _name;
 	
 		this->processMessage();
 	}

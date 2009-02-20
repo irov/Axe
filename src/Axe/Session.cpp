@@ -20,7 +20,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Session::handleReadPermissionSize, this, boost::asio::placeholders::error, size )
+			, boost::bind( &Session::handleReadPermissionSize, intrusivePtr(this), boost::asio::placeholders::error, size )
 			);
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Session::handleReadPermission, this, boost::asio::placeholders::error, blob )
+			, boost::bind( &Session::handleReadPermission, intrusivePtr(this), boost::asio::placeholders::error, blob )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
