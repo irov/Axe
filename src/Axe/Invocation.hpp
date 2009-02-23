@@ -13,10 +13,10 @@ namespace Axe
 		Invocation( boost::asio::io_service & _service, std::size_t _endpointId );
 
 	public:
-		ArchiveWrite & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
-
-	public:
 		void processMessage() override;
+
+	protected:
+		ArchiveWrite & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	protected:
 		void handleConnect( const boost::system::error_code & _ec );

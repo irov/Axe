@@ -406,10 +406,14 @@ namespace Axe
 		
 		write() << std::endl;
 		write() << "private:" << std::endl;
-		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
+		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
+		write() << std::endl;
+		write() << "void operator >> ( Axe::ArchiveRead & _ar, " << servant_name << "Ptr & _value );" << std::endl;
+		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << servant_name << "Ptr & _value );" << std::endl;
+		write() << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderResponse( const Declaration::Class & _class )
@@ -468,7 +472,7 @@ namespace Axe
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -564,6 +568,9 @@ namespace Axe
 		/*write() << std::endl;*/
 
 		writeTypedefHandle( proxy_name );
+		write() << std::endl;
+		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << proxy_name << "Ptr & _value );" << std::endl;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplement( const std::string & _fileName )
@@ -832,7 +839,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )" << std::endl;
 		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
@@ -894,6 +901,18 @@ namespace Axe
 			write() << "	}" << std::endl;
 		}
 		write() << "}" << std::endl;
+
+		writeLine();
+		write() << "void operator >> ( Axe::ArchiveRead & _ar, " << servant_name << "Ptr & _value )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	_value->read( _ar );" << std::endl;
+		write() << "}" << std::endl;
+
+		writeLine();
+		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << servant_name << "Ptr & _value )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	_value->write( _ar );" << std::endl;
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementResponse( const Class & _class )
@@ -919,7 +938,7 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )" << std::endl;
 			write() << "{" << std::endl;
 			
 
@@ -1055,17 +1074,11 @@ namespace Axe
 			write() << "}" << std::endl;
 			write() << std::endl;
 		}
-		//writeLine();
-		//write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value )" << std::endl;
-		//write() << "{" << std::endl;
-		//write() << "	std::size_t servantId = _value->getServantId();" << std::endl;
-		//write() << "	const ConnectionPtr & cn = _value->getConnection();" << std::endl;
-		//write() << "	std::size_t endpointId = cn->getEndpointId();" << std::endl;
-		//write() << "	ar.write( servantId );" << std::endl;
-		//write() << "	ar.write( endpointId );" << std::endl;
-		//write() << "}" << std::endl;
-		//writeLine();
-		//write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+		writeLine();
+		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	_value->write( _ar );" << std::endl;
+		write() << "}" << std::endl;				
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1223,11 +1236,13 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << ", _connectionCache );" << std::endl;
-			return;
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = Axe::makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << ", _connectionCache );" << std::endl;
+			
 		}
-		
-		m_stream << writeMemberType( _type ) << " arg" << _enum << "; " << _ar << " >> arg" << _enum << ";" << std::endl;
+		else
+		{
+			m_stream << writeMemberType( _type ) << " arg" << _enum << "; " << _ar << " >> arg" << _enum << ";" << std::endl;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::writeLine()

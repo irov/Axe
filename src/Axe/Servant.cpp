@@ -3,7 +3,10 @@
 #	include "Servant.hpp"
 #	include "Proxy.hpp"
 
+#	include "ArchiveRead.hpp"
 #	include "ArchiveWrite.hpp"
+
+
 #	include "ConnectionCache.hpp"
 
 namespace Axe
@@ -42,12 +45,15 @@ namespace Axe
 		return new Proxy( m_servantId, cn );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( ArchiveWrite & ar, const ServantPtr & _value )
+	void Servant::write( ArchiveWrite & _ar ) const
 	{
-		std::size_t servantId = _value->getServantId();
-		ar.write( servantId );
-
-		std::size_t endpointId = _value->getEndpointId();
-		ar.write( endpointId );
+		_ar.write( m_servantId );
+		_ar.write( m_endpointId );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant::read( ArchiveRead & _ar )
+	{
+		_ar.read( m_servantId );
+		_ar.read( m_endpointId );
 	}
 }

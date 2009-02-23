@@ -15,6 +15,12 @@ namespace Axe
 		template<class T>
 		void write( const T & _value )
 		{
+			*this << _value;
+		}
+
+		template<class T>
+		void writePOD( const T & _value )
+		{
 			writeBuffer( &_value,  &_value + 1 );
 		}
 
@@ -41,6 +47,6 @@ namespace Axe
 	template<class T>
 	void operator << ( ArchiveWrite & ar, const T & _value )
 	{
-		ar.write( _value );
+		ar.writePOD( _value );
 	}
 }

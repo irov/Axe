@@ -4,6 +4,7 @@
 
 namespace Axe
 {
+	class ArchiveRead;
 	class ArchiveWrite;
 
 	typedef AxeHandle<class Session> SessionPtr;
@@ -29,12 +30,14 @@ namespace Axe
 	public:
 		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) = 0;
 
+	public:
+		void write( ArchiveWrite & _ar ) const;
+		void read( ArchiveRead & _ar );
+
 	protected:
 		std::size_t m_servantId;
 		std::size_t m_endpointId;
 	};
 
 	typedef AxeHandle<Servant> ServantPtr;
-
-	void operator << ( ArchiveWrite & ar, const ServantPtr & _value );
 }

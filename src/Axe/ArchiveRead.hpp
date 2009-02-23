@@ -13,6 +13,12 @@ namespace Axe
 		template<class T>
 		void read( T & _t )
 		{
+			*this >> _t;
+		}
+
+		template<class T>
+		void readPOD( T & _t )
+		{
 			readBuffer( (void *)&_t, sizeof(T) );
 		}
 
@@ -46,6 +52,6 @@ namespace Axe
 	template<class T>
 	void operator >> ( ArchiveRead & ar, T & _value )
 	{
-		ar.read( _value );
+		ar.readPOD( _value );
 	}
 }

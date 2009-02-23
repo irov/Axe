@@ -21,5 +21,7 @@ namespace Axe
 		ar.write( gridManager );
 
 		this->process();
+
+		this->run();
 	}
 }

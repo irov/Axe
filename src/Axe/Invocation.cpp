@@ -32,6 +32,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::handleConnect( const boost::system::error_code & _ec )
 	{
+		if( _ec )
+		{
+			printf("Invocation::handleConnect ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
@@ -43,6 +49,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size )
 	{
+		if( _ec )
+		{
+			printf("Invocation::handleReadConnectSize ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
 		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
@@ -56,26 +68,29 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::handleReadConnect( const boost::system::error_code & _ec, Archive::value_type * _blob )
 	{
-		if( !_ec )
+		if( _ec )
 		{
-			m_streamIn.begin();
+			printf("Invocation::handleReadConnect ec: %s\n", _ec.message().c_str() );
+			return;
+		}
 
-			std::size_t size;
-			m_streamIn.read( size );
+		m_streamIn.begin();
 
-			bool result;
-			m_streamIn.read( result );
+		std::size_t size;
+		m_streamIn.read( size );
 
-			if( result == true )
-			{
-				this->connectionSuccessful( m_streamIn, size );
-				this->run();
-			}
-			else
-			{
-				this->connectionFailed( m_streamIn, size );
-				this->close();
-			}
+		bool result;
+		m_streamIn.read( result );
+
+		if( result == true )
+		{				
+			this->connectionSuccessful( m_streamIn, size );				
+			this->run();
+		}
+		else
+		{
+			this->close();
+			this->connectionFailed( m_streamIn, size );				
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

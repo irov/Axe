@@ -36,10 +36,14 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
+	
+	void operator >> ( Axe::ArchiveRead & _ar, Servant_PlayerPtr & _value );
+	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PlayerPtr & _value );
+	
 	
 	class Response_Player_test
 		: public Axe::Response
@@ -48,7 +52,7 @@ namespace Axe
 		virtual void response( int ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_Player_test> Response_Player_testPtr;
@@ -66,6 +70,8 @@ namespace Axe
 	
 	typedef AxeHandle<Proxy_Player> Proxy_PlayerPtr;
 	
+	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_PlayerPtr & _value );
+	
 	
 	class Servant_Unique
 		: virtual public Axe::Servant
@@ -75,10 +81,14 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_Unique> Servant_UniquePtr;
+	
+	void operator >> ( Axe::ArchiveRead & _ar, Servant_UniquePtr & _value );
+	void operator << ( Axe::ArchiveWrite & _ar, const Servant_UniquePtr & _value );
+	
 	
 	
 	class Proxy_Unique
@@ -91,6 +101,8 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Proxy_Unique> Proxy_UniquePtr;
+	
+	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_UniquePtr & _value );
 	
 	class Bellhop_PermissionsVerifier_checkPermissions
 		: public Axe::Bellhop
@@ -113,10 +125,14 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
+	
+	void operator >> ( Axe::ArchiveRead & _ar, Servant_PermissionsVerifierPtr & _value );
+	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PermissionsVerifierPtr & _value );
+	
 	
 	class Response_PermissionsVerifier_checkPermissions
 		: public Axe::Response
@@ -125,7 +141,7 @@ namespace Axe
 		virtual void response( bool ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_PermissionsVerifier_checkPermissions> Response_PermissionsVerifier_checkPermissionsPtr;
@@ -142,6 +158,8 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Proxy_PermissionsVerifier> Proxy_PermissionsVerifierPtr;
+	
+	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_PermissionsVerifierPtr & _value );
 	
 	class Bellhop_SessionManager_create
 		: public Axe::Bellhop
@@ -164,10 +182,14 @@ namespace Axe
 	protected:
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
+	
+	void operator >> ( Axe::ArchiveRead & _ar, Servant_SessionManagerPtr & _value );
+	void operator << ( Axe::ArchiveWrite & _ar, const Servant_SessionManagerPtr & _value );
+	
 	
 	class Response_SessionManager_create
 		: public Axe::Response
@@ -176,7 +198,7 @@ namespace Axe
 		virtual void response( const Proxy_PlayerPtr & ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_SessionManager_create> Response_SessionManager_createPtr;
@@ -193,6 +215,8 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Proxy_SessionManager> Proxy_SessionManagerPtr;
+	
+	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_SessionManagerPtr & _value );
 	
 	typedef std::map<std::string, std::size_t> TMapAdapterIds;
 	
@@ -243,10 +267,14 @@ namespace Axe
 		std::size_t m_enumeratorID;
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
+	
+	void operator >> ( Axe::ArchiveRead & _ar, Servant_GridManagerPtr & _value );
+	void operator << ( Axe::ArchiveWrite & _ar, const Servant_GridManagerPtr & _value );
+	
 	
 	class Response_GridManager_addAdapter
 		: public Axe::Response
@@ -255,7 +283,7 @@ namespace Axe
 		virtual void response( std::size_t ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
@@ -267,7 +295,7 @@ namespace Axe
 		virtual void response() = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_addUnique> Response_GridManager_addUniquePtr;
@@ -279,7 +307,7 @@ namespace Axe
 		virtual void response( const Proxy_UniquePtr & ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) override;
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_getUnique> Response_GridManager_getUniquePtr;
@@ -298,4 +326,6 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;
+	
+	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_GridManagerPtr & _value );
 }

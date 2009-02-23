@@ -15,6 +15,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Session::accept()
 	{
+		m_streamIn.clear();
+		m_streamIn.begin();		
+
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
@@ -42,28 +45,45 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Session::handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size )
 	{
+		if( _ec )
+		{
+			printf("Session::handleReadPermissionSize ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+
 		std::size_t size_blob = *_size - sizeof(std::size_t);
+		
+		if( size_blob )
+		{
+			Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
 
-		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
-
-		boost::asio::async_read( m_socket
-			, boost::asio::buffer( blob, size_blob )
-			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Session::handleReadPermission, intrusivePtr(this), boost::asio::placeholders::error, blob )
-			);
+			boost::asio::async_read( m_socket
+				, boost::asio::buffer( blob, size_blob )
+				, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
+				, boost::bind( &Session::handleReadPermission, intrusivePtr(this), boost::asio::placeholders::error )
+				);
+		}
+		else
+		{
+			boost::system::error_code ec;
+			this->handleReadPermission( ec );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::handleReadPermission( const boost::system::error_code & _ec, Archive::value_type * _blob )
+	void Session::handleReadPermission( const boost::system::error_code & _ec )
 	{
-		if( !_ec )
+		if( _ec )
 		{
-			m_streamIn.begin();
-
-			std::size_t size;
-			m_streamIn.read( size );
-
-			this->permissionVerify( m_streamIn, size );
+			printf("Session::handleReadPermission ec: %s\n", _ec.message().c_str() );
+			return;
 		}
+
+		m_streamIn.begin();
+
+		std::size_t size;
+		m_streamIn.read( size );
+
+		this->permissionVerify( m_streamIn, size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

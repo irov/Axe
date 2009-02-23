@@ -30,7 +30,7 @@ namespace Axe
 
 	protected:
 		void handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size );
-		void handleReadBody( const boost::system::error_code & _ec, Archive::value_type * _blob );
+		void handleReadBody( const boost::system::error_code & _ec );
 
 	public:
 		virtual void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) = 0;

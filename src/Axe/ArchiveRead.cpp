@@ -47,7 +47,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Archive::value_type * ArchiveRead::keepBuffer( std::size_t _size )
 	{
+		if( _size == 0 )
+		{
+			return 0;
+		}
+
 		Archive::size_type size = m_archive.size();
+
 		m_archive.resize( size + _size );
 
 		return &m_archive[size];

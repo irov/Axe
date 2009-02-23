@@ -170,10 +170,6 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\grid.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\main.cpp"
 			>
 		</File>

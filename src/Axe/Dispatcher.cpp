@@ -27,6 +27,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::run()
 	{
+		m_streamIn.clear();
+		m_streamIn.begin();
+
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
@@ -49,8 +52,10 @@ namespace Axe
 
 			const Archive & blob = m_streamSend.getArchive();
 
+			std::size_t size_blob = blob.size();
+
 			boost::asio::async_write( m_socket
-				, boost::asio::buffer( blob )
+				, boost::asio::buffer( blob, size_blob )
 				, boost::bind( &Dispatcher::handleWriteStream, intrusivePtr(this), boost::asio::placeholders::error )
 				);
 		}
@@ -58,6 +63,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::handleWriteStream( const boost::system::error_code & _ec )
 	{
+		if( _ec )
+		{
+			printf("Dispatcher::handleWriteStream ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+		
 		m_streamSend.clear();
 
 		if( m_streamWrite.empty() == false )
@@ -68,6 +79,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size )
 	{
+		if( _ec )
+		{
+			printf("Dispatcher::handleReadBodySize ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
 		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
@@ -75,22 +92,25 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Dispatcher::handleReadBody, intrusivePtr(this), boost::asio::placeholders::error, blob )
+			, boost::bind( &Dispatcher::handleReadBody, intrusivePtr(this), boost::asio::placeholders::error )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Dispatcher::handleReadBody( const boost::system::error_code & _ec, Archive::value_type * _blob )
+	void Dispatcher::handleReadBody( const boost::system::error_code & _ec )
 	{
-		if( !_ec )
+		if( _ec )
 		{
-			m_streamIn.begin();
-
-			std::size_t size;
-			m_streamIn.read( size );
-
-			this->dispatchMessage( m_streamIn, size );
-			this->run();
+			printf("Dispatcher::handleReadBody ec: %s\n", _ec.message().c_str() );
+			return;
 		}
+
+		m_streamIn.begin();
+
+		std::size_t size;
+		m_streamIn.read( size );
+
+		this->dispatchMessage( m_streamIn, size );
+		this->run();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Dispatcher::handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait )

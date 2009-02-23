@@ -23,6 +23,7 @@ namespace Axe
 		ConnectionCache( const ConnectionProviderPtr & _provider );
 
 	public:
+		void addConnection( std::size_t _endpointId, const ConnectionPtr & _connection );
 		const ConnectionPtr & getConnection( std::size_t _endpointId );
 
 	protected:

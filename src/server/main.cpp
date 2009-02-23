@@ -6,7 +6,7 @@
 
 #	include <stdio.h>
 
-class PermissionsVerifier
+class MyPermissionsVerifier
 	: public Axe::Servant_PermissionsVerifier
 {
 public:
@@ -35,11 +35,13 @@ protected:
 	TMapAuthentication m_authentication;
 };
 
-class Player
+typedef AxeHandle<MyPermissionsVerifier> MyPermissionsVerifierPtr;
+
+class MyPlayer
 	: public Axe::Servant_Player
 {
 public:
-	Player( const std::string & _login )
+	MyPlayer( const std::string & _login )
 		: m_login(_login)
 	{		
 	}
@@ -61,11 +63,11 @@ protected:
 	std::string m_login;
 };
 
-class SessionManager
+class MySessionManager
 	: public Axe::Servant_SessionManager
 {
 public:
-	SessionManager( const Axe::AdapterPtr & _adapter )
+	MySessionManager( const Axe::AdapterPtr & _adapter )
 		: m_adapter(_adapter)
 	{
 
@@ -74,7 +76,7 @@ public:
 public:
 	void create( const Axe::Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) override
 	{
-		Axe::Servant_PlayerPtr player = new Player( _login );
+		Axe::Servant_PlayerPtr player = new MyPlayer( _login );
 
 		Axe::ProxyPtr base = m_adapter->addServant( player );
 
@@ -93,8 +95,11 @@ class AdapterInitialize
 public:
 	void onInitialize( const Axe::AdapterPtr & _adapter ) override
 	{
-		Axe::Servant_PermissionsVerifierPtr permissionsVerifier = new PermissionsVerifier();
-		Axe::Servant_SessionManagerPtr sessionManager = new SessionManager( _adapter );
+		MyPermissionsVerifierPtr permissionsVerifier = new MyPermissionsVerifier();
+
+		permissionsVerifier->add( "test", "test" );
+
+		Axe::Servant_SessionManagerPtr sessionManager = new MySessionManager( _adapter );
 
 		_adapter->addUnique( "PermissionsVerifier", permissionsVerifier );
 		_adapter->addUnique( "SessionManager", sessionManager );

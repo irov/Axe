@@ -28,7 +28,7 @@ void main()
 
 	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12000);
 
-	rc->connect( ep, "login", "password", new MyClient );
+	rc->connect( ep, "test", "test", new MyClient );
 
 	rc->run();
 }

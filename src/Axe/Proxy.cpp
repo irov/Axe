@@ -38,6 +38,15 @@ namespace Axe
 		return m_connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Proxy::write( ArchiveWrite & _ar ) const
+	{
+		_ar.write( m_servantId );
+
+		const ConnectionPtr & connection = this->getConnection();
+		std::size_t endpointId = connection->getEndpointId();
+		_ar.writeSize( endpointId );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConnectionPtr & makeProxyInfo( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache, std::size_t & _servantId )
 	{
 		_ar.read( _servantId );
@@ -49,15 +58,5 @@ namespace Axe
 			_connectionCache->getConnection( endpointId );
 
 		return connection;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value )
-	{
-		std::size_t servantId = _value->getServantId();
-		ar.write( servantId );
-
-		const ConnectionPtr & connection = _value->getConnection();
-		std::size_t endpointId = connection->getEndpointId();
-		ar.writeSize( endpointId );
 	}
 }

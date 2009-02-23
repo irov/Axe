@@ -15,7 +15,6 @@ namespace Axe
 	class Router
 		: public Service
 		, public ConnectionProvider
-		, public GridConnectResponse
 	{
 	public:
 		Router( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
@@ -24,7 +23,7 @@ namespace Axe
 		void initialize( const boost::asio::ip::tcp::endpoint & _grid );
 
 	public:
-		void start( const Proxy_SessionManagerPtr & _sessionManager );
+		void start( const Proxy_PermissionsVerifierPtr & _permissionsVerifier, const Proxy_SessionManagerPtr & _sessionManager );
 
 	public:
 		void dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _sn );
@@ -36,16 +35,11 @@ namespace Axe
 	protected:
 		SessionPtr makeSession() override;
 
-	public:
-		void connectSuccessful( const Proxy_GridManagerPtr & _gridManager ) override;
-		void connectFailed() override;
-
 	protected:
 		ConnectionCachePtr m_connectionCache;
 
 		Proxy_SessionManagerPtr m_sessionManager;
-		Proxy_GridManagerPtr m_gridManager;
-		GridConnectionPtr m_gridConnection;
+		Proxy_PermissionsVerifierPtr m_permissionsVerifier;
 	};
 
 	typedef AxeHandle<Router> RouterPtr;

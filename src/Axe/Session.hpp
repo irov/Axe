@@ -19,7 +19,7 @@ namespace Axe
 
 	protected:
 		void handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size );
-		void handleReadPermission( const boost::system::error_code & _ec, Archive::value_type * _blob );
+		void handleReadPermission( const boost::system::error_code & _ec );
 
 	public:
 		virtual void permissionVerify( ArchiveRead & _ar, std::size_t _size ) = 0;

@@ -16,6 +16,9 @@ namespace Axe
 	public:
 		GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const GridConnectResponsePtr & _connectResponse );
 
+	public:
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
+
 	protected:
 		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
 		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;

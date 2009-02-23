@@ -12,6 +12,11 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ConnectionCache::addConnection( std::size_t _endpointId, const ConnectionPtr & _connection )
+	{
+		m_connections.insert( std::make_pair(_endpointId, _connection) );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _endpointId )
 	{
 		TMapConnections::const_iterator it_found = m_connections.find( _endpointId );

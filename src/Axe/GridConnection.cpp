@@ -13,19 +13,28 @@
 
 namespace Axe
 {
+	const std::size_t grid_endpoint_id = 0;
 	//////////////////////////////////////////////////////////////////////////
 	GridConnection::GridConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const GridConnectResponsePtr & _connectResponse )
-		: AdapterConnection( _service, _connectionCache, 0 )
+		: AdapterConnection( _service, _connectionCache, grid_endpoint_id )
 		, m_connectResponse(_connectResponse)
 	{
+		m_connectionCache->addConnection( grid_endpoint_id, this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		ArchiveWrite & ar = Invocation::connect( _endpoint );
+		
+		//ar.write( 0 );
+
+		Invocation::processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_GridManagerPtr gridManager = 
 			makeProxy<Proxy_GridManagerPtr>( _ar, m_connectionCache );
-
-		_ar.read( gridManager );
 
 		m_connectResponse->connectSuccessful( gridManager );
 	}

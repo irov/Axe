@@ -26,6 +26,9 @@ namespace Axe
 		std::size_t getServantId() const;
 		const ConnectionPtr & getConnection() const;
 
+	public:
+		void write( ArchiveWrite & _ar ) const;
+
 	protected:
 		std::size_t m_servantId;
 		ConnectionPtr m_connection;
@@ -58,6 +61,4 @@ namespace Axe
 
 		return new El( servantId, connection );
 	}
-
-	void operator << ( ArchiveWrite & ar, const ProxyPtr & _value );	
 }
