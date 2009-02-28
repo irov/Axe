@@ -288,6 +288,20 @@ namespace Axe
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Bellhop_GridManager_getAdapterEndpoint::Bellhop_GridManager_getAdapterEndpoint( std::size_t _requestId, const Axe::SessionPtr & _session )
+		: Axe::Bellhop(_requestId, _session)
+	{
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_getAdapterEndpoint::response( const std::string & _arg0 )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginResponse();
+		ar.writeSize( m_requestId );
+		ar << _arg0;
+		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_addUnique::Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -319,6 +333,7 @@ namespace Axe
 	{
 		ESMD_GridManager = 0
 		,	ESMD_GridManager_addAdapter
+		,	ESMD_GridManager_getAdapterEndpoint
 		,	ESMD_GridManager_addUnique
 		,	ESMD_GridManager_getUnique
 	};
@@ -334,7 +349,15 @@ namespace Axe
 				Bellhop_GridManager_addAdapterPtr bellhop = new Bellhop_GridManager_addAdapter( _requestId, _session );
 	
 				std::string arg0; ar >> arg0;
-				this->addAdapter( bellhop, arg0 );
+				std::string arg1; ar >> arg1;
+				this->addAdapter( bellhop, arg0, arg1 );
+			}break;
+		case ESMD_GridManager_getAdapterEndpoint:
+			{
+				Bellhop_GridManager_getAdapterEndpointPtr bellhop = new Bellhop_GridManager_getAdapterEndpoint( _requestId, _session );
+	
+				std::size_t arg0; ar >> arg0;
+				this->getAdapterEndpoint( bellhop, arg0 );
 			}break;
 		case ESMD_GridManager_addUnique:
 			{
@@ -371,6 +394,12 @@ namespace Axe
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	{
+		std::string arg0; _ar >> arg0;
+		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
 	{
 		this->response();
@@ -389,10 +418,20 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response )
+	void Proxy_GridManager::addAdapter( const std::string & _name, const std::string & _endpoint, const Response_GridManager_addAdapterPtr & _response )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addAdapter, _response );
 		ar << _name;
+		ar << _endpoint;
+	
+		this->processMessage();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void Proxy_GridManager::getAdapterEndpoint( std::size_t _hostId, const Response_GridManager_getAdapterEndpointPtr & _response )
+	{
+		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getAdapterEndpoint, _response );
+		ar << _hostId;
 	
 		this->processMessage();
 	}

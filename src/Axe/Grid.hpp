@@ -22,7 +22,7 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		Servant_GridManagerPtr m_gridManager;

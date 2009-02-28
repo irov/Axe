@@ -5,13 +5,13 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Connection::Connection( std::size_t _endpointId )
-		: m_endpointId(_endpointId)
+	Connection::Connection( std::size_t _hostId )
+		: m_hostId(_hostId)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Connection::getEndpointId() const
+	std::size_t Connection::getHostId() const
 	{
-		return m_endpointId;
+		return m_hostId;
 	}
 }

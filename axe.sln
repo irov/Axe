@@ -38,9 +38,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "router", "src\router\router
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
-		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -87,5 +84,8 @@ Global
 		{41916002-DFC8-4AF4-BA10-782A173B9653} = {34AE27EB-E6A6-4331-8B23-36B645D0B074}
 		{2EEF5AB1-87A8-4852-A2E4-D4B31A3FBF4E} = {34AE27EB-E6A6-4331-8B23-36B645D0B074}
 		{82D1BDA2-8C54-401A-AF95-60A4FA99FDC9} = {34AE27EB-E6A6-4331-8B23-36B645D0B074}
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 EndGlobal

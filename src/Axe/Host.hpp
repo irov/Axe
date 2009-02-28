@@ -22,9 +22,9 @@ namespace Axe
 		ProxyPtr addServant( const ServantPtr & _servant );
 
 	public:
-		void setEndpointId( std::size_t _endpointId );
+		void setHostId( std::size_t _hostId );
 
-		void refreshServantEndpoint( std::size_t _endpointId );
+		void refreshServantEndpoint( std::size_t _hostId );
 
 	public:
 		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
@@ -33,7 +33,7 @@ namespace Axe
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
 		TMapServants m_servants;
 
-		std::size_t m_endpointId;
+		std::size_t m_hostId;
 
 		ConnectionCachePtr m_connectionCache;
 	};

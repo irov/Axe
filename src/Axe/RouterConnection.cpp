@@ -14,11 +14,13 @@
 
 namespace Axe
 {
+	const std::size_t router_endpoint_id = 0;
 	//////////////////////////////////////////////////////////////////////////
 	RouterConnection::RouterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse )
-		: AdapterConnection( _service, _connectionCache, 0 )
+		: AdapterConnection( _service, _connectionCache, router_endpoint_id )
 		, m_connectResponse( _connectResponse )
-	{		
+	{
+		m_connectionCache->addConnection( router_endpoint_id, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password )
@@ -31,9 +33,9 @@ namespace Axe
 		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr RouterConnection::createProxyConnection( std::size_t _endpointId )
+	ConnectionPtr RouterConnection::createProxyConnection( std::size_t _hostId )
 	{
-		RouterProxyConnectionPtr cn = new RouterProxyConnection( this, _endpointId );
+		RouterProxyConnectionPtr cn = new RouterProxyConnection( this, _hostId );
 
 		return cn;
 	}

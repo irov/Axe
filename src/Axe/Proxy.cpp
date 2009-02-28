@@ -43,7 +43,7 @@ namespace Axe
 		_ar.write( m_servantId );
 
 		const ConnectionPtr & connection = this->getConnection();
-		std::size_t endpointId = connection->getEndpointId();
+		std::size_t endpointId = connection->getHostId();
 		_ar.writeSize( endpointId );
 	}
 	//////////////////////////////////////////////////////////////////////////

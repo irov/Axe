@@ -19,9 +19,9 @@ namespace Axe
 		m_router->createSession( _endpoint, _login, _password );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Client::createConnection( std::size_t _endpointId )
+	ConnectionPtr Client::createConnection( std::size_t _hostId )
 	{
-		ConnectionPtr cn = m_router->createProxyConnection( _endpointId );
+		ConnectionPtr cn = m_router->createProxyConnection( _hostId );
 
 		return cn;
 	}

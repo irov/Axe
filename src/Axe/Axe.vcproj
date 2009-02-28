@@ -45,7 +45,8 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -61,6 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="libboost_system-vc80-mt-gd-1_38.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -267,6 +269,14 @@
 				RelativePath=".\ConnectionCache.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\EndpointCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EndpointCache.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Host"
@@ -433,6 +443,18 @@
 			</File>
 			<File
 				RelativePath=".\Service.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PCH"
+			>
+			<File
+				RelativePath=".\pch.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pch.hpp"
 				>
 			</File>
 		</Filter>

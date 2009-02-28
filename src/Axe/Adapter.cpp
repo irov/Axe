@@ -28,8 +28,21 @@ namespace Axe
 			m_gridManager = _gridManager;
 
 			const std::string & name = m_adapter->getName();
+			const boost::asio::ip::tcp::endpoint & tcp_endpoint = m_adapter->getEndpoint();
 
-			m_gridManager->addAdapter( name, this );
+			boost::asio::ip::address ip_addr = tcp_endpoint.address();
+			
+			std::string addr = ip_addr.to_string(); 
+			unsigned short port = tcp_endpoint.port();
+
+			std::stringstream ss;
+			ss << addr;
+			ss << " ";
+			ss << port;
+
+			std::string endpoint = ss.str();
+
+			m_gridManager->addAdapter( name, endpoint, this );
 		}
 
 		void connectFailed() override
@@ -69,11 +82,11 @@ namespace Axe
 		gridConnection->connect( _grid );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::start( const Proxy_GridManagerPtr & _gridManager, std::size_t _endpointId )
+	void Adapter::start( const Proxy_GridManagerPtr & _gridManager, std::size_t _hostId )
 	{
 		m_gridManager = _gridManager;
 
-		this->refreshServantEndpoint( _endpointId );
+		this->refreshServantEndpoint( _hostId );
 		
 		Service::accept();
 	}
@@ -103,9 +116,9 @@ namespace Axe
 		return session;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Adapter::createConnection( std::size_t _endpointId )
+	ConnectionPtr Adapter::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _endpointId );
+		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _hostId );
 
 		return connection;
 	}

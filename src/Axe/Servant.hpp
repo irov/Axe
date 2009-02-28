@@ -22,8 +22,8 @@ namespace Axe
 		void setServantId( std::size_t _servantId );
 		std::size_t getServantId() const;
 		
-		void setEndpointId( std::size_t _servantId );
-		std::size_t getEndpointId() const;
+		void setHostId( std::size_t _servantId );
+		std::size_t getHostId() const;
 
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
@@ -36,7 +36,7 @@ namespace Axe
 
 	protected:
 		std::size_t m_servantId;
-		std::size_t m_endpointId;
+		std::size_t m_hostId;
 	};
 
 	typedef AxeHandle<Servant> ServantPtr;

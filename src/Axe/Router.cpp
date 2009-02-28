@@ -115,9 +115,9 @@ namespace Axe
 		this->accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _session )
+	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _hostId, const RouterSessionPtr & _session )
 	{
-		const ConnectionPtr & cn = m_connectionCache->getConnection( _endpointId );
+		const ConnectionPtr & cn = m_connectionCache->getConnection( _hostId );
 
 		ArchiveWrite & write = cn->beginMessage( _servantId, _methodId, new RouterResponse( _requestId, _session ) );
 
@@ -185,9 +185,9 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Router::createConnection( std::size_t _endpointId )
+	ConnectionPtr Router::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr cn = new AdapterConnection( m_service, m_connectionCache, _endpointId );
+		AdapterConnectionPtr cn = new AdapterConnection( m_service, m_connectionCache, _hostId );
 
 		return cn;
 	}

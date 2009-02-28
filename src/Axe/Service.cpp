@@ -23,6 +23,11 @@ namespace Axe
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const boost::asio::ip::tcp::endpoint & Service::getEndpoint() const
+	{
+		return m_acceptor.local_endpoint();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Service::accept()
 	{
 		SessionPtr session = this->makeSession();

@@ -12,20 +12,20 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConnectionCache::addConnection( std::size_t _endpointId, const ConnectionPtr & _connection )
+	void ConnectionCache::addConnection( std::size_t _hostId, const ConnectionPtr & _connection )
 	{
-		m_connections.insert( std::make_pair(_endpointId, _connection) );
+		m_connections.insert( std::make_pair(_hostId, _connection) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _endpointId )
+	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _hostId )
 	{
-		TMapConnections::const_iterator it_found = m_connections.find( _endpointId );
+		TMapConnections::const_iterator it_found = m_connections.find( _hostId );
 
 		if( it_found == m_connections.end() )
 		{
-			ConnectionPtr connection = m_provider->createConnection( _endpointId );
+			ConnectionPtr connection = m_provider->createConnection( _hostId );
 
-			it_found = m_connections.insert( std::make_pair(_endpointId, connection) ).first;
+			it_found = m_connections.insert( std::make_pair(_hostId, connection) ).first;
 		}
 
 		return it_found->second;

@@ -231,6 +231,17 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
+	class Bellhop_GridManager_getAdapterEndpoint
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getAdapterEndpoint( std::size_t _requestId, const Axe::SessionPtr & _session );
+	
+	public:
+		void response( const std::string & );
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
 	class Bellhop_GridManager_addUnique
 		: public Axe::Bellhop
 	{
@@ -258,7 +269,8 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name ) = 0;
+		virtual void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) = 0;
+		virtual void getAdapterEndpoint( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) = 0;
 		virtual void addUnique( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) = 0;
 		virtual void getUnique( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
 	
@@ -287,6 +299,18 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
+	
+	class Response_GridManager_getAdapterEndpoint
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( const std::string & ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
+	};
+	
+	typedef AxeHandle<Response_GridManager_getAdapterEndpoint> Response_GridManager_getAdapterEndpointPtr;
 	
 	class Response_GridManager_addUnique
 		: public Axe::Response
@@ -320,7 +344,8 @@ namespace Axe
 		Proxy_GridManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void addAdapter( const std::string & _name, const Response_GridManager_addAdapterPtr & _response );
+		void addAdapter( const std::string & _name, const std::string & _endpoint, const Response_GridManager_addAdapterPtr & _response );
+		void getAdapterEndpoint( std::size_t _hostId, const Response_GridManager_getAdapterEndpointPtr & _response );
 		void addUnique( const std::string & _name, const Proxy_UniquePtr & _unique, const Response_GridManager_addUniquePtr & _response );
 		void getUnique( const std::string & _name, const Response_GridManager_getUniquePtr & _response );
 	};

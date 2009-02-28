@@ -17,6 +17,7 @@ namespace Axe
 
 	public:
 		const std::string & getName() const;
+		const boost::asio::ip::tcp::endpoint & getEndpoint() const;
 
 	protected:
 		virtual SessionPtr makeSession() = 0;

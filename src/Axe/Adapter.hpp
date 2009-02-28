@@ -34,7 +34,7 @@ namespace Axe
 		void initialize( const boost::asio::ip::tcp::endpoint & _grid, const AdapterInitializeResponsePtr & _response );
 
 	public:
-		void start( const Proxy_GridManagerPtr & _gridManager, std::size_t _endpointId );
+		void start( const Proxy_GridManagerPtr & _gridManager, std::size_t _hostId );
 
 	public:
 		void addUnique( const std::string & _name, const Servant_UniquePtr & _unique );
@@ -43,7 +43,7 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;

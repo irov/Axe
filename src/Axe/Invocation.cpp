@@ -8,9 +8,9 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _endpointId )
+	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId )
 		: Dispatcher(_service)
-		, Connection(_endpointId)
+		, Connection(_hostId)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -25,8 +25,15 @@ namespace Axe
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	//void Invocation::endpointResive( const boost::asio::ip::tcp::endpoint & _endpoint )
+	//////////////////////////////////////////////////////////////////////////
 	void Invocation::processMessage()
 	{
+		//if( m_socket.is_open() == false )
+		//{
+		//	m_endpointProvider->uncheckedEndpoint( m_hostId, this );
+		//}
+
 		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////

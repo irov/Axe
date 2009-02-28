@@ -10,7 +10,7 @@ namespace Axe
 		, public Connection
 	{
 	public:
-		Invocation( boost::asio::io_service & _service, std::size_t _endpointId );
+		Invocation( boost::asio::io_service & _service, std::size_t _hostId );
 
 	public:
 		void processMessage() override;

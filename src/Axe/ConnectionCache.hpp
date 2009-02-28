@@ -10,7 +10,7 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		virtual ConnectionPtr createConnection( std::size_t _endpointId ) = 0;
+		virtual ConnectionPtr createConnection( std::size_t _hostId ) = 0;
 	};
 
 	typedef AxeHandle<ConnectionProvider> ConnectionProviderPtr;
@@ -23,8 +23,8 @@ namespace Axe
 		ConnectionCache( const ConnectionProviderPtr & _provider );
 
 	public:
-		void addConnection( std::size_t _endpointId, const ConnectionPtr & _connection );
-		const ConnectionPtr & getConnection( std::size_t _endpointId );
+		void addConnection( std::size_t _hostId, const ConnectionPtr & _connection );
+		const ConnectionPtr & getConnection( std::size_t _hostId );
 
 	protected:
 		typedef std::map<std::size_t, ConnectionPtr> TMapConnections;

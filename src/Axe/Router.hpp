@@ -26,11 +26,11 @@ namespace Axe
 		void start( const Proxy_PermissionsVerifierPtr & _permissionsVerifier, const Proxy_SessionManagerPtr & _sessionManager );
 
 	public:
-		void dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _endpointId, const RouterSessionPtr & _sn );
+		void dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _hostId, const RouterSessionPtr & _sn );
 		void permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session );
 
 	public:
-		ConnectionPtr createConnection( std::size_t _endpointId ) override;
+		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		SessionPtr makeSession() override;

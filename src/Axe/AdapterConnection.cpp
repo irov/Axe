@@ -12,8 +12,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _endpointId )
-		: Invocation( _service, _endpointId )
+	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _hostId )
+		: Invocation( _service, _hostId )
 		, m_messageEnum(0)
 		, m_connectionCache(_connectionCache)
 	{

@@ -10,7 +10,7 @@ namespace Axe
 		: public Connection
 	{
 	public:
-		RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _endpointId );
+		RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _hostId );
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;

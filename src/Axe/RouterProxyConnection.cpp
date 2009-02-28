@@ -7,20 +7,20 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	RouterProxyConnection::RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _endpointId )
-		: Connection( _endpointId )
+	RouterProxyConnection::RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _hostId )
+		: Connection( _hostId )
 		, m_base(_base)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & RouterProxyConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & stream 
+		ArchiveWrite & ar 
 			= m_base->beginMessage( _servantId, _methodId, _response );
 
-		stream.writeSize( m_endpointId );
+		ar.writeSize( m_hostId );
 	
-		return stream;
+		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterProxyConnection::processMessage()

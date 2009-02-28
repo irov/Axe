@@ -25,7 +25,9 @@ namespace Axe
 
 	class GridManager
 	{
-		size_t addAdapter( string _name );
+		size_t addAdapter( string _name, string _endpoint );
+		string getAdapterEndpoint( size_t _hostId );
+
 
 		void addUnique( string _name, Unique _unique );
 		Unique getUnique( string _name );

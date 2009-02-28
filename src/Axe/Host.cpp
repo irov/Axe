@@ -11,7 +11,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Host::Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: Service(_endpoint, _name)
-		, m_endpointId(0)
+		, m_hostId(0)
 	{
 		m_connectionCache = new ConnectionCache( this );
 	}
@@ -20,25 +20,25 @@ namespace Axe
 	{
 		std::size_t servantId = _servant->getServantId();
 
-		_servant->setEndpointId( m_endpointId );
+		_servant->setHostId( m_hostId );
 
 		m_servants.insert( std::make_pair( servantId, _servant ) );
 
-		const ConnectionPtr & cn = m_connectionCache->getConnection( m_endpointId );
+		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
 
 		ProxyPtr proxy = new Proxy( servantId, cn );
 
 		return proxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::setEndpointId( std::size_t _endpointId )
+	void Host::setHostId( std::size_t _hostId )
 	{
-		m_endpointId = _endpointId;
+		m_hostId = _hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::refreshServantEndpoint( std::size_t _endpointId )
+	void Host::refreshServantEndpoint( std::size_t _hostId )
 	{
-		setEndpointId( _endpointId );
+		setHostId( _hostId );
 
 		for( TMapServants::iterator
 			it = m_servants.begin(),
@@ -46,7 +46,7 @@ namespace Axe
 		it != it_end;
 		++it )
 		{
-			it->second->setEndpointId( m_endpointId );
+			it->second->setHostId( m_hostId );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

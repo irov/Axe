@@ -61,9 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_system-vc80-mt-gd-1_37.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;D:\Projects\boost_1_37_0\bin.v2\libs\system\build\msvc-8.0\debug\link-static\threading-multi&quot;"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

@@ -5,14 +5,33 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void GridManager::addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name )
+	GridManager::GridManager()
+	{
+		m_enumeratorID = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridManager::addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint )
 	{
 		TMapAdapterIds::const_iterator it_found = m_adapterIds.find( _name );
 
 		if( it_found == m_adapterIds.end() )
 		{
 			it_found = 
-				m_adapterIds.insert( std::make_pair( _name, ++m_enumeratorID ) ).first;
+				m_adapterIds.insert( std::make_pair(_name, ++m_enumeratorID) ).first;
+
+			m_endpoints.insert( std::make_pair(m_enumeratorID, _endpoint) );
+		}
+
+		_cb->response( it_found->second );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridManager::getAdapterEndpoint( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId )
+	{
+		TMapEndpoints::const_iterator it_found = m_endpoints.find( _hostId );
+
+		if( it_found == m_endpoints.end() )
+		{
+			//Error;
 		}
 
 		_cb->response( it_found->second );
