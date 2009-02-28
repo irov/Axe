@@ -18,56 +18,6 @@ namespace Axe
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_GridManager_getUniqueSessionManager
-		: public Response_GridManager_getUnique
-	{
-	public:
-		RouterResponse_GridManager_getUniqueSessionManager( const RouterPtr & _router, const Proxy_PermissionsVerifierPtr & _permissionsVerifier )
-			: m_router(_router)
-			, m_permissionsVerifier(_permissionsVerifier)
-		{
-		}
-
-	protected:
-		void response( const Proxy_UniquePtr & _unique ) override
-		{
-			Proxy_SessionManagerPtr sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
-
-			m_router->start( m_permissionsVerifier, sessionManager );
-		}
-
-	protected:
-		RouterPtr m_router;
-		Proxy_PermissionsVerifierPtr m_permissionsVerifier;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_GridManager_getUniquePermissionsVerifier
-		: public Response_GridManager_getUnique
-	{
-	public:
-		RouterResponse_GridManager_getUniquePermissionsVerifier( const RouterPtr & _router, const Proxy_GridManagerPtr & _gridManager )
-			: m_router(_router)
-			, m_gridManager(_gridManager)
-		{
-
-		}
-
-	protected:
-		void response( const Proxy_UniquePtr & _unique ) override
-		{
-			m_permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
-
-			m_gridManager->getUnique( "SessionManager"
-				, new RouterResponse_GridManager_getUniqueSessionManager( m_router, m_permissionsVerifier ) 
-				);
-		}
-
-	protected:
-		RouterPtr m_router;
-		Proxy_GridManagerPtr m_gridManager;
-		Proxy_PermissionsVerifierPtr m_permissionsVerifier;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	class RouterGridConnectResponse
 		: public GridConnectResponse
 	{
@@ -80,11 +30,7 @@ namespace Axe
 	protected:
 		void connectSuccessful( const Proxy_GridManagerPtr & _gridManager )
 		{
-			m_gridManager = _gridManager;
-
-			m_gridManager->getUnique( "PermissionsVerifier"
-				, new RouterResponse_GridManager_getUniquePermissionsVerifier( m_router, m_gridManager ) 
-				);
+			m_router->start( _gridManager );
 		}
 
 		void connectFailed()
@@ -94,25 +40,85 @@ namespace Axe
 
 	protected:
 		RouterPtr m_router;
-
-		Proxy_GridManagerPtr m_gridManager;
 	};	
 	//////////////////////////////////////////////////////////////////////////
 	void Router::initialize( const boost::asio::ip::tcp::endpoint & _grid )
 	{
-		GridConnectionPtr gridConnection = new GridConnection( m_service, m_connectionCache
+		GridConnectionPtr gridConnection = new GridConnection( m_service, m_endpointCache, m_connectionCache
 			, new RouterGridConnectResponse( this ) 
 			);
 
 		gridConnection->connect( _grid );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::start( const Proxy_PermissionsVerifierPtr & _permissionsVerifier, const Proxy_SessionManagerPtr & _sessionManager )
+	void Router::onSessionManager( const Proxy_SessionManagerPtr & _sessionManager )
 	{
 		m_sessionManager = _sessionManager;
-		m_permissionsVerifier = _permissionsVerifier;
 
 		this->accept();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	class RouterResponse_GridManager_getUniqueSessionManager
+		: public Response_GridManager_getUnique
+	{
+	public:
+		RouterResponse_GridManager_getUniqueSessionManager( const RouterPtr & _router )
+			: m_router(_router)
+		{
+		}
+
+	protected:
+		void response( const Proxy_UniquePtr & _unique ) override
+		{
+			Proxy_SessionManagerPtr sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
+
+			m_router->onSessionManager( sessionManager );
+		}
+
+	protected:
+		RouterPtr m_router;
+		
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Router::onPermissionsVerifier( const Proxy_PermissionsVerifierPtr & _permissionsVerifier )
+	{
+		m_permissionsVerifier = _permissionsVerifier;
+
+		m_gridManager->getUnique( "SessionManager"
+			, new RouterResponse_GridManager_getUniqueSessionManager( this ) 
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	class RouterResponse_GridManager_getUniquePermissionsVerifier
+		: public Response_GridManager_getUnique
+	{
+	public:
+		RouterResponse_GridManager_getUniquePermissionsVerifier( const RouterPtr & _router )
+			: m_router(_router)
+		{
+		}
+
+	protected:
+		void response( const Proxy_UniquePtr & _unique ) override
+		{
+			Proxy_PermissionsVerifierPtr permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
+
+			m_router->onPermissionsVerifier( permissionsVerifier );
+		}
+
+	protected:
+		RouterPtr m_router;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Router::start( const Proxy_GridManagerPtr & _gridManager )
+	{
+		m_gridManager = _gridManager;
+
+		m_endpointCache = new EndpointCache( m_gridManager );
+
+		m_gridManager->getUnique( "PermissionsVerifier"
+			, new RouterResponse_GridManager_getUniquePermissionsVerifier( this ) 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _hostId, const RouterSessionPtr & _session )
@@ -187,7 +193,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Router::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr cn = new AdapterConnection( m_service, m_connectionCache, _hostId );
+		AdapterConnectionPtr cn = new AdapterConnection( m_service, _hostId, m_endpointCache, m_connectionCache );
 
 		return cn;
 	}

@@ -8,16 +8,17 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId )
+	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache )
 		: Dispatcher(_service)
 		, Connection(_hostId)
+		, m_endpointCache(_endpointCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		m_socket.async_connect( _endpoint
-			, boost::bind( &Invocation::handleConnect, intrusivePtr(this), boost::asio::placeholders::error ) 
+			, boost::bind( &Invocation::handleConnectRead, intrusivePtr(this), boost::asio::placeholders::error ) 
 			);
 
 		m_streamWrite.begin();
@@ -25,19 +26,19 @@ namespace Axe
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//void Invocation::endpointResive( const boost::asio::ip::tcp::endpoint & _endpoint )
+	
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::processMessage()
 	{
-		//if( m_socket.is_open() == false )
-		//{
-		//	m_endpointProvider->uncheckedEndpoint( m_hostId, this );
-		//}
+		if( m_socket.is_open() == false )
+		{
+			m_endpointCache->getEndpoint( m_hostId, this );
+		}
 
 		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleConnect( const boost::system::error_code & _ec )
+	void Invocation::handleConnectRead( const boost::system::error_code & _ec )
 	{
 		if( _ec )
 		{
@@ -101,4 +102,21 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Invocation::handleConnectProcess( const boost::system::error_code & _ec )
+	{
+		if( _ec )
+		{
+			printf("Invocation::handleConnect ec: %s\n", _ec.message().c_str() );
+			return;
+		}
+
+		this->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Invocation::onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		m_socket.async_connect( _endpoint
+			, boost::bind( &Invocation::handleConnectProcess, intrusivePtr(this), boost::asio::placeholders::error ) 
+			);
+	}
 }

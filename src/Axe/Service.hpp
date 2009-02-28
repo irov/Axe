@@ -29,6 +29,8 @@ namespace Axe
 		void acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _sn );
 
 	protected:
+		boost::asio::ip::tcp::endpoint m_endpoint;
+
 		boost::asio::io_service m_service;
 		boost::asio::ip::tcp::acceptor m_acceptor;
 

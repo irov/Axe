@@ -5,6 +5,8 @@
 #	include "GridConnection.hpp"
 #	include "GridConnectResponse.hpp"
 
+#	include "EndpointCache.hpp"
+
 #	include "AxeProtocols/Player.hpp"
 
 namespace Axe
@@ -47,6 +49,7 @@ namespace Axe
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;
+		EndpointCachePtr m_endpointCache;
 	};
 
 	typedef AxeHandle<Adapter> AdapterPtr;

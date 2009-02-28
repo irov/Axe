@@ -16,8 +16,8 @@ namespace Axe
 {
 	const std::size_t router_endpoint_id = 0;
 	//////////////////////////////////////////////////////////////////////////
-	RouterConnection::RouterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse )
-		: AdapterConnection( _service, _connectionCache, router_endpoint_id )
+	RouterConnection::RouterConnection( boost::asio::io_service & _service, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse )
+		: AdapterConnection( _service, router_endpoint_id, _endpointCache, _connectionCache )
 		, m_connectResponse( _connectResponse )
 	{
 		m_connectionCache->addConnection( router_endpoint_id, this );

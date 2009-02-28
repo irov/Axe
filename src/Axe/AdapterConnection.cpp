@@ -12,10 +12,10 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _hostId )
-		: Invocation( _service, _hostId )
-		, m_messageEnum(0)
+	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
+		: Invocation(_service, _hostId, _endpointCache)
 		, m_connectionCache(_connectionCache)
+		, m_messageEnum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

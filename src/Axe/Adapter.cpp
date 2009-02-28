@@ -18,7 +18,7 @@ namespace Axe
 	public:
 		AdapterGridConnectResponse( const AdapterPtr & _adapter, const AdapterInitializeResponsePtr & _response )
 			: m_adapter(_adapter)
-			, m_response( _response )
+			, m_response(_response)
 		{
 		}
 
@@ -77,7 +77,7 @@ namespace Axe
 		AdapterGridConnectResponsePtr gridResponse = new AdapterGridConnectResponse( this, _response );
 
 		GridConnectionPtr gridConnection
-			= new GridConnection( m_service, m_connectionCache, gridResponse );
+			= new GridConnection( m_service, m_endpointCache, m_connectionCache, gridResponse );
 
 		gridConnection->connect( _grid );
 	}
@@ -85,6 +85,8 @@ namespace Axe
 	void Adapter::start( const Proxy_GridManagerPtr & _gridManager, std::size_t _hostId )
 	{
 		m_gridManager = _gridManager;
+
+		m_endpointCache = new EndpointCache( m_gridManager );
 
 		this->refreshServantEndpoint( _hostId );
 		
@@ -118,7 +120,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Adapter::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _hostId );
+		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), _hostId, m_endpointCache, m_connectionCache  );
 
 		return connection;
 	}

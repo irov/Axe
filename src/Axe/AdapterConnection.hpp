@@ -15,7 +15,7 @@ namespace Axe
 		: public Invocation
 	{
 	public:
-		AdapterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, std::size_t _hostId );
+		AdapterConnection( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;		
@@ -31,12 +31,12 @@ namespace Axe
 		void writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 
 	protected:
-		typedef std::map<std::size_t, ResponsePtr> TMapResponse;
-		TMapResponse m_dispatch;
+		ConnectionCachePtr m_connectionCache;
 
 		std::size_t m_messageEnum;
 
-		ConnectionCachePtr m_connectionCache;
+		typedef std::map<std::size_t, ResponsePtr> TMapResponse;
+		TMapResponse m_dispatch;
 	};
 
 	typedef AxeHandle<AdapterConnection> AdapterConnectionPtr;

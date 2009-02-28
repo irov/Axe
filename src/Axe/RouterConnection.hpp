@@ -12,7 +12,7 @@ namespace Axe
 		: public AdapterConnection
 	{
 	public:
-		RouterConnection( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse );
+		RouterConnection( boost::asio::io_service & _service, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache, const ClientConnectResponsePtr & _connectResponse );
 
 	public:
 		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password );

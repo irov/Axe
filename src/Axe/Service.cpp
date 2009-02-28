@@ -8,7 +8,8 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Service::Service( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: m_acceptor(m_service, _endpoint)
+		: m_endpoint(_endpoint)
+		, m_acceptor(m_service, _endpoint)
 		, m_name(_name)
 	{
 	}
@@ -25,7 +26,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	const boost::asio::ip::tcp::endpoint & Service::getEndpoint() const
 	{
-		return m_acceptor.local_endpoint();
+		return m_endpoint;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Service::accept()

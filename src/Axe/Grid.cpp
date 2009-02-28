@@ -39,7 +39,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Grid::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), m_connectionCache, _hostId );
+		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), _hostId, 0, m_connectionCache );
 
 		return connection;
 	}
