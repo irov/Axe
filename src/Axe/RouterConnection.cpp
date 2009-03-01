@@ -25,12 +25,10 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password )
 	{
-		ArchiveWrite & ar = this->connect( _endpoint );
+		ArchiveWrite & permission = this->connect( _endpoint );
 
-		ar.writeString( _login );
-		ar.writeString( _password );
-
-		this->processMessage();
+		permission.writeString( _login );
+		permission.writeString( _password );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr RouterConnection::createProxyConnection( std::size_t _hostId )

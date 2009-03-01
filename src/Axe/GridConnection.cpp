@@ -24,11 +24,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
-		ArchiveWrite & ar = Invocation::connect( _endpoint );
-		
-		//ar.write( 0 );
-
-		Invocation::processMessage();
+		Invocation::connect( _endpoint );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )

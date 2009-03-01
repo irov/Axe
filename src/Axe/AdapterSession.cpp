@@ -19,5 +19,6 @@ namespace Axe
 	{
 		this->beginConnect( true );
 		this->process();
+		this->run();
 	}
 }

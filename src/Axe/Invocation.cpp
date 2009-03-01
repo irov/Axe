@@ -17,16 +17,19 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveWrite & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
-		m_socket.async_connect( _endpoint
-			, boost::bind( &Invocation::handleConnectRead, intrusivePtr(this), boost::asio::placeholders::error ) 
-			);
+		m_permission.begin();
 
-		m_streamWrite.begin();
+		this->connect_( _endpoint, this );
 
-		return m_streamWrite;
+		return m_permission;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	
+	void Invocation::connect_( const boost::asio::ip::tcp::endpoint & _endpoint, const ConnectCallbackPtr & _cb )
+	{
+		m_socket.async_connect( _endpoint
+			, boost::bind( &Invocation::handleConnect, intrusivePtr(this), boost::asio::placeholders::error, _cb ) 
+			);
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::processMessage()
 	{
@@ -34,11 +37,13 @@ namespace Axe
 		{
 			m_endpointCache->getEndpoint( m_hostId, this );
 		}
-
-		this->process();
+		else
+		{
+			this->process();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleConnectRead( const boost::system::error_code & _ec )
+	void Invocation::handleConnect( const boost::system::error_code & _ec, const ConnectCallbackPtr & _cb )
 	{
 		if( _ec )
 		{
@@ -46,16 +51,20 @@ namespace Axe
 			return;
 		}
 
+		const Archive & ar = m_permission.getArchive();
+
+		this->processArchive( ar );
+
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Invocation::handleReadConnectSize, intrusivePtr(this), boost::asio::placeholders::error, size )
+			, boost::bind( &Invocation::handleReadConnectSize, intrusivePtr(this), boost::asio::placeholders::error, size, _cb )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size )
+	void Invocation::handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size, const ConnectCallbackPtr & _cb )
 	{
 		if( _ec )
 		{
@@ -70,11 +79,11 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Invocation::handleReadConnect, intrusivePtr(this), boost::asio::placeholders::error, blob )
+			, boost::bind( &Invocation::handleReadConnect, intrusivePtr(this), boost::asio::placeholders::error, blob, _cb )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleReadConnect( const boost::system::error_code & _ec, Archive::value_type * _blob )
+	void Invocation::handleReadConnect( const boost::system::error_code & _ec, Archive::value_type * _blob, const ConnectCallbackPtr & _cb )
 	{
 		if( _ec )
 		{
@@ -91,32 +100,44 @@ namespace Axe
 		m_streamIn.read( result );
 
 		if( result == true )
-		{				
-			this->connectionSuccessful( m_streamIn, size );				
+		{		
+			_cb->connectionSuccessful( m_streamIn, size );				
 			this->run();
 		}
 		else
 		{
 			this->close();
-			this->connectionFailed( m_streamIn, size );				
+			_cb->connectionFailed( m_streamIn, size );				
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleConnectProcess( const boost::system::error_code & _ec )
+	class InvocationonEndpointConnectCallback
+		: public ConnectCallback
 	{
-		if( _ec )
+	public:
+		InvocationonEndpointConnectCallback( const InvocationPtr & _invocation )
+			: m_invocation(_invocation)
 		{
-			printf("Invocation::handleConnect ec: %s\n", _ec.message().c_str() );
-			return;
 		}
 
-		this->process();
-	}
+	public:
+		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override
+		{
+			//m_invocation->run();
+			
+		}
+
+		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override
+		{
+			printf("InvocationonEndpointConnectCallback::connectionFailed\n");
+		}
+
+	protected:
+		InvocationPtr m_invocation;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
-		m_socket.async_connect( _endpoint
-			, boost::bind( &Invocation::handleConnectProcess, intrusivePtr(this), boost::asio::placeholders::error ) 
-			);
+		this->connect( _endpoint );
 	}
 }

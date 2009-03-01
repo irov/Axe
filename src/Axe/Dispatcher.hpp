@@ -22,6 +22,9 @@ namespace Axe
 		ArchiveWrite & getArchiveWrite();
 
 	protected:
+		void processArchive( const Archive & _ar );
+
+	protected:
 		void run();
 		void close();
 

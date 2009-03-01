@@ -50,15 +50,20 @@ namespace Axe
 		{
 			std::swap( m_streamWrite, m_streamSend );
 
-			const Archive & blob = m_streamSend.getArchive();
+			const Archive & ar = m_streamSend.getArchive();
 
-			std::size_t size_blob = blob.size();
-
-			boost::asio::async_write( m_socket
-				, boost::asio::buffer( blob, size_blob )
-				, boost::bind( &Dispatcher::handleWriteStream, intrusivePtr(this), boost::asio::placeholders::error )
-				);
+			this->processArchive( ar );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Dispatcher::processArchive( const Archive & _ar )
+	{
+		std::size_t size_ar = _ar.size();
+
+		boost::asio::async_write( m_socket
+			, boost::asio::buffer( _ar, size_ar )
+			, boost::bind( &Dispatcher::handleWriteStream, intrusivePtr(this), boost::asio::placeholders::error )
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::handleWriteStream( const boost::system::error_code & _ec )
