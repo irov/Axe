@@ -46,11 +46,6 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_PlayerPtr & _value )
-	{
-		_value->read( _ar );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PlayerPtr & _value )
 	{
 		_value->write( _ar );
@@ -94,11 +89,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_Unique::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_UniquePtr & _value )
-	{
-		_value->read( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_UniquePtr & _value )
@@ -155,11 +145,6 @@ namespace Axe
 				this->checkPermissions( bellhop, arg0, arg1 );
 			}break;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_PermissionsVerifierPtr & _value )
-	{
-		_value->read( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PermissionsVerifierPtr & _value )
@@ -232,11 +217,6 @@ namespace Axe
 				this->create( bellhop, arg0 );
 			}break;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_SessionManagerPtr & _value )
-	{
-		_value->read( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_SessionManagerPtr & _value )
@@ -375,11 +355,6 @@ namespace Axe
 				this->getUnique( bellhop, arg0 );
 			}break;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_GridManagerPtr & _value )
-	{
-		_value->read( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_GridManagerPtr & _value )

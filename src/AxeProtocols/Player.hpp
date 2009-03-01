@@ -41,7 +41,6 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
 	
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_PlayerPtr & _value );
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PlayerPtr & _value );
 	
 	
@@ -86,7 +85,6 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_Unique> Servant_UniquePtr;
 	
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_UniquePtr & _value );
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_UniquePtr & _value );
 	
 	
@@ -130,7 +128,6 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
 	
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_PermissionsVerifierPtr & _value );
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PermissionsVerifierPtr & _value );
 	
 	
@@ -187,7 +184,6 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
 	
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_SessionManagerPtr & _value );
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_SessionManagerPtr & _value );
 	
 	
@@ -284,7 +280,6 @@ namespace Axe
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
 	
-	void operator >> ( Axe::ArchiveRead & _ar, Servant_GridManagerPtr & _value );
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_GridManagerPtr & _value );
 	
 	

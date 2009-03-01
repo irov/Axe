@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Service.hpp"
-#	include "Servant.hpp"
 #	include "Proxy.hpp"
 
 #	include "ConnectionCache.hpp"
@@ -9,6 +8,7 @@
 namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
+	typedef AxeHandle<class Servant> ServantPtr;
 	typedef AxeHandle<class Connection> ConnectionPtr;
 
 	class Host
@@ -23,6 +23,7 @@ namespace Axe
 
 	public:
 		void setHostId( std::size_t _hostId );
+		std::size_t getHostId() const;
 
 		void refreshServantEndpoint( std::size_t _hostId );
 

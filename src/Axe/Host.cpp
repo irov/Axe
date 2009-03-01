@@ -20,9 +20,17 @@ namespace Axe
 	{
 		std::size_t servantId = _servant->getServantId();
 
-		_servant->setHostId( m_hostId );
+		_servant->setHost( this );
 
-		m_servants.insert( std::make_pair( servantId, _servant ) );
+		bool inserted = m_servants.insert( std::make_pair( servantId, _servant ) ).second;
+
+		if( inserted == false )
+		{
+			printf("Host::addServant host '%d' already exist servant '%d'\n"
+				, m_hostId
+				, servantId 
+				);
+		}
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
 
@@ -36,18 +44,9 @@ namespace Axe
 		m_hostId = _hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::refreshServantEndpoint( std::size_t _hostId )
+	std::size_t Host::getHostId() const
 	{
-		setHostId( _hostId );
-
-		for( TMapServants::iterator
-			it = m_servants.begin(),
-			it_end = m_servants.end();
-		it != it_end;
-		++it )
-		{
-			it->second->setHostId( m_hostId );
-		}
+		return m_hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Host::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )

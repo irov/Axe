@@ -88,7 +88,7 @@ namespace Axe
 
 		m_endpointCache = new EndpointCache( m_gridManager );
 
-		this->refreshServantEndpoint( _hostId );
+		this->setHostId( _hostId );
 		
 		Service::accept();
 	}

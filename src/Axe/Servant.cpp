@@ -14,7 +14,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Servant::Servant()
 		: m_servantId(0)
-		, m_hostId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -28,19 +27,21 @@ namespace Axe
 		return m_servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::setHostId( std::size_t _hostId )
+	void Servant::setHost( const HostPtr & _host )
 	{
-		m_hostId = _hostId;
+		m_host = _host;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Servant::getHostId() const
+	const HostPtr & Servant::getHost() const
 	{
-		return m_hostId;
+		return m_host;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		const ConnectionPtr & cn = _connectionCache->getConnection( m_hostId );
+		std::size_t hostId = m_host->getHostId();
+
+		const ConnectionPtr & cn = _connectionCache->getConnection( hostId );
 
 		return new Proxy( m_servantId, cn );
 	}
@@ -48,12 +49,8 @@ namespace Axe
 	void Servant::write( ArchiveWrite & _ar ) const
 	{
 		_ar.write( m_servantId );
-		_ar.write( m_hostId );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Servant::read( ArchiveRead & _ar )
-	{
-		_ar.read( m_servantId );
-		_ar.read( m_hostId );
+
+		std::size_t hostId = m_host->getHostId();
+		_ar.write( hostId );
 	}
 }

@@ -16,16 +16,19 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Grid::initialize()
 	{
-		m_gridManager = new GridManager();
+		GridManagerPtr servant = new GridManager();
 
-		m_gridManager->setServantId(0);
+		servant->setServantId(0);
 
-		m_servants.insert( std::make_pair( 0, m_gridManager ) );
+		ProxyPtr base = this->addServant( servant );
+
+		m_gridManager 
+			= uncheckedCast<Proxy_GridManagerPtr>(base);
 
 		this->accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Servant_GridManagerPtr & Grid::getGridManager() const
+	const Proxy_GridManagerPtr & Grid::getGridManager() const
 	{
 		return m_gridManager;
 	}

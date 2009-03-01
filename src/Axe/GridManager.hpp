@@ -24,4 +24,6 @@ namespace Axe
 		typedef std::map<std::size_t, std::string> TMapEndpoints;
 		TMapEndpoints m_endpoints;
 	};
+
+	typedef AxeHandle<GridManager> GridManagerPtr;
 }

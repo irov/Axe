@@ -16,7 +16,7 @@ namespace Axe
 		void initialize();
 
 	public:
-		const Servant_GridManagerPtr & getGridManager() const;
+		const Proxy_GridManagerPtr & getGridManager() const;
 
 	protected:
 		SessionPtr makeSession() override;
@@ -25,7 +25,7 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
-		Servant_GridManagerPtr m_gridManager;
+		Proxy_GridManagerPtr m_gridManager;
 	};
 
 	typedef AxeHandle<Grid> GridPtr;

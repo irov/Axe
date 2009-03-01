@@ -411,7 +411,6 @@ namespace Axe
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
 		write() << std::endl;
-		write() << "void operator >> ( Axe::ArchiveRead & _ar, " << servant_name << "Ptr & _value );" << std::endl;
 		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << servant_name << "Ptr & _value );" << std::endl;
 		write() << std::endl;
 	}
@@ -900,12 +899,6 @@ namespace Axe
 
 			write() << "	}" << std::endl;
 		}
-		write() << "}" << std::endl;
-
-		writeLine();
-		write() << "void operator >> ( Axe::ArchiveRead & _ar, " << servant_name << "Ptr & _value )" << std::endl;
-		write() << "{" << std::endl;
-		write() << "	_value->read( _ar );" << std::endl;
 		write() << "}" << std::endl;
 
 		writeLine();

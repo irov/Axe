@@ -15,7 +15,7 @@ namespace Axe
 	{
 		GridPtr grid = handleCast<GridPtr>( m_host );
 
-		const Servant_GridManagerPtr & gridManager = grid->getGridManager();
+		const Proxy_GridManagerPtr & gridManager = grid->getGridManager();
 
 		ArchiveWrite & ar = this->beginConnect( true );
 		ar.write( gridManager );

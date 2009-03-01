@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Shared.hpp"
+#	include "Host.hpp"
 
 namespace Axe
 {
@@ -22,8 +23,8 @@ namespace Axe
 		void setServantId( std::size_t _servantId );
 		std::size_t getServantId() const;
 		
-		void setHostId( std::size_t _servantId );
-		std::size_t getHostId() const;
+		void setHost( const HostPtr & _host );
+		const HostPtr & getHost() const;
 
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
@@ -32,11 +33,10 @@ namespace Axe
 
 	public:
 		void write( ArchiveWrite & _ar ) const;
-		void read( ArchiveRead & _ar );
 
 	protected:
 		std::size_t m_servantId;
-		std::size_t m_hostId;
+		HostPtr m_host;
 	};
 
 	typedef AxeHandle<Servant> ServantPtr;
