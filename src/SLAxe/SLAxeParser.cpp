@@ -205,4 +205,12 @@ namespace Axe
 
 		m_method.outArguments.push_back( arg );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::add_exception_to_method( char const* str, char const* end )
+	{
+		MethodException ex;
+		ex.name.assign( str, end );
+
+		m_method.exceptions.push_back( ex );
+	}
 }

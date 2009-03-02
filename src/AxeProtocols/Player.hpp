@@ -5,6 +5,7 @@
 #	include <Axe/Response.hpp>
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Response.hpp>
+#	include <Axe/Exception.hpp>
 
 namespace Axe
 {
@@ -23,6 +24,8 @@ namespace Axe
 	
 	public:
 		void response( int );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_Player_test> Bellhop_Player_testPtr;
@@ -49,6 +52,8 @@ namespace Axe
 	{
 	protected:
 		virtual void response( int ) = 0;
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
@@ -110,6 +115,8 @@ namespace Axe
 	
 	public:
 		void response( bool );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
@@ -136,6 +143,8 @@ namespace Axe
 	{
 	protected:
 		virtual void response( bool ) = 0;
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
@@ -166,6 +175,8 @@ namespace Axe
 	
 	public:
 		void response( const Proxy_PlayerPtr & );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
@@ -192,6 +203,8 @@ namespace Axe
 	{
 	protected:
 		virtual void response( const Proxy_PlayerPtr & ) = 0;
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
@@ -224,6 +237,8 @@ namespace Axe
 	
 	public:
 		void response( std::size_t );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
@@ -235,6 +250,8 @@ namespace Axe
 	
 	public:
 		void response( const std::string & );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
@@ -246,6 +263,8 @@ namespace Axe
 	
 	public:
 		void response();
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
@@ -257,6 +276,8 @@ namespace Axe
 	
 	public:
 		void response( const Proxy_UniquePtr & );
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex );
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
@@ -289,6 +310,8 @@ namespace Axe
 	protected:
 		virtual void response( std::size_t ) = 0;
 	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
@@ -300,6 +323,8 @@ namespace Axe
 	{
 	protected:
 		virtual void response( const std::string & ) = 0;
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
@@ -313,6 +338,8 @@ namespace Axe
 	protected:
 		virtual void response() = 0;
 	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;
 	};
@@ -324,6 +351,8 @@ namespace Axe
 	{
 	protected:
 		virtual void response( const Proxy_UniquePtr & ) = 0;
+	
+		void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;

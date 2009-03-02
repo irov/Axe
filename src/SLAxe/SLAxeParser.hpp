@@ -30,6 +30,8 @@ namespace Axe
 		void set_member_type( char const* str, char const* end );
 		void set_member_name( char const* str, char const* end );
 		void add_member( char const* str, char const* end );
+
+
 		void set_type_name( char const* str, char const* end );
 
 		void add_typedef( char const* str, char const* end );
@@ -42,6 +44,8 @@ namespace Axe
 		void add_in_argument( char const* str, char const* end );
 		void add_default_out_argument( char const* str, char const* end );
 		void add_out_argument( char const* str, char const* end );
+		void add_exception_to_method( char const* str, char const* end );
+
 
 	protected:
 		Declaration::TVectorNamespaces m_namespaces;

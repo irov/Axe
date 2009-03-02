@@ -37,16 +37,6 @@ namespace Axe
 
 		typedef std::vector<Member> TVectorMembers;
 
-		struct Method
-		{
-			std::string name;
-		
-			TVectorArguments inArguments;
-			TVectorArguments outArguments;
-		};
-
-		typedef std::vector<Method> TVectorMethods;
-
 		struct Parent
 		{
 			std::string name;
@@ -54,17 +44,6 @@ namespace Axe
 		};
 
 		typedef std::vector<Parent> TVectorParents;
-
-		struct Exception
-		{
-			std::string name;
-
-			TVectorParents parents;
-			TVectorMembers members;
-		};
-
-		typedef std::vector<Exception> TVectorExceptions;
-
 
 		struct Struct
 		{
@@ -76,6 +55,33 @@ namespace Axe
 
 		typedef std::vector<Struct> TVectorStructs;
 		
+		struct Exception
+		{
+			std::string name;
+
+			TVectorParents parents;
+			TVectorMembers members;
+		};
+
+		typedef std::vector<Exception> TVectorExceptions;
+
+		struct MethodException
+		{
+			std::string name;
+		};
+
+		typedef std::vector<MethodException> TVectorMethodExceptions;
+
+		struct Method
+		{
+			std::string name;
+
+			TVectorArguments inArguments;
+			TVectorArguments outArguments;
+			TVectorMethodExceptions exceptions;
+		};
+
+		typedef std::vector<Method> TVectorMethods;
 
 		struct Class
 		{

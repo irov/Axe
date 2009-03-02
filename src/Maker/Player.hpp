@@ -30,7 +30,7 @@ namespace Axe
 
 	class GridManager
 	{
-		size_t addAdapter( string _name, string _endpoint );
+		size_t addAdapter( string _name, string _endpoint ) throws AdapterAlreadyExistet;
 		string getAdapterEndpoint( size_t _hostId );
 
 

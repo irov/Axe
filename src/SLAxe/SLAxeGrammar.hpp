@@ -30,7 +30,7 @@ namespace Axe
 					;
 
 				definition_frame
-					= sclass | structs | typedefs | namespaces
+					= sexception | sclass | structs | typedefs | namespaces
 					;
 
 				structs
@@ -82,8 +82,16 @@ namespace Axe
 				method
 					= (	type[ boost::bind( &SLAxeParser::add_default_out_argument, parser, _1, _2 ) ] >> 
 					name[ boost::bind( &SLAxeParser::set_method_name, parser, _1, _2 ) ] >> 
-					'(' >> !method_argument_list >> ')'	>> ';' )[ boost::bind( &SLAxeParser::add_method, parser, _1, _2 ) ]
+					'(' >> !method_argument_list >> ')'	>> !throws_body >> ';' )[ boost::bind( &SLAxeParser::add_method, parser, _1, _2 ) ]
 				;
+
+				throws_body
+					= "throws" >> throws_name >> *(',' >> +throws_name)
+					;
+
+				throws_name
+					= name[ boost::bind( &SLAxeParser::add_exception_to_method, parser, _1, _2 ) ] 
+					;
 
 				method_argument_list
 					= method_argument >> *(',' >> +method_argument)
@@ -125,7 +133,7 @@ namespace Axe
 			boost::spirit::rule<T> root, definition_frame, 
 				structs, sclass, sexception, typedefs, namespaces,
 				parents, parent, struct_body, class_body,
-				member, method, method_argument_list, method_argument,
+				member, method, method_argument_list, method_argument, throws_body, throws_name,
 
 				type_list, complex_type, type, template_type,
 				inheritance_type, name;

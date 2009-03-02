@@ -22,6 +22,12 @@ namespace Axe
 		ar << _arg0;
 		m_session->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_Player_test::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
+	}
 	
 	enum
 	{
@@ -123,6 +129,12 @@ namespace Axe
 		ar << _arg0;
 		m_session->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_PermissionsVerifier_checkPermissions::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
+	}
 	
 	enum
 	{
@@ -196,6 +208,12 @@ namespace Axe
 		ar << _arg0;
 		m_session->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_SessionManager_create::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
+	}
 	
 	enum
 	{
@@ -268,6 +286,12 @@ namespace Axe
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_addAdapter::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_getAdapterEndpoint::Bellhop_GridManager_getAdapterEndpoint( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -280,6 +304,12 @@ namespace Axe
 		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_getAdapterEndpoint::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_addUnique::Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session )
@@ -295,6 +325,12 @@ namespace Axe
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_addUnique::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_getUnique::Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -307,6 +343,12 @@ namespace Axe
 		ar.writeSize( m_requestId );
 		ar << _arg0;
 		m_session->process();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Bellhop_GridManager_getUnique::throw_exception( const Axe::ExceptionPtr & _ex )
+	{
+		Axe::ArchiveWrite & ar = m_session->beginException();
+		
 	}
 	
 	enum

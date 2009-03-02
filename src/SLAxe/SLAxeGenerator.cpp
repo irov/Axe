@@ -473,7 +473,7 @@ namespace Axe
 
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
-			write() << "	void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
+			write() << "	virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
