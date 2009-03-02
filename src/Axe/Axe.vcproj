@@ -458,6 +458,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Exception"
+			>
+			<File
+				RelativePath=".\Exception.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

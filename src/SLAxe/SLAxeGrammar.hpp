@@ -41,6 +41,10 @@ namespace Axe
 					= "class" >> name[ boost::bind( &SLAxeParser::set_class_name, parser, _1, _2 ) ] >> !parents >> class_body[ boost::bind( &SLAxeParser::add_class, parser, _1, _2 ) ]
 				;
 
+				sexception
+					= "exception" >> name[ boost::bind( &SLAxeParser::set_exception_name, parser, _1, _2 ) ] >> !parents >> struct_body[ boost::bind( &SLAxeParser::add_exception, parser, _1, _2 ) ]
+				;
+
 				typedefs
 					= (	"typedef" >> 
 					name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>') >> 
@@ -67,11 +71,7 @@ namespace Axe
 					;
 
 				class_body
-					= '{' >> inside_class_body >> '}' >> ';'
-					;
-
-				inside_class_body
-					= *(member | method)
+					= '{' >> *(member | method) >> '}' >> ';'
 					;
 
 				member
@@ -123,9 +123,9 @@ namespace Axe
 
 		protected:
 			boost::spirit::rule<T> root, definition_frame, 
-				structs, sclass, typedefs, namespaces,
+				structs, sclass, sexception, typedefs, namespaces,
 				parents, parent, struct_body, class_body,
-				inside_class_body, member, method, method_argument_list, method_argument,
+				member, method, method_argument_list, method_argument,
 
 				type_list, complex_type, type, template_type,
 				inheritance_type, name;

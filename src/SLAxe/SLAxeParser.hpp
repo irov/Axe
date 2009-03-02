@@ -19,6 +19,8 @@ namespace Axe
 		void add_class( char const* str, char const* end );
 		void set_struct_name( char const* str, char const* end );
 		void add_struct( char const* str, char const* end );
+		void set_exception_name( char const* str, char const* end );
+		void add_exception( char const* str, char const* end );
 
 		void begin_namespace( char const* str, char const* end );
 		void end_namespace( char const* str, char const* end );
@@ -48,6 +50,7 @@ namespace Axe
 
 		Declaration::Class m_class;
 		Declaration::Struct m_struct;
+		Declaration::Exception m_exception;
 		Declaration::Method m_method;
 		Declaration::Member m_member;
 		Declaration::Typedef m_typedef;

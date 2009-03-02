@@ -40,6 +40,17 @@ namespace Axe
 	{
 		m_streamWrite.begin();
 
+		m_streamWrite.writePOD( true );
+
+		return m_streamWrite;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ArchiveWrite & Session::beginException()
+	{
+		m_streamWrite.begin();
+
+		m_streamWrite.writePOD( true );
+
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,8 @@ namespace Axe
 
 	public:
 		ProxyPtr addServant( const ServantPtr & _servant );
+		ProxyPtr addServantUnique( const ServantPtr & _servant );
+		ProxyPtr addServantByID( const ServantPtr & _servant, std::size_t _servantId );
 
 	public:
 		void setHostId( std::size_t _hostId );

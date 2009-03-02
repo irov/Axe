@@ -48,6 +48,11 @@ namespace Axe
 	{
 		TMapUniques::const_iterator it_found = m_uniques.find( _name );
 
+		if( it_found == m_uniques.end() )
+		{
+			//Error;
+		}
+
 		_cb->response( it_found->second );
 	}
 

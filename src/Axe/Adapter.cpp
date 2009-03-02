@@ -104,7 +104,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::addUnique( const std::string & _name, const Servant_UniquePtr & _unique )
 	{
-		ProxyPtr base = this->addServant( _unique );
+		ProxyPtr base = this->addServantUnique( _unique );
 
 		Proxy_UniquePtr proxyUnique = uncheckedCast<Proxy_UniquePtr>( base );
 

@@ -16,6 +16,7 @@ namespace Axe
 	public:
 		ArchiveWrite & beginConnect( bool _successful );
 		ArchiveWrite & beginResponse();
+		ArchiveWrite & beginException();
 
 	protected:
 		void handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size );

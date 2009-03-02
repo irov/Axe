@@ -19,7 +19,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_class_name( char const* str, char const* end )
 	{
-		m_class.name = std::string( str, end );
+		m_class.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_class( char const* str, char const* end )
@@ -34,7 +34,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_struct_name( char const* str, char const* end )
 	{
-		m_struct.name = std::string( str, end );
+		m_struct.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_struct( char const* str, char const* end )
@@ -45,6 +45,21 @@ namespace Axe
 		nm.order.push_back( DECL_STRUCT );
 
 		m_struct = Struct();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::set_exception_name( char const* str, char const* end )
+	{
+		m_exception.name.assign( str, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::add_exception( char const* str, char const* end )
+	{
+		Namespace & nm = m_namespaces.back();
+
+		nm.exceptions.push_back( m_exception );
+		nm.order.push_back( DECL_EXCEPTION );
+
+		m_exception = Exception();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::begin_namespace( char const* str, char const* end )
@@ -80,6 +95,10 @@ namespace Axe
 		{
 			m_struct.parents.push_back( parent );
 		}
+		else if( m_exception.name.empty() == false )
+		{
+			m_exception.parents.push_back( parent );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_inheritance_type( char const* str, char const* end )
@@ -106,6 +125,10 @@ namespace Axe
 		else if( m_struct.name.empty() == false )
 		{
 			m_struct.members.push_back( m_member );
+		}
+		else if( m_exception.name.empty() == false )
+		{
+			m_exception.members.push_back( m_member );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

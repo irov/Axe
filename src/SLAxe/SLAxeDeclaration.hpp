@@ -55,6 +55,17 @@ namespace Axe
 
 		typedef std::vector<Parent> TVectorParents;
 
+		struct Exception
+		{
+			std::string name;
+
+			TVectorParents parents;
+			TVectorMembers members;
+		};
+
+		typedef std::vector<Exception> TVectorExceptions;
+
+
 		struct Struct
 		{
 			std::string name;
@@ -81,6 +92,7 @@ namespace Axe
 		{
 			DECL_TYPEDEF,
 			DECL_STRUCT,
+			DECL_EXCEPTION,
 			DECL_CLASS,
 			DECL_NAMESPACE
 		};
@@ -93,6 +105,7 @@ namespace Axe
 
 			TVectorClasses classes;
 			TVectorStructs structs;
+			TVectorExceptions exceptions;
 			TVectorTypedefs typedefs;
 
 			TVectorOrder order;

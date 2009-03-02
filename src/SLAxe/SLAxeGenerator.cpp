@@ -100,6 +100,7 @@ namespace Axe
 		m_stream << "#	include <Axe/Response.hpp>" << std::endl;
 		m_stream << "#	include <Axe/Proxy.hpp>" << std::endl;
 		m_stream << "#	include <Axe/Response.hpp>" << std::endl;
+		m_stream << "#	include <Axe/Exception.hpp>" << std::endl;
 		
 		m_stream << std::endl;
 
@@ -306,6 +307,8 @@ namespace Axe
 			}
 
 			m_stream << ");" << std::endl;
+			write() << std::endl;
+			write() << "	void throw_exception( const Axe::ExceptionPtr & _ex );" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( bellhop_name );			
@@ -469,6 +472,8 @@ namespace Axe
 			}
 
 			m_stream << ") = 0;" << std::endl;
+			write() << std::endl;
+			write() << "	void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
@@ -791,6 +796,13 @@ namespace Axe
 
 			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
+			writeLine();
+			write() << "void " << bellhop_name << "::throw_exception( const Axe::ExceptionPtr & _ex )" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = m_session->beginException();" << std::endl;
+			write() << "	" << std::endl;
+			write() << "}" << std::endl;
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -78,7 +78,7 @@ public:
 	{
 		Axe::Servant_PlayerPtr player = new MyPlayer( _login );
 
-		Axe::ProxyPtr base = m_adapter->addServant( player );
+		Axe::ProxyPtr base = m_adapter->addServantUnique( player );
 
 		Axe::Proxy_PlayerPtr playerPrx = Axe::uncheckedCast<Axe::Proxy_PlayerPtr>( base );
 
@@ -96,12 +96,10 @@ public:
 	void onInitialize( const Axe::AdapterPtr & _adapter ) override
 	{
 		MyPermissionsVerifierPtr permissionsVerifier = new MyPermissionsVerifier();
-		permissionsVerifier->setServantId(0);
 
 		permissionsVerifier->add( "test", "test" );
 
 		Axe::Servant_SessionManagerPtr sessionManager = new MySessionManager( _adapter );
-		permissionsVerifier->setServantId(1);
 
 		_adapter->addUnique( "PermissionsVerifier", permissionsVerifier );
 		_adapter->addUnique( "SessionManager", sessionManager );
