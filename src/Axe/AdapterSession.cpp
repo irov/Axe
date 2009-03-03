@@ -10,8 +10,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	AdapterSession::AdapterSession( boost::asio::io_service & _service, const HostPtr & _host )
-		: HostSession(_service, _host)
+	AdapterSession::AdapterSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache )
+		: HostSession(_service, _host, _connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

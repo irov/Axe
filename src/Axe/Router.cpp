@@ -75,6 +75,10 @@ namespace Axe
 			m_router->onSessionManager( sessionManager );
 		}
 
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+		}
+
 	protected:
 		RouterPtr m_router;
 		
@@ -104,6 +108,11 @@ namespace Axe
 			Proxy_PermissionsVerifierPtr permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
 
 			m_router->onPermissionsVerifier( permissionsVerifier );
+		}
+
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+
 		}
 
 	protected:
@@ -152,6 +161,11 @@ namespace Axe
 			ar << _player;
 			m_session->process();
 		}
+
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+
+		}
 		
 
 	protected:
@@ -177,6 +191,11 @@ namespace Axe
 				);
 		}
 
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+
+		}
+
 	protected:
 		std::string m_login;
 
@@ -200,7 +219,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Router::makeSession()
 	{
-		RouterSessionPtr session = new RouterSession( m_service, this );
+		RouterSessionPtr session = new RouterSession( m_service, this, m_connectionCache );
 
 		return session;
 	}

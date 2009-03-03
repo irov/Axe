@@ -9,7 +9,7 @@ namespace Axe
 		: public Session
 	{
 	public:
-		RouterSession( boost::asio::io_service & _service, const RouterPtr & _rt );
+		RouterSession( boost::asio::io_service & _service, const RouterPtr & _rt, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		ArchiveWrite & beginResponse( std::size_t _responseId );

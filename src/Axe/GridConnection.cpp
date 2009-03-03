@@ -30,7 +30,7 @@ namespace Axe
 	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_GridManagerPtr gridManager = 
-			makeProxy<Proxy_GridManagerPtr>( _ar, m_connectionCache );
+			makeProxy<Proxy_GridManagerPtr>( _ar );
 
 		m_connectResponse->connectSuccessful( gridManager );
 	}

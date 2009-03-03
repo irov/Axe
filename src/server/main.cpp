@@ -47,13 +47,13 @@ public:
 	}
 
 public:
-	void test( const Axe::Bellhop_Player_testPtr & _cb, const std::string & name, int id ) override
+	void test( const Axe::Bellhop_Player_testPtr & _cb, const Axe::PlayerInfo & info ) override
 	{
 		int result = 0;
 
-		if( m_login == name )
+		if( m_login == info.name )
 		{
-			result = id;
+			result = info.id;
 		}
 		
 		_cb->response( result );

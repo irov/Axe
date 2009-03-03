@@ -5,8 +5,10 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Dispatcher::Dispatcher( boost::asio::io_service & _service )
+	Dispatcher::Dispatcher( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache )
 		: m_socket(_service)
+		, m_connectionCache(_connectionCache)
+		, m_streamIn(_connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

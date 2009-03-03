@@ -8,7 +8,7 @@ namespace Axe
 		: public Dispatcher
 	{
 	public:
-		Session( boost::asio::io_service & _service );
+		Session( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void accept();

@@ -6,12 +6,11 @@ namespace Axe
 {
 	class ArchiveRead;
 
-	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
-
 	class Response
 		: virtual public Shared
 	{
 	public:
-		virtual void responseCall( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache ) = 0;
+		virtual void responseCall( ArchiveRead & _ar ) = 0;
+		virtual void exceptionCall( ArchiveRead & _ar ) = 0;
 	};
 }

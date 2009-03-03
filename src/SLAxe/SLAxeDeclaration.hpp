@@ -105,9 +105,17 @@ namespace Axe
 
 		typedef std::vector<EOrder> TVectorOrder;
 
+
 		struct Namespace
 		{
+			Namespace( Namespace * _parent )
+				: m_parent(_parent)
+			{
+			}
+
+			Namespace * m_parent;
 			std::string name;
+
 
 			TVectorClasses classes;
 			TVectorStructs structs;
@@ -116,7 +124,7 @@ namespace Axe
 
 			TVectorOrder order;
 
-			typedef std::vector<Namespace> TVectorNamespaces;
+			typedef std::list<Namespace> TVectorNamespaces;
 			TVectorNamespaces namespaces;
 		};
 

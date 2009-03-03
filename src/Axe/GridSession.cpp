@@ -6,8 +6,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	GridSession::GridSession( boost::asio::io_service & _service, const HostPtr & _host )
-		: HostSession(_service, _host)
+	GridSession::GridSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache )
+		: HostSession(_service, _host, _connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

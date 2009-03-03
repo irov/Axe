@@ -29,11 +29,11 @@ namespace Axe
 	{
 		std::size_t servantId = 0;
 
-		if( m_servants.empty() )
-		{
-			TMapServants::iterator it_back = m_servants.lower_bound( -1 );
+		TMapServants::reverse_iterator it_back = m_servants.rbegin();
 
-			servantId = it_back->first;
+		if( it_back != m_servants.rend() )
+		{
+			servantId = it_back->first + 1;
 		}
 
 		ProxyPtr proxy = this->addServantByID( _servant, servantId );
@@ -83,6 +83,6 @@ namespace Axe
 
 		const ServantPtr & servant = it_find->second;
 
-		servant->callMethod( _methodId, _requestId, _session, m_connectionCache );
+		servant->callMethod( _methodId, _requestId, _session );
 	}
 }

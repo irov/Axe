@@ -11,7 +11,7 @@ namespace Axe
 		: public Session
 	{
 	public:
-		HostSession( boost::asio::io_service & _service, const HostPtr & _host );
+		HostSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) override;

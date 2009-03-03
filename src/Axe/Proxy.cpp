@@ -47,15 +47,17 @@ namespace Axe
 		_ar.writeSize( endpointId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & makeProxyInfo( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache, std::size_t & _servantId )
+	const ConnectionPtr & makeProxyInfo( ArchiveRead & _ar, std::size_t & _servantId )
 	{
 		_ar.read( _servantId );
 
 		std::size_t endpointId;
 		_ar.readSize( endpointId );
 
+		const ConnectionCachePtr & connectionCache = _ar.getConnectionCache();
+
 		const ConnectionPtr & connection = 
-			_connectionCache->getConnection( endpointId );
+			connectionCache->getConnection( endpointId );
 
 		return connection;
 	}

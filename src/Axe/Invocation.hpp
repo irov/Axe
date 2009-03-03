@@ -24,7 +24,7 @@ namespace Axe
 		, public ConnectCallback
 	{
 	public:
-		Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache );
+		Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void processMessage() override;
@@ -43,7 +43,6 @@ namespace Axe
 
 	protected:
 		void connect_( const boost::asio::ip::tcp::endpoint & _endpoint, const ConnectCallbackPtr & _cb );
-
 
 	protected:
 		EndpointCachePtr m_endpointCache;

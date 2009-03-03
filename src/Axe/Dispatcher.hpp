@@ -10,7 +10,7 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		Dispatcher( boost::asio::io_service & _service );
+		Dispatcher( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void process();
@@ -46,6 +46,8 @@ namespace Axe
 		ArchiveWrite m_streamSend;
 
 		ArchiveRead m_streamIn;
+
+		ConnectionCachePtr m_connectionCache;
 
 		boost::asio::ip::tcp::socket m_socket;
 	};

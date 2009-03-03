@@ -9,6 +9,19 @@ namespace Axe
 {
 	
 	//////////////////////////////////////////////////////////////////////////
+	void operator << ( Axe::ArchiveWrite & ar, const PlayerInfo & _value )
+	{
+		ar << _value.name;
+		ar << _value.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( Axe::ArchiveRead & ar, PlayerInfo & _value )
+	{
+		ar >> _value.name;
+		ar >> _value.id;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Player_test::Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -26,6 +39,7 @@ namespace Axe
 	void Bellhop_Player_test::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	
@@ -36,7 +50,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -45,9 +59,8 @@ namespace Axe
 			{
 				Bellhop_Player_testPtr bellhop = new Bellhop_Player_test( _requestId, _session );
 	
-				std::string arg0; ar >> arg0;
-				int arg1; ar >> arg1;
-				this->test( bellhop, arg0, arg1 );
+				PlayerInfo arg0; ar >> arg0;
+				this->test( bellhop, arg0 );
 			}break;
 		}
 	}
@@ -58,10 +71,21 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar )
 	{
 		int arg0; _ar >> arg0;
 		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_Player_test::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -71,11 +95,10 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_Player::test( const std::string & name, int id, const Response_Player_testPtr & _response )
+	void Proxy_Player::test( const PlayerInfo & info, const Response_Player_testPtr & _response )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_test, _response );
-		ar << name;
-		ar << id;
+		ar << info;
 	
 		this->processMessage();
 	}
@@ -93,7 +116,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Unique::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
+	void Servant_Unique::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -133,6 +156,7 @@ namespace Axe
 	void Bellhop_PermissionsVerifier_checkPermissions::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	
@@ -143,7 +167,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
+	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -165,10 +189,21 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar )
 	{
 		bool arg0; _ar >> arg0;
 		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_PermissionsVerifier_checkPermissions::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -212,6 +247,7 @@ namespace Axe
 	void Bellhop_SessionManager_create::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	
@@ -222,7 +258,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
+	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -243,10 +279,21 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar )
 	{
-		Proxy_PlayerPtr arg0 = Axe::makeProxy<Proxy_PlayerPtr>( _ar, _connectionCache );
+		Proxy_PlayerPtr arg0 = Axe::makeProxy<Proxy_PlayerPtr>( _ar );
 		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_SessionManager_create::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -272,6 +319,17 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
+	void AdapterAlreadyExistet::write( Axe::ArchiveWrite & _ar )
+	{
+		_ar << name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterAlreadyExistet::read( Axe::ArchiveRead & _ar )
+	{
+		_ar >> name;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session )
 		: Axe::Bellhop(_requestId, _session)
 	{
@@ -289,6 +347,12 @@ namespace Axe
 	void Bellhop_GridManager_addAdapter::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
+		if( AdapterAlreadyExistetPtr method_ex = Axe::handleCast<AdapterAlreadyExistetPtr>( _ex ) )
+		{
+			ar.writeSize( 0 );
+			method_ex->write( ar );
+		}
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -309,6 +373,7 @@ namespace Axe
 	void Bellhop_GridManager_getAdapterEndpoint::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,6 +393,7 @@ namespace Axe
 	void Bellhop_GridManager_addUnique::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -348,6 +414,7 @@ namespace Axe
 	void Bellhop_GridManager_getUnique::throw_exception( const Axe::ExceptionPtr & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException();
+	
 		
 	}
 	
@@ -361,7 +428,7 @@ namespace Axe
 	};
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )
+	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )
 	{
 		Axe::ArchiveRead & ar = _session->getArchiveRead();
 		switch( _methodId )
@@ -386,7 +453,7 @@ namespace Axe
 				Bellhop_GridManager_addUniquePtr bellhop = new Bellhop_GridManager_addUnique( _requestId, _session );
 	
 				std::string arg0; ar >> arg0;
-				Proxy_UniquePtr arg1 = Axe::makeProxy<Proxy_UniquePtr>( ar, _connectionCache );
+				Proxy_UniquePtr arg1 = Axe::makeProxy<Proxy_UniquePtr>( ar );
 				this->addUnique( bellhop, arg0, arg1 );
 			}break;
 		case ESMD_GridManager_getUnique:
@@ -405,27 +472,77 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar )
 	{
 		std::size_t arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_GridManager_addAdapter::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+		if( ex_method_id == 0 )
+		{
+			ex = new AdapterAlreadyExistet;
+		}
+	
+		ex->read( _ar );
+	
+		this->throw_exception( ex ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar )
 	{
 		std::string arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_GridManager_getAdapterEndpoint::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar )
 	{
 		this->response();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )
+	void Response_GridManager_addUnique::exceptionCall( Axe::ArchiveRead & _ar )
 	{
-		Proxy_UniquePtr arg0 = Axe::makeProxy<Proxy_UniquePtr>( _ar, _connectionCache );
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar )
+	{
+		Proxy_UniquePtr arg0 = Axe::makeProxy<Proxy_UniquePtr>( _ar );
 		this->response( arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Response_GridManager_getUnique::exceptionCall( Axe::ArchiveRead & _ar )
+	{
+		std::size_t ex_method_id;
+		_ar.readSize( ex_method_id );
+	
+		Axe::ExceptionPtr ex = 0;
+	
+	
+		this->throw_exception( ex ); 
 	}
 	
 	//////////////////////////////////////////////////////////////////////////

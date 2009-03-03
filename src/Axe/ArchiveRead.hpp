@@ -2,10 +2,15 @@
 
 #	include "Archive.hpp"
 
+#	include "ConnectionCache.hpp"
+
 namespace Axe
 {
 	class ArchiveRead
 	{
+	public:
+		ArchiveRead( const ConnectionCachePtr & _connectionCache );
+
 	public:
 		void begin();
 
@@ -36,15 +41,19 @@ namespace Axe
 			return (T*)keepBuffer( sizeof(T) );
 		}
 
-
 	public:
 		void clear();
 		void seek( std::size_t _pos );
 		bool eof() const;
 
+	public:
+		const ConnectionCachePtr & getConnectionCache() const;
+
 	protected:
 		Archive m_archive;
 		Archive::const_iterator m_seek;
+
+		ConnectionCachePtr m_connectionCache;
 	};
 
 	void operator >> ( ArchiveRead & ar, std::string & _value );

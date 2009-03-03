@@ -25,6 +25,7 @@ namespace Axe
 		void generateHeaderNamespace( const Declaration::Namespace & _namespace );
 		void generateHeaderStruct( const Declaration::Struct & _struct );
 		void generateHeaderTypedef( const Declaration::Typedef & _typedef );
+		void generateHeaderException( const Declaration::Exception & _class );
 
 		void generateHeaderClass( const Declaration::Class & _class );
 		void generateHeaderBellhop( const Declaration::Class & _class );
@@ -36,6 +37,7 @@ namespace Axe
 		void generateImplementNamespace( const Declaration::Namespace & _namespace );
 		void generateImplementStruct( const Declaration::Struct & _struct );
 		void generateImplementClass( const Declaration::Class & _class );
+		void generateImplementException( const Declaration::Exception & _ex );
 		
 		void generateImplementBellhop( const Declaration::Class & _class );
 		void generateImplementServant( const Declaration::Class & _class );
@@ -60,6 +62,7 @@ namespace Axe
 
 	protected:
 		void writeSelectType( const std::string & _ar, const std::string & _type, std::size_t _enum );
+		void writeReadType( const std::string & _ar, const std::string & _type, const std::string & _name );
 		void writeLine();
 
 

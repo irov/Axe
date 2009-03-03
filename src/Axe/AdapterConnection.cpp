@@ -13,8 +13,7 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
-		: Invocation(_service, _hostId, _endpointCache)
-		, m_connectionCache(_connectionCache)
+		: Invocation(_service, _hostId, _endpointCache, _connectionCache)
 		, m_messageEnum(0)
 	{
 	}
@@ -54,13 +53,24 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void AdapterConnection::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
 	{
+		bool true_response;
+		_ar.read( true_response );
+
 		std::size_t responseId;
 		_ar.readSize( responseId );
 
 		TMapResponse::iterator it_found = m_dispatch.find( responseId );
 
 		const ResponsePtr & response = it_found->second;
-		response->responseCall( _ar, m_connectionCache );
+
+		if( true_response )
+		{
+			response->responseCall( _ar );
+		}
+		else
+		{
+			response->exceptionCall( _ar );
+		}
 
 		m_dispatch.erase( it_found );
 

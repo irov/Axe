@@ -12,7 +12,8 @@ namespace Axe
 		RouterResponse( std::size_t _requestId, const RouterSessionPtr & _session );
 
 	public:
-		void responseCall( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache  ) override;
+		void responseCall( ArchiveRead & _ar  ) override;
+		void exceptionCall( ArchiveRead & _ar ) override;
 
 	protected:
 		std::size_t m_requestId;

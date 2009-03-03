@@ -9,7 +9,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SLAxeParser::SLAxeParser()
 	{
-		m_namespaces.push_back( Namespace() );
+		m_namespaces.push_back( Namespace(0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Namespace & SLAxeParser::getNamespace() const
@@ -64,7 +64,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::begin_namespace( char const* str, char const* end )
 	{
-		m_namespaces.push_back( Namespace() );
+		Namespace & back_nm = m_namespaces.back();
+		m_namespaces.push_back( Namespace(&back_nm) );
 
 		Namespace & nm = m_namespaces.back();
 
@@ -73,7 +74,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::end_namespace( char const* str, char const* end )
 	{
-		Namespace & nm_parent = *(m_namespaces.end() - 2);
+		Namespace & nm_parent = *(--(--m_namespaces.end()));
 
 		nm_parent.namespaces.push_back( m_namespaces.back() );
 		nm_parent.order.push_back( DECL_NAMESPACE );

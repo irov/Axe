@@ -8,8 +8,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	RouterSession::RouterSession( boost::asio::io_service & _service, const RouterPtr & _router )
-		: Session(_service)
+	RouterSession::RouterSession( boost::asio::io_service & _service, const RouterPtr & _router, const ConnectionCachePtr & _connectionCache )
+		: Session(_service, _connectionCache)
 		, m_router(_router)
 	{
 	}

@@ -35,7 +35,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Grid::makeSession()
 	{
-		GridSessionPtr session = new GridSession( m_service, this );
+		GridSessionPtr session = new GridSession( m_service, this, m_connectionCache );
 
 		return session;
 	}

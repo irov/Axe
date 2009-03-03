@@ -47,15 +47,15 @@ namespace Axe
 		return new element_type( servantId, connection );
 	}
 
-	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, const ConnectionCachePtr & _connectionCache, std::size_t & servantId );
+	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, std::size_t & servantId );
 
 	template<class T>
-	T makeProxy( ArchiveRead & _ar, const ConnectionCachePtr & _connectionCache )
+	T makeProxy( ArchiveRead & _ar )
 	{
 		std::size_t servantId;
 
 		const ConnectionPtr & connection = 
-			makeProxyInfo( _ar, _connectionCache, servantId );
+			makeProxyInfo( _ar, servantId );
 
 		typedef typename T::element_type El;
 

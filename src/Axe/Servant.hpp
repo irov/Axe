@@ -11,7 +11,6 @@ namespace Axe
 	typedef AxeHandle<class Session> SessionPtr;
 	
 	typedef AxeHandle<class Proxy> ProxyPtr;
-	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	
 	class Servant
 		: virtual public Shared
@@ -29,7 +28,7 @@ namespace Axe
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
 	public:
-		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session, const ConnectionCachePtr & _connectionCache ) = 0;
+		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session ) = 0;
 
 	public:
 		void write( ArchiveWrite & _ar ) const;

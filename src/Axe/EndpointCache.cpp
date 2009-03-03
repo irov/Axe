@@ -46,6 +46,11 @@ namespace Axe
 			m_cb->onEndpoint( tcp_endpoint );
 		}
 
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+
+		}
+
 	protected:
 		EndpointCachePtr m_cache;
 		std::size_t m_hostId;

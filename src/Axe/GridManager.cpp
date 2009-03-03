@@ -16,13 +16,18 @@ namespace Axe
 
 		if( it_found == m_adapterIds.end() )
 		{
-			it_found = 
-				m_adapterIds.insert( std::make_pair(_name, ++m_enumeratorID) ).first;
+			it_found = m_adapterIds.insert( std::make_pair(_name, ++m_enumeratorID) ).first;
 
 			m_endpoints.insert( std::make_pair(m_enumeratorID, _endpoint) );
-		}
 
-		_cb->response( it_found->second );
+			_cb->response( it_found->second );
+		}
+		else
+		{
+			AdapterAlreadyExistet * ex = new AdapterAlreadyExistet;
+			ex->name = _name;
+			_cb->throw_exception( ex );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridManager::getAdapterEndpoint( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId )

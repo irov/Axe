@@ -6,6 +6,7 @@
 #	include <string>
 #	include <sstream>
 
+#	include <list>
 #	include <vector>
 #	include <set>
 

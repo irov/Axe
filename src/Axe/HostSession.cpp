@@ -8,8 +8,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	HostSession::HostSession( boost::asio::io_service & _service, const HostPtr & _host )
-		: Session( _service )
+	HostSession::HostSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache )
+		: Session( _service, _connectionCache )
 		, m_host(_host)
 	{
 	}

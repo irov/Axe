@@ -130,11 +130,13 @@ namespace Axe
 		const TVectorTypedefs & typedefs = _namespace.typedefs;
 		const TVectorStructs & structs = _namespace.structs;
 		const TVectorClasses & classes = _namespace.classes;
+		const TVectorExceptions & exceptions = _namespace.exceptions;
 		const TVectorNamespaces & namespaces = _namespace.namespaces;
 
 		TVectorTypedefs::const_iterator it_typedef = typedefs.begin();
 		TVectorStructs::const_iterator it_struct = structs.begin();
 		TVectorClasses::const_iterator it_class = classes.begin();
+		TVectorExceptions::const_iterator it_exception = exceptions.begin();
 		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
@@ -159,6 +161,11 @@ namespace Axe
 				{
 					generateHeaderClass( *it_class );
 					++it_class;
+				}break;
+			case DECL_EXCEPTION:
+				{
+					generateHeaderException( *it_exception );
+					++it_exception;
 				}break;
 			case DECL_NAMESPACE:
 				{
@@ -253,6 +260,54 @@ namespace Axe
 
 		m_stream << " " << td.name << ";" << std::endl;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateHeaderException( const Exception & _ex )
+	{
+		write() << std::endl;
+
+		write() << "class " + _ex.name << std::endl;
+		write() << "	: virtual public Axe::Exception" << std::endl;
+
+		
+		for( TVectorParents::const_iterator
+			it_parent = _ex.parents.begin(),
+			it_parent_end = _ex.parents.end();
+		it_parent != it_parent_end; 
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+			write() << "	, " << it_parent->inheritance << " " << it_parent->name << std::endl;
+		}
+
+		write() << "{" << std::endl;
+		write() << "public:" << std::endl;
+		//write() << "	" << _ex.name; << "()" << std::endl;
+
+
+		write() <<	"public:" << std::endl;
+
+		for( TVectorMembers::const_iterator
+			it_member = _ex.members.begin(),
+			it_member_end = _ex.members.end();
+		it_member != it_member_end;
+		++it_member )
+		{
+			const Member & mb = *it_member;
+
+			write() << "	" << writeMemberType( mb.type.name ) << " " << mb.name << ";" << std::endl;
+		}
+
+		write() << std::endl;
+		write() << "public:" << std::endl;
+		write() << "	void write( ArchiveWrite & _ar ) override;" << std::endl;
+		write() << "	void read( Axe::ArchiveRead & _ar ) override;" << std::endl;
+		write() << "};" << std::endl;
+		
+		write() << std::endl;
+		writeTypedefHandle( _ex.name );
+		write() << std::endl;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderClass( const Declaration::Class & _class )
 	{
 		generateHeaderBellhop( _class );
@@ -409,7 +464,7 @@ namespace Axe
 		
 		write() << std::endl;
 		write() << "private:" << std::endl;
-		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
+		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
@@ -476,7 +531,8 @@ namespace Axe
 			write() << "	virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache ) override;" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
+			write() << "	void exceptionCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -607,10 +663,13 @@ namespace Axe
 
 		const TVectorStructs & structs = _namespace.structs;
 		const TVectorClasses & classes = _namespace.classes;
+		const TVectorExceptions & exceptions = _namespace.exceptions;
 		const TVectorNamespaces & namespaces = _namespace.namespaces;
 
 		TVectorStructs::const_iterator it_struct = structs.begin();
 		TVectorClasses::const_iterator it_class = classes.begin();
+		TVectorExceptions::const_iterator it_exception = exceptions.begin();
+
 		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
@@ -630,6 +689,11 @@ namespace Axe
 				{
 					generateImplementClass( *it_class );
 					++it_class;
+				}break;
+			case DECL_EXCEPTION:
+				{
+					generateImplementException( *it_exception );
+					++it_exception;
 				}break;
 			case DECL_NAMESPACE:
 				{
@@ -702,8 +766,9 @@ namespace Axe
 		++it_member )
 		{
 			const Member & mb = *it_member;
-
-			write() << "	ar >> _value." << mb.name << ";" << std::endl;
+			
+			write() << "	";
+			writeReadType( "ar", mb.type.name, "_value." + mb.name );
 		}
 
 		write() << "}" << std::endl;
@@ -715,6 +780,67 @@ namespace Axe
 		generateImplementServant( _class );
 		generateImplementResponse( _class );
 		generateImplementProxy( _class );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateImplementException( const Declaration::Exception & _ex )
+	{
+		write() << std::endl;
+
+		writeLine();
+		write() << "void " << _ex.name << "::write( Axe::ArchiveWrite & _ar )" << std::endl;
+		write() << "{" << std::endl;
+
+		for( TVectorParents::const_iterator
+			it_parent = _ex.parents.begin(),
+			it_parent_end = _ex.parents.end();
+		it_parent != it_parent_end;
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+
+			write() << "	" << pr.name << "::write( _ar );" << std::endl;
+		}
+
+		for( TVectorMembers::const_iterator
+			it_member = _ex.members.begin(),
+			it_member_end = _ex.members.end();
+		it_member != it_member_end;
+		++it_member )
+		{
+			const Member & mb = *it_member;
+
+			write() << "	_ar << " << mb.name << ";" << std::endl;
+		}
+
+		write() << "}" << std::endl;
+		writeLine();
+		write() << "void " << _ex.name << "::read( Axe::ArchiveRead & _ar )" << std::endl;
+		write() << "{" << std::endl;
+
+		for( TVectorParents::const_iterator
+			it_parent = _ex.parents.begin(),
+			it_parent_end = _ex.parents.end();
+		it_parent != it_parent_end;
+		++it_parent )
+		{
+			const Parent & pr = *it_parent;
+
+			write() << "	" << pr.name << "::read( _ar );" << std::endl;
+		}
+
+		for( TVectorMembers::const_iterator
+			it_member = _ex.members.begin(),
+			it_member_end = _ex.members.end();
+		it_member != it_member_end;
+		++it_member )
+		{
+			const Member & mb = *it_member;
+
+			write() << "	";
+			writeReadType( "_ar", mb.type.name, mb.name );			
+		}
+
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementBellhop( const Class & _class )
@@ -751,7 +877,7 @@ namespace Axe
 			writeLine();
 			write() << "void " << bellhop_name << "::response(";
 
-			unsigned int arg_enumerator = 0;
+			std::size_t arg_enumerator = 0;
 
 			TVectorArguments::const_iterator 
 				it_args = mt.outArguments.begin(),
@@ -800,9 +926,41 @@ namespace Axe
 			write() << "void " << bellhop_name << "::throw_exception( const Axe::ExceptionPtr & _ex )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	Axe::ArchiveWrite & ar = m_session->beginException();" << std::endl;
+			write() << std::endl;
+			
+
+			TVectorMethodExceptions::const_iterator 
+				it_exception = mt.exceptions.begin(),
+				it_exception_end = mt.exceptions.end();
+			
+			if( it_exception != it_exception_end )
+			{
+				const MethodException & me = *it_exception;
+
+				write() << "	if( " << me.name << "Ptr method_ex = Axe::handleCast<" << me.name << "Ptr>( _ex ) )" << std::endl;
+				write() << "	{" << std::endl;
+				write() << "		ar.writeSize( 0 );" << std::endl;
+				write() << "		method_ex->write( ar );" << std::endl;
+				write() << "	}" << std::endl;
+
+				std::size_t methodExceptionEnumerator = 1;
+
+				for( ++it_exception;
+					it_exception != it_exception_end;
+					++it_exception, ++methodExceptionEnumerator )
+				{
+					const MethodException & me = *it_exception;
+
+					write() << "	else if( " << me.name << "Ptr method_ex = handleCast<" << me.name << "Ptr>( _ex ) )" << std::endl;
+					write() << "	{" << std::endl;
+					write() << "		ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
+					write() << "		method_ex.write( ar );" << std::endl;
+					write() << "	}" << std::endl;
+				}
+			}
+
 			write() << "	" << std::endl;
 			write() << "}" << std::endl;
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -850,7 +1008,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::ConnectionCachePtr & _connectionCache )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
 		write() << "{" << std::endl;
 
 		//		stream_read * stream = _session->get_streamIn();
@@ -943,11 +1101,11 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, const Axe::ConnectionCachePtr & _connectionCache )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar )" << std::endl;
 			write() << "{" << std::endl;
 			
 
-			unsigned int bellhop_args = 0;
+			std::size_t bellhop_args = 0;
 
 			for( TVectorArguments::const_iterator
 				it_arg = mt.outArguments.begin(),
@@ -987,6 +1145,48 @@ namespace Axe
 			}
 
 			m_stream << ");" << std::endl;
+			write() << "}" << std::endl;
+			writeLine();
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	std::size_t ex_method_id;" << std::endl;
+			write() << "	_ar.readSize( ex_method_id );" << std::endl;
+			write() << std::endl;
+			write() << "	Axe::ExceptionPtr ex = 0;" << std::endl;
+			write() << std::endl;
+			
+
+			TVectorMethodExceptions::const_iterator
+				it_exception = mt.exceptions.begin(),
+				it_exception_end = mt.exceptions.end();
+
+			if( it_exception != it_exception_end )
+			{
+				const MethodException & me = *it_exception;
+
+				write() << "	if( ex_method_id == 0 )" << std::endl;
+				write() << "	{" << std::endl;
+				write() << "		ex = new " << me.name << ";" << std::endl;
+				write() << "	}" << std::endl;
+
+				std::size_t methodExceptionEnumerator = 1;
+
+				for( ++it_exception;
+					it_exception != it_exception_end;
+					++it_exception, ++methodExceptionEnumerator )
+				{
+					write() << "	else if( ex_method_id == " << methodExceptionEnumerator << " )" << std::endl;
+					write() << "	{" << std::endl;
+					write() << "		ex = new " << me.name << ";" << std::endl;
+					write() << "	}" << std::endl;
+				}
+
+				write() << std::endl;
+				write() << "	ex->read( _ar );" << std::endl;
+			}
+
+			write() << std::endl;
+			write() << "	this->throw_exception( ex ); " << std::endl;
 			write() << "}" << std::endl;
 		}
 	}
@@ -1083,8 +1283,7 @@ namespace Axe
 		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
 		write() << "{" << std::endl;
 		write() << "	_value->write( _ar );" << std::endl;
-		write() << "}" << std::endl;				
-
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::writeTypedefHandle( const std::string & _type )
@@ -1241,12 +1440,25 @@ namespace Axe
 
 		if( it_class_found != m_classTypes.end() )
 		{
-			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = Axe::makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << ", _connectionCache );" << std::endl;
-			
+			m_stream << writeProxyName( _type ) << "Ptr arg" << _enum << " = Axe::makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << " );" << std::endl;
 		}
 		else
 		{
 			m_stream << writeMemberType( _type ) << " arg" << _enum << "; " << _ar << " >> arg" << _enum << ";" << std::endl;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::writeReadType( const std::string & _ar, const std::string & _type, const std::string & _name )
+	{
+		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
+
+		if( it_class_found != m_classTypes.end() )
+		{
+			m_stream << _name << " = Axe::makeProxy<" << writeProxyName( _type ) << "Ptr>( " << _ar << " );" << std::endl;
+		}
+		else
+		{
+			m_stream << _ar << " >> " << _name << ";" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

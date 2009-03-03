@@ -1,8 +1,14 @@
 namespace Axe
 {
+	struct PlayerInfo
+	{
+		string name;
+		int id;
+	};
+
 	class Player
 	{
-		int test( string name, int id );
+		int test( PlayerInfo info );
 	};
 
 	class Unique

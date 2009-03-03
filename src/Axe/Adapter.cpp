@@ -57,6 +57,11 @@ namespace Axe
 			m_response->onInitialize( m_adapter );
 		}
 
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+
+		}
+
 	protected:
 		AdapterPtr m_adapter;
 		AdapterInitializeResponsePtr m_response;
@@ -100,6 +105,11 @@ namespace Axe
 		void response() override
 		{
 		}
+
+	protected:
+		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		{
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::addUnique( const std::string & _name, const Servant_UniquePtr & _unique )
@@ -113,7 +123,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()
 	{
-		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this );
+		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this, m_connectionCache );
 
 		return session;
 	}

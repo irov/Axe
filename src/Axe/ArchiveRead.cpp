@@ -4,6 +4,12 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
+	ArchiveRead::ArchiveRead( const ConnectionCachePtr & _connectionCache )
+		: m_connectionCache(_connectionCache)
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
 		m_seek = m_archive.begin();
@@ -78,5 +84,10 @@ namespace Axe
 	void operator >> ( ArchiveRead & ar, std::string & _value )
 	{
 		ar.readString( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionCachePtr & ArchiveRead::getConnectionCache() const
+	{
+		return m_connectionCache;
 	}
 }

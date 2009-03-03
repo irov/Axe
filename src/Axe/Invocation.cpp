@@ -8,8 +8,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache )
-		: Dispatcher(_service)
+	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
+		: Dispatcher(_service, _connectionCache)
 		, Connection(_hostId)
 		, m_endpointCache(_endpointCache)
 	{
