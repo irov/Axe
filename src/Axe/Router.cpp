@@ -130,17 +130,27 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::dispatchMethod( std::size_t _sizeArgs, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, std::size_t _hostId, const RouterSessionPtr & _session )
+	void Router::dispatchMethod( ArchiveRead & _ar, std::size_t _size, const RouterSessionPtr & _session )
 	{
-		const ConnectionPtr & cn = m_connectionCache->getConnection( _hostId );
+		std::size_t servantId;
+		std::size_t methodId;
+		std::size_t requestId;
+		std::size_t hostId;
 
-		ArchiveWrite & write = cn->beginMessage( _servantId, _methodId, new RouterResponse( _requestId, _session ) );
+		_ar.read( servantId);
+		_ar.readSize( methodId);
+		_ar.readSize( requestId);
+		_ar.readSize( hostId );
 
-		ArchiveRead & read = _session->getArchiveRead();
+		const ConnectionPtr & cn = m_connectionCache->getConnection( hostId );
 
-		const Archive::value_type * args_buff = read.selectBuffer( _sizeArgs );
+		ArchiveWrite & write = cn->beginMessage( servantId, methodId, new RouterResponse( requestId, _session ) );
 
-		write.writeArchive( args_buff, _sizeArgs );
+		std::size_t lenght = _ar.length( _size );
+
+		const Archive::value_type * args_buff = _ar.selectBuffer( lenght );
+
+		write.writeArchive( args_buff, lenght );
 
 		cn->processMessage();
 	}
@@ -160,6 +170,7 @@ namespace Axe
 			ArchiveWrite & ar = m_session->beginConnect( true );
 			ar << _player;
 			m_session->process();
+			m_session->run();
 		}
 
 		void throw_exception( const Axe::ExceptionPtr & _ex ) override

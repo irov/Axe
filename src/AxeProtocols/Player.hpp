@@ -65,8 +65,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_Player_test> Response_Player_testPtr;
@@ -157,8 +157,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_PermissionsVerifier_checkPermissions> Response_PermissionsVerifier_checkPermissionsPtr;
@@ -218,8 +218,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_SessionManager_create> Response_SessionManager_createPtr;
@@ -244,6 +244,7 @@ namespace Axe
 	class AdapterAlreadyExistet
 		: virtual public Axe::Exception
 	{
+	public:
 	public:
 		std::string name;
 	
@@ -339,8 +340,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
@@ -354,8 +355,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_getAdapterEndpoint> Response_GridManager_getAdapterEndpointPtr;
@@ -369,8 +370,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_addUnique> Response_GridManager_addUniquePtr;
@@ -384,8 +385,8 @@ namespace Axe
 		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
 	
 	public:
-		void responseCall( Axe::ArchiveRead & _ar ) override;
-		void exceptionCall( Axe::ArchiveRead & _ar ) override;
+		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_GridManager_getUnique> Response_GridManager_getUniquePtr;

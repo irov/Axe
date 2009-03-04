@@ -531,8 +531,8 @@ namespace Axe
 			write() << "	virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void responseCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
-			write() << "	void exceptionCall( Axe::ArchiveRead & _ar ) override;" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
+			write() << "	void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -1101,7 +1101,7 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
 			write() << "{" << std::endl;
 			
 
@@ -1147,7 +1147,7 @@ namespace Axe
 			m_stream << ");" << std::endl;
 			write() << "}" << std::endl;
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveRead & _ar )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	std::size_t ex_method_id;" << std::endl;
 			write() << "	_ar.readSize( ex_method_id );" << std::endl;

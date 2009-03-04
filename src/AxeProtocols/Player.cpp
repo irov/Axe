@@ -71,13 +71,13 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar )
+	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		int arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_test::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_Player_test::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -189,13 +189,13 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar )
+	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		bool arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_PermissionsVerifier_checkPermissions::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_PermissionsVerifier_checkPermissions::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -279,13 +279,13 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar )
+	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_PlayerPtr arg0 = Axe::makeProxy<Proxy_PlayerPtr>( _ar );
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_create::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_SessionManager_create::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -472,13 +472,13 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addAdapter::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_addAdapter::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -495,13 +495,13 @@ namespace Axe
 		this->throw_exception( ex ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::string arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getAdapterEndpoint::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_getAdapterEndpoint::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -512,12 +512,12 @@ namespace Axe
 		this->throw_exception( ex ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		this->response();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_addUnique::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_addUnique::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );
@@ -528,13 +528,13 @@ namespace Axe
 		this->throw_exception( ex ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_UniquePtr arg0 = Axe::makeProxy<Proxy_UniquePtr>( _ar );
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_GridManager_getUnique::exceptionCall( Axe::ArchiveRead & _ar )
+	void Response_GridManager_getUnique::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t ex_method_id;
 		_ar.readSize( ex_method_id );

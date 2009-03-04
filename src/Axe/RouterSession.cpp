@@ -25,19 +25,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void RouterSession::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t servantId;
-		std::size_t methodId;
-		std::size_t requestId;
-		std::size_t hostId;
-
-		_ar.read( servantId);
-		_ar.readSize( methodId);
-		_ar.readSize( requestId);
-		_ar.readSize( hostId );
-
-		std::size_t size_args = _size - sizeof(servantId) - sizeof(methodId) - sizeof(requestId) - sizeof(hostId);
-
-		m_router->dispatchMethod( size_args, servantId, methodId, requestId, hostId, this );
+		m_router->dispatchMethod( _ar, _size, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )

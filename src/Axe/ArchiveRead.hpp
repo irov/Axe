@@ -44,6 +44,7 @@ namespace Axe
 	public:
 		void clear();
 		void seek( std::size_t _pos );
+		std::size_t length( std::size_t _pos ) const;
 		bool eof() const;
 
 	public:

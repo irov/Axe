@@ -7,13 +7,37 @@
 
 #	include <stdio.h>
 
+class MyClientResponse_Player_test
+	: public Axe::Response_Player_test
+{
+protected:
+	void response( int _id ) override
+	{
+		printf( "Response_Player_test %d"
+			, _id
+			);
+	}
+
+	void throw_exception( const Axe::ExceptionPtr & _ex ) override
+	{
+		printf( "Response_Player_test throw_exception" );	
+	};
+};
+
 class MyClient
 	:	public Axe::ClientConnectResponse
 {
 protected:
 	void connectSuccessful( const Axe::Proxy_PlayerPtr & _player ) override
 	{
-		printf("connectSuccessful");
+		printf("connectSuccessful\n");
+
+		Axe::PlayerInfo pi;
+
+		pi.id = 2;
+		pi.name = "test";
+
+		_player->test( pi, new MyClientResponse_Player_test );
 	}
 
 	void connectFailed() override

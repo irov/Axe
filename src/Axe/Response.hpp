@@ -10,7 +10,7 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		virtual void responseCall( ArchiveRead & _ar ) = 0;
-		virtual void exceptionCall( ArchiveRead & _ar ) = 0;
+		virtual void responseCall( ArchiveRead & _ar, std::size_t _size ) = 0;
+		virtual void exceptionCall( ArchiveRead & _ar, std::size_t _size ) = 0;
 	};
 }

@@ -48,8 +48,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	const Archive::value_type * ArchiveRead::selectBuffer( std::size_t _size )
 	{
+		const Archive::value_type * buff = &*m_seek;
 		std::advance( m_seek, _size );
-		return &*m_seek;
+		return buff;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Archive::value_type * ArchiveRead::keepBuffer( std::size_t _size )
@@ -74,6 +75,13 @@ namespace Axe
 	void ArchiveRead::seek( std::size_t _pos )
 	{
 		std::advance( m_seek, _pos );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ArchiveRead::length( std::size_t _pos ) const
+	{
+		std::size_t reading = std::distance( m_archive.begin(), m_seek );
+		std::size_t length = _pos - reading;
+		return length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveRead::eof() const

@@ -24,7 +24,7 @@ namespace Axe
 	protected:
 		void processArchive( const Archive & _ar );
 
-	protected:
+	public:
 		void run();
 		void close();
 
