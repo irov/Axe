@@ -8,6 +8,8 @@ namespace Axe
 	class ArchiveRead;
 	class ArchiveWrite;
 
+	class Exception;
+
 	typedef AxeHandle<class Session> SessionPtr;
 	
 	typedef AxeHandle<class Proxy> ProxyPtr;
@@ -29,6 +31,7 @@ namespace Axe
 
 	public:
 		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session ) = 0;
+		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) = 0;
 
 	public:
 		void write( ArchiveWrite & _ar ) const;

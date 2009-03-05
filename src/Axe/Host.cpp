@@ -83,6 +83,26 @@ namespace Axe
 
 		const ServantPtr & servant = it_find->second;
 
-		servant->callMethod( _methodId, _requestId, _session );
+		try
+		{
+			servant->callMethod( _methodId, _requestId, _session );
+		}
+		catch( const Exception & _ex )
+		{
+			servant->responseException( _methodId, _requestId, _session, _ex );
+		}
+		catch( const std::exception & _ex )
+		{
+			ArchiveWrite & aw = _session->beginException( _requestId );
+			const char * message = _ex.what();
+			aw << LocalException( message );
+			_session->process();
+		}
+		catch( ... )
+		{
+			ArchiveWrite & aw = _session->beginException( _requestId );
+			aw << UnknownException();
+			_session->process();
+		}
 	}
 }

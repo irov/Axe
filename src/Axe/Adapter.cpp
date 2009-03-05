@@ -57,7 +57,7 @@ namespace Axe
 			m_response->onInitialize( m_adapter );
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 
 		}
@@ -107,7 +107,7 @@ namespace Axe
 		}
 
 	protected:
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 		}
 	};

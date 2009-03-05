@@ -22,11 +22,15 @@ namespace Axe
 		ArchiveWrite & write = m_session->beginResponse( m_requestId );
 		write.writeArchive( args_buff, lenght );
 		m_session->process();
-		//_cn->
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterResponse::exceptionCall( ArchiveRead & _ar, std::size_t _size )
 	{
+		std::size_t lenght = _ar.length( _size );
+		const Archive::value_type * args_buff = _ar.selectBuffer( lenght );
 
+		ArchiveWrite & write = m_session->beginException( m_requestId );
+		write.writeArchive( args_buff, lenght );
+		m_session->process();
 	}
 }

@@ -24,8 +24,8 @@ namespace Axe
 		}
 		else
 		{
-			AdapterAlreadyExistet * ex = new AdapterAlreadyExistet;
-			ex->name = _name;
+			AdapterAlreadyExistet ex;
+			ex.name = _name;
 			_cb->throw_exception( ex );
 		}		
 	}

@@ -25,19 +25,7 @@ namespace Axe
 	void operator << ( Axe::ArchiveWrite & ar, const PlayerInfo & _value );
 	void operator >> ( Axe::ArchiveRead & ar, PlayerInfo & _value );
 	
-	class Bellhop_Player_test
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( int );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_Player_test> Bellhop_Player_testPtr;
+	typedef AxeHandle<class Bellhop_Player_test> Bellhop_Player_testPtr;
 	
 	class Servant_Player
 		: virtual public Axe::Servant
@@ -47,8 +35,12 @@ namespace Axe
 	
 	protected:
 	
+	public:
+		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
@@ -56,13 +48,30 @@ namespace Axe
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PlayerPtr & _value );
 	
 	
+	class Bellhop_Player_test
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_PlayerPtr & _servant );
+	
+	public:
+		void response( int );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_PlayerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_Player_test> Bellhop_Player_testPtr;
+	
 	class Response_Player_test
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( int ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -94,13 +103,18 @@ namespace Axe
 	
 	protected:
 	
+	public:
+		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_Unique> Servant_UniquePtr;
 	
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_UniquePtr & _value );
+	
 	
 	
 	
@@ -117,19 +131,7 @@ namespace Axe
 	
 	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_UniquePtr & _value );
 	
-	class Bellhop_PermissionsVerifier_checkPermissions
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( bool );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
+	typedef AxeHandle<class Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
 	
 	class Servant_PermissionsVerifier
 		:	public Servant_Unique
@@ -139,8 +141,12 @@ namespace Axe
 	
 	protected:
 	
+	public:
+		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
@@ -148,13 +154,30 @@ namespace Axe
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PermissionsVerifierPtr & _value );
 	
 	
+	class Bellhop_PermissionsVerifier_checkPermissions
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_PermissionsVerifierPtr & _servant );
+	
+	public:
+		void response( bool );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_PermissionsVerifierPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
+	
 	class Response_PermissionsVerifier_checkPermissions
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( bool ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -178,19 +201,7 @@ namespace Axe
 	
 	void operator << ( Axe::ArchiveWrite & _ar, const Proxy_PermissionsVerifierPtr & _value );
 	
-	class Bellhop_SessionManager_create
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( const Proxy_PlayerPtr & );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
+	typedef AxeHandle<class Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
 	
 	class Servant_SessionManager
 		:	public Servant_Unique
@@ -200,8 +211,12 @@ namespace Axe
 	
 	protected:
 	
+	public:
+		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
@@ -209,13 +224,30 @@ namespace Axe
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_SessionManagerPtr & _value );
 	
 	
+	class Bellhop_SessionManager_create
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_SessionManagerPtr & _servant );
+	
+	public:
+		void response( const Proxy_PlayerPtr & );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_SessionManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
+	
 	class Response_SessionManager_create
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( const Proxy_PlayerPtr & ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -249,65 +281,17 @@ namespace Axe
 		std::string name;
 	
 	public:
-		void write( ArchiveWrite & _ar ) override;
+		void write( ArchiveWrite & _ar ) const override;
 		void read( Axe::ArchiveRead & _ar ) override;
 	};
 	
 	typedef AxeHandle<AdapterAlreadyExistet> AdapterAlreadyExistetPtr;
 	
 	
-	class Bellhop_GridManager_addAdapter
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( std::size_t );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
-	class Bellhop_GridManager_getAdapterEndpoint
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_GridManager_getAdapterEndpoint( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( const std::string & );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
-	class Bellhop_GridManager_addUnique
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response();
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
-	class Bellhop_GridManager_getUnique
-		: public Axe::Bellhop
-	{
-	public:
-		Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session );
-	
-	public:
-		void response( const Proxy_UniquePtr & );
-	
-		void throw_exception( const Axe::ExceptionPtr & _ex );
-	};
-	
-	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
+	typedef AxeHandle<class Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
+	typedef AxeHandle<class Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
+	typedef AxeHandle<class Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
+	typedef AxeHandle<class Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
 	
 	class Servant_GridManager
 		: virtual public Axe::Servant
@@ -322,8 +306,12 @@ namespace Axe
 		TMapAdapterIds m_adapterIds;
 		std::size_t m_enumeratorID;
 	
+	public:
+		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
@@ -331,13 +319,78 @@ namespace Axe
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_GridManagerPtr & _value );
 	
 	
+	class Bellhop_GridManager_addAdapter
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
+	
+	public:
+		void response( std::size_t );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_GridManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
+	class Bellhop_GridManager_getAdapterEndpoint
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getAdapterEndpoint( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
+	
+	public:
+		void response( const std::string & );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_GridManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
+	class Bellhop_GridManager_addUnique
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_addUnique( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
+	
+	public:
+		void response();
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_GridManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
+	class Bellhop_GridManager_getUnique
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
+	
+	public:
+		void response( const Proxy_UniquePtr & );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_GridManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
+	
 	class Response_GridManager_addAdapter
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( std::size_t ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -352,7 +405,7 @@ namespace Axe
 	protected:
 		virtual void response( const std::string & ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -367,7 +420,7 @@ namespace Axe
 	protected:
 		virtual void response() = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -382,7 +435,7 @@ namespace Axe
 	protected:
 		virtual void response( const Proxy_UniquePtr & ) = 0;
 	
-		virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;

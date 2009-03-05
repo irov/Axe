@@ -36,20 +36,24 @@ namespace Axe
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginResponse()
+	ArchiveWrite & Session::beginResponse( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
 
 		m_streamWrite.writePOD( true );
+
+		m_streamWrite.writeSize( _responseId );
 
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginException()
+	ArchiveWrite & Session::beginException( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
 
-		m_streamWrite.writePOD( true );
+		m_streamWrite.writePOD( false );
+
+		m_streamWrite.writeSize( _responseId );
 
 		return m_streamWrite;
 	}

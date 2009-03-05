@@ -18,7 +18,7 @@ protected:
 			);
 	}
 
-	void throw_exception( const Axe::ExceptionPtr & _ex ) override
+	void throw_exception( const Axe::Exception & _ex ) override
 	{
 		printf( "Response_Player_test throw_exception" );	
 	};

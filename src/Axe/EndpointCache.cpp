@@ -46,7 +46,7 @@ namespace Axe
 			m_cb->onEndpoint( tcp_endpoint );
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 
 		}

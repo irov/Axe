@@ -75,7 +75,7 @@ namespace Axe
 			m_router->onSessionManager( sessionManager );
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 		}
 
@@ -110,7 +110,7 @@ namespace Axe
 			m_router->onPermissionsVerifier( permissionsVerifier );
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 
 		}
@@ -173,7 +173,7 @@ namespace Axe
 			m_session->run();
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 
 		}
@@ -202,7 +202,7 @@ namespace Axe
 				);
 		}
 
-		void throw_exception( const Axe::ExceptionPtr & _ex ) override
+		void throw_exception( const Axe::Exception & _ex ) override
 		{
 
 		}

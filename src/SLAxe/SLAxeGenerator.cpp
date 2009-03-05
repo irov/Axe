@@ -299,7 +299,7 @@ namespace Axe
 
 		write() << std::endl;
 		write() << "public:" << std::endl;
-		write() << "	void write( ArchiveWrite & _ar ) override;" << std::endl;
+		write() << "	void write( ArchiveWrite & _ar ) const override;" << std::endl;
 		write() << "	void read( Axe::ArchiveRead & _ar ) override;" << std::endl;
 		write() << "};" << std::endl;
 		
@@ -310,8 +310,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderClass( const Declaration::Class & _class )
 	{
-		generateHeaderBellhop( _class );
 		generateHeaderServant( _class );
+		generateHeaderBellhop( _class );		
 		generateHeaderResponse( _class );
 		generateHeaderProxy( _class );
 	}
@@ -331,12 +331,13 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
+			std::string servant_name = writeServantName( cl.name );
 
 			write() << "class " << bellhop_name << std::endl;
 			write() << "	: public Axe::Bellhop" << std::endl;
 			write() << "{" << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session );" << std::endl;
+			write() << "	" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session, const " << servant_name << "Ptr & _servant );" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void response(";
@@ -363,7 +364,10 @@ namespace Axe
 
 			m_stream << ");" << std::endl;
 			write() << std::endl;
-			write() << "	void throw_exception( const Axe::ExceptionPtr & _ex );" << std::endl;
+			write() << "	void throw_exception( const Axe::Exception & _ex );" << std::endl;
+			write() << std::endl;
+			write() << "protected:" << std::endl;
+			write() << "	" << servant_name << "Ptr m_servant;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( bellhop_name );			
@@ -386,6 +390,19 @@ namespace Axe
 		write() << std::endl;
 
 		const Class & cl = _class;
+
+		for( TVectorMethods::const_iterator
+			it_method = cl.methods.begin(),
+			it_method_end = cl.methods.end();
+		it_method != it_method_end;
+		++it_method )
+		{
+			const Method & mt = *it_method;
+			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
+			write() << "typedef AxeHandle<class " << bellhop_name << "> " << bellhop_name << "Ptr;" << std::endl;
+		}
+
+		write() << std::endl;
 
 		std::string servant_name = writeServantName( cl.name );
 
@@ -463,8 +480,12 @@ namespace Axe
 		}
 		
 		write() << std::endl;
+		write() << "public:" << std::endl;
+		write() << "	void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );" << std::endl;
+		write() << std::endl;
 		write() << "private:" << std::endl;
 		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;" << std::endl;
+		write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
@@ -528,7 +549,7 @@ namespace Axe
 
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
-			write() << "	virtual void throw_exception( const Axe::ExceptionPtr & _ex ) = 0;" << std::endl;
+			write() << "	virtual void throw_exception( const Axe::Exception & _ex ) = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
@@ -776,8 +797,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementClass( const Class & _class )
 	{
-		generateImplementBellhop( _class );
 		generateImplementServant( _class );
+		generateImplementBellhop( _class );		
 		generateImplementResponse( _class );
 		generateImplementProxy( _class );
 	}
@@ -787,7 +808,7 @@ namespace Axe
 		write() << std::endl;
 
 		writeLine();
-		write() << "void " << _ex.name << "::write( Axe::ArchiveWrite & _ar )" << std::endl;
+		write() << "void " << _ex.name << "::write( Axe::ArchiveWrite & _ar ) const" << std::endl;
 		write() << "{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -867,10 +888,12 @@ namespace Axe
 			const Method & mt = *it_method;
 
 			std::string bellhop_name = writeBellhopName( cl.name, mt.name );
+			std::string servant_name = writeServantName( cl.name );
 
 			writeLine();
-			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
+			write() << bellhop_name << "::" << bellhop_name << "( std::size_t _requestId, const Axe::SessionPtr & _session, const " << servant_name << "Ptr & _servant )" << std::endl;
 			write() <<	"	: Axe::Bellhop(_requestId, _session)" << std::endl;
+			write() <<	"	, m_servant(_servant)" << std::endl;
 			write() << "{" << std::endl;
 			write() << "}" << std::endl;
 			write() << std::endl;
@@ -903,8 +926,7 @@ namespace Axe
 
 			m_stream << ")" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse();" << std::endl;
-			write() << "	ar.writeSize( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );" << std::endl;
 
 			arg_enumerator = 0;
 
@@ -923,66 +945,34 @@ namespace Axe
 			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
 			writeLine();
-			write() << "void " << bellhop_name << "::throw_exception( const Axe::ExceptionPtr & _ex )" << std::endl;
+			write() << "void " << bellhop_name << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveWrite & ar = m_session->beginException();" << std::endl;
-			write() << std::endl;
-			
-
-			TVectorMethodExceptions::const_iterator 
-				it_exception = mt.exceptions.begin(),
-				it_exception_end = mt.exceptions.end();
-			
-			if( it_exception != it_exception_end )
-			{
-				const MethodException & me = *it_exception;
-
-				write() << "	if( " << me.name << "Ptr method_ex = Axe::handleCast<" << me.name << "Ptr>( _ex ) )" << std::endl;
-				write() << "	{" << std::endl;
-				write() << "		ar.writeSize( 0 );" << std::endl;
-				write() << "		method_ex->write( ar );" << std::endl;
-				write() << "	}" << std::endl;
-
-				std::size_t methodExceptionEnumerator = 1;
-
-				for( ++it_exception;
-					it_exception != it_exception_end;
-					++it_exception, ++methodExceptionEnumerator )
-				{
-					const MethodException & me = *it_exception;
-
-					write() << "	else if( " << me.name << "Ptr method_ex = handleCast<" << me.name << "Ptr>( _ex ) )" << std::endl;
-					write() << "	{" << std::endl;
-					write() << "		ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
-					write() << "		method_ex.write( ar );" << std::endl;
-					write() << "	}" << std::endl;
-				}
-			}
-
-			write() << "	" << std::endl;
+			write() << "	Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );" << std::endl;
+			write() << "	m_servant->write_exception( ar, " << writeEnumMethodName( cl.name, mt.name ) << ", _ex );" << std::endl;
+			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementServant( const Class & _class )
 	{
-	//	const int enum_method_add_adapter = 0;
+		//	const int enum_method_add_adapter = 0;
 
-	//	void servant::call_method( std::size_t _methodId, std::size_t _requestId, adapter_session * _session )
-	//	{
-	//		stream_read * stream = _session->get_streamIn();
-	//		switch( _methodId ){
- //case enum_method_add_adapter:
-	// {
-	//	 bellhop_add_adapter * bellhop
-	//		 = new bellhop_add_adapter( _requestId, _session );
-	//	 std::string * a0;
-	//	 stream->select( &a0 );
+		//	void servant::call_method( std::size_t _methodId, std::size_t _requestId, adapter_session * _session )
+		//	{
+		//		stream_read * stream = _session->get_streamIn();
+		//		switch( _methodId ){
+		//case enum_method_add_adapter:
+		// {
+		//	 bellhop_add_adapter * bellhop
+		//		 = new bellhop_add_adapter( _requestId, _session );
+		//	 std::string * a0;
+		//	 stream->select( &a0 );
 
-	//	 this->add_adapter ( bellhop , *a0 , *a1 , *a2 );
-	// }break;
-	//		}
-	//	}
+		//	 this->add_adapter ( bellhop , *a0 , *a1 , *a2 );
+		// }break;
+		//		}
+		//	}
 
 		write() << std::endl;
 
@@ -1030,7 +1020,7 @@ namespace Axe
 
 				write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
 				write() << "		{" << std::endl;
-				write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session );" << std::endl;
+				write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session, this );" << std::endl;
 				write() << std::endl;
 
 				unsigned int bellhop_args = 0;
@@ -1069,6 +1059,70 @@ namespace Axe
 
 			write() << "	}" << std::endl;
 		}
+		write() << "}" << std::endl;
+
+		writeLine();
+		write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	ArchiveWrite & aw = _session->beginException( _requestId );" << std::endl;
+		write() << "	this->write_exception( aw, _methodId, _ex );" << std::endl;
+		write() << "	_session->process();" << std::endl;
+		write() << "}" << std::endl;
+		writeLine();
+		write() << "void " << servant_name << "::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )" << std::endl;
+		write() << "{" << std::endl;
+
+
+		if( cl.methods.empty() == false )
+		{
+			write() << "	switch( _methodId )" << std::endl;
+			write() << "	{" << std::endl;
+
+			for( TVectorMethods::const_iterator 
+				it_method = cl.methods.begin(), 
+				it_method_end = cl.methods.end();
+			it_method != it_method_end;
+			++it_method	)
+			{
+				const Method & mt = *it_method;
+
+				write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
+				write() << "		{" << std::endl;
+
+				TVectorMethodExceptions::const_iterator 
+					it_exception = mt.exceptions.begin(),
+					it_exception_end = mt.exceptions.end();
+
+				if( it_exception != it_exception_end )
+				{
+					const MethodException & me = *it_exception;
+
+					write() << "			if( const " << me.name << " * method_ex = dynamic_cast<const " << me.name << " *>( &_ex ) )" << std::endl;
+					write() << "			{" << std::endl;
+					write() << "				_ar.writeSize( 2 );" << std::endl;
+					write() << "				method_ex->write( _ar );" << std::endl;
+					write() << "			}" << std::endl;
+
+					std::size_t methodExceptionEnumerator = 3;
+
+					for( ++it_exception;
+						it_exception != it_exception_end;
+						++it_exception, ++methodExceptionEnumerator )
+					{
+						const MethodException & me = *it_exception;
+
+						write() << "	else if( const " << me.name << " * method_ex = dynamic_cast<const " << me.name << " *>( &_ex ) )" << std::endl;
+						write() << "	{" << std::endl;
+						write() << "		_ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
+						write() << "		method_ex->write( _ar );" << std::endl;
+						write() << "	}" << std::endl;
+					}
+				}
+				write() << "		}break;" << std::endl;
+			}
+			write() << "	}" << std::endl;
+		}
+
 		write() << "}" << std::endl;
 
 		writeLine();
@@ -1152,8 +1206,6 @@ namespace Axe
 			write() << "	std::size_t ex_method_id;" << std::endl;
 			write() << "	_ar.readSize( ex_method_id );" << std::endl;
 			write() << std::endl;
-			write() << "	Axe::ExceptionPtr ex = 0;" << std::endl;
-			write() << std::endl;
 			
 
 			TVectorMethodExceptions::const_iterator
@@ -1164,12 +1216,14 @@ namespace Axe
 			{
 				const MethodException & me = *it_exception;
 
-				write() << "	if( ex_method_id == 0 )" << std::endl;
+				write() << "	if( ex_method_id == 2 )" << std::endl;
 				write() << "	{" << std::endl;
-				write() << "		ex = new " << me.name << ";" << std::endl;
+				write() << "		" << me.name << " ex;" << std::endl;
+				write() << "		ex.read( _ar );" << std::endl;
+				write() << "		this->throw_exception( ex ); " << std::endl;
 				write() << "	}" << std::endl;
 
-				std::size_t methodExceptionEnumerator = 1;
+				std::size_t methodExceptionEnumerator = 3;
 
 				for( ++it_exception;
 					it_exception != it_exception_end;
@@ -1177,16 +1231,14 @@ namespace Axe
 				{
 					write() << "	else if( ex_method_id == " << methodExceptionEnumerator << " )" << std::endl;
 					write() << "	{" << std::endl;
-					write() << "		ex = new " << me.name << ";" << std::endl;
+					write() << "		" << me.name << "ex;" << std::endl;
+					write() << "		ex.read( _ar );" << std::endl;
+					write() << "		this->throw_exception( ex ); " << std::endl;
 					write() << "	}" << std::endl;
 				}
-
-				write() << std::endl;
-				write() << "	ex->read( _ar );" << std::endl;
 			}
 
 			write() << std::endl;
-			write() << "	this->throw_exception( ex ); " << std::endl;
 			write() << "}" << std::endl;
 		}
 	}
