@@ -1,0 +1,35 @@
+#	include "pch.hpp"
+
+#	include "Exception.hpp"
+
+#	include "ArchiveWrite.hpp"
+#	include "ArchiveRead.hpp"
+
+namespace Axe
+{
+	//////////////////////////////////////////////////////////////////////////
+	LocalException::LocalException( const std::string & _message )
+		: m_message(_message)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LocalException::write( ArchiveWrite & _aw ) const
+	{
+		_aw << m_message;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LocalException::read( ArchiveRead & _ar )
+	{
+		_ar >> m_message;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UnknownException::write( ArchiveWrite & _ar ) const
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UnknownException::read( ArchiveRead & _ar )
+	{
+
+	}
+}
