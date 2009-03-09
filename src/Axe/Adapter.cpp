@@ -11,90 +11,16 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	class AdapterGridConnectResponse
-		: public GridConnectResponse
-		, public Response_GridManager_addAdapter
-	{
-	public:
-		AdapterGridConnectResponse( const AdapterPtr & _adapter, const AdapterInitializeResponsePtr & _response )
-			: m_adapter(_adapter)
-			, m_response(_response)
-		{
-		}
+	Adapter::Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _adapterId )
+		: Host(_communicator.getService(), _endpoint, _name)
+		, m_communicator(_communicator)
+		, m_adapterId(_adapterId)
 
-	public:
-		void connectSuccessful( const Proxy_GridManagerPtr & _gridManager ) override
-		{
-			m_gridManager = _gridManager;
-
-			const std::string & name = m_adapter->getName();
-			const boost::asio::ip::tcp::endpoint & tcp_endpoint = m_adapter->getEndpoint();
-
-			boost::asio::ip::address ip_addr = tcp_endpoint.address();
-			
-			std::string addr = ip_addr.to_string(); 
-			unsigned short port = tcp_endpoint.port();
-
-			std::stringstream ss;
-			ss << addr;
-			ss << " ";
-			ss << port;
-
-			std::string endpoint = ss.str();
-
-			m_gridManager->addAdapter( name, endpoint, this );
-		}
-
-		void connectFailed() override
-		{
-			m_response->onFailed();
-		}
-
-	public:
-		void response( std::size_t _id ) override
-		{
-			m_adapter->start( m_gridManager, _id );
-			m_response->onInitialize( m_adapter );
-		}
-
-		void throw_exception( const Axe::Exception & _ex ) override
-		{
-
-		}
-
-	protected:
-		AdapterPtr m_adapter;
-		AdapterInitializeResponsePtr m_response;
-
-		Proxy_GridManagerPtr m_gridManager;
-	};
-
-	typedef AxeHandle<AdapterGridConnectResponse> AdapterGridConnectResponsePtr;
-
-	//////////////////////////////////////////////////////////////////////////
-	Adapter::Adapter( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Host(_endpoint, _name)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::initialize( const boost::asio::ip::tcp::endpoint & _grid, const AdapterInitializeResponsePtr & _response )
+	void Adapter::start()
 	{
-		AdapterGridConnectResponsePtr gridResponse = new AdapterGridConnectResponse( this, _response );
-
-		GridConnectionPtr gridConnection
-			= new GridConnection( m_service, m_endpointCache, m_connectionCache, gridResponse );
-
-		gridConnection->connect( _grid );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Adapter::start( const Proxy_GridManagerPtr & _gridManager, std::size_t _hostId )
-	{
-		m_gridManager = _gridManager;
-
-		m_endpointCache = new EndpointCache( m_gridManager );
-
-		this->setHostId( _hostId );
-		
 		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -121,17 +47,31 @@ namespace Axe
 		m_gridManager->addUnique( _name, proxyUnique, new AdapterAddUniqueResponse() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Adapter::addServant( const ServantPtr & _servant )
+	{
+		std::size_t servantId = _servant->getServantId();
+
+		bool inserted = this->addServantById( _servant );
+
+		if( inserted == false )
+		{
+			printf("Adapter::addServant host '%d' already exist servant '%d'\n"
+				, m_hostId
+				, _servantId 
+				);
+		}
+		
+		const ConnectionPtr & cn = m_connectionCache->getConnection( m_adapterId );
+
+		ProxyPtr proxy = new Proxy( servantId, cn );
+
+		return proxy;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()
 	{
 		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this, m_connectionCache );
 
 		return session;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Adapter::createConnection( std::size_t _hostId )
-	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_acceptor.get_io_service(), _hostId, m_endpointCache, m_connectionCache  );
-
-		return connection;
 	}
 }

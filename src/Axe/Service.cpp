@@ -7,16 +7,12 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Service::Service( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+	Service::Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: m_endpoint(_endpoint)
-		, m_acceptor(m_service, _endpoint)
+		, m_service(_service)
+		, m_acceptor(_service, _endpoint)
 		, m_name(_name)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Service::run()
-	{
-		m_service.run();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Service::getName() const
