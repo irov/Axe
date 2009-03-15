@@ -13,23 +13,32 @@ namespace Axe
 
 	class Host
 		: public Service
+		, public ConnectionProvider
 	{
 	public:
-		Host( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+
+	public:
+		ProxyPtr addServant( const ServantPtr & _servant );
+		ProxyPtr addServantUnique( const ServantPtr & _servant );
+		ProxyPtr addServantByID( const ServantPtr & _servant, std::size_t _servantId );
 
 	public:
 		void setHostId( std::size_t _hostId );
 		std::size_t getHostId() const;
 
+		void refreshServantEndpoint( std::size_t _hostId );
+
 	public:
 		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
 
 	protected:
-		bool addServantByID( const ServantPtr & _servant );
-
-	protected:
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
 		TMapServants m_servants;
+
+		std::size_t m_hostId;
+
+		ConnectionCachePtr m_connectionCache;
 	};
 
 	typedef AxeHandle<Host> HostPtr;

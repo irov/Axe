@@ -12,7 +12,6 @@ namespace Axe
 	Grid::Grid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: Host(_endpoint, _name)
 	{
-		m_connectionCache = new ConnectionCache( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid::initialize()

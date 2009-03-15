@@ -447,46 +447,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Exception"
-			>
-			<File
-				RelativePath=".\Exception.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Exception.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Box"
-			>
-			<File
-				RelativePath=".\Box.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Communicator"
-			>
-			<File
-				RelativePath=".\Communicator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Communicator.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CommunicatorInitializer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CommunicatorInitializer.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="PCH"
 			>
 			<File
@@ -495,6 +455,18 @@
 			</File>
 			<File
 				RelativePath=".\pch.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Exception"
+			>
+			<File
+				RelativePath=".\Exception.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception.hpp"
 				>
 			</File>
 		</Filter>

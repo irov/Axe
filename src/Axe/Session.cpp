@@ -40,7 +40,7 @@ namespace Axe
 	{
 		m_streamWrite.begin();
 
-		m_streamWrite.write( true );
+		m_streamWrite.writePOD( true );
 
 		m_streamWrite.writeSize( _responseId );
 
@@ -51,7 +51,7 @@ namespace Axe
 	{
 		m_streamWrite.begin();
 
-		m_streamWrite.write( false );
+		m_streamWrite.writePOD( false );
 
 		m_streamWrite.writeSize( _responseId );
 
