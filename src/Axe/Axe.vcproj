@@ -470,6 +470,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Box"
+			>
+			<File
+				RelativePath=".\Box.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
