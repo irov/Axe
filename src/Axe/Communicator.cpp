@@ -106,10 +106,7 @@ namespace Axe
 	public:
 		void response( std::size_t _id ) override
 		{
-			AdapterPtr adapter = 
-				m_communicator->createAdapterWithId( m_endpoint, m_name, _id );
-
-			m_response->onCreate( adapter );
+			m_communicator->createAdapterWithId( m_endpoint, m_name, _id, m_response );
 		}
 
 		void throw_exception( const Axe::Exception & _ex ) override
@@ -153,16 +150,20 @@ namespace Axe
 		m_gridManager->addAdapter( _name, endpoint, gridResponse );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Axe::AdapterPtr Communicator::createAdapterWithId(
+	void Communicator::createAdapterWithId(
 		const boost::asio::ip::tcp::endpoint & _endpoint
 		, const std::string & _name
-		, std::size_t _id )
+		, std::size_t _id 
+		, const AdapterCreateResponsePtr & _response )
 	{
 		AdapterPtr adapter = new Adapter( this, _endpoint, _name, _id );
 
 		m_adapters.insert( std::make_pair( _name, adapter ) );
 
-		return adapter;
+		if( _response )
+		{
+			_response->onCreate( adapter );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::createRouter(
@@ -174,7 +175,10 @@ namespace Axe
 
 		m_routers.insert( std::make_pair( _name, router ) );
 
-		_response->onCreate( router );
+		if( _response )
+		{
+			_response->onCreate( router );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Communicator::createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache )

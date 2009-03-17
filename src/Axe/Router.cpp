@@ -91,7 +91,7 @@ namespace Axe
 		RouterPtr m_router;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Router::start()
+	void Router::run()
 	{
 		m_gridManager->getUnique( "PermissionsVerifier"
 			, new RouterResponse_GridManager_getUniquePermissionsVerifier( this ) 

@@ -67,10 +67,11 @@ namespace Axe
 			, const AdapterCreateResponsePtr & _response 
 			);
 
-		Axe::AdapterPtr createAdapterWithId(
+		void createAdapterWithId(
 			const boost::asio::ip::tcp::endpoint & _endpoint
 			, const std::string & _name
-			, std::size_t _id );
+			, std::size_t _id 
+			, const AdapterCreateResponsePtr & _response );
 
 	public:
 		void createRouter(
