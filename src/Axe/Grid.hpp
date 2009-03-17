@@ -8,6 +8,7 @@ namespace Axe
 {
 	class Grid
 		: public Host
+		, public ConnectionProvider
 	{	
 	public:
 		Grid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
@@ -22,9 +23,10 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _hostId ) override;
+		ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) override;
 
 	protected:
+		boost::asio::io_service m_service;
 		Proxy_GridManagerPtr m_gridManager;
 	};
 

@@ -7,8 +7,9 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Service::Service( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: m_endpoint(_endpoint)
+	Service::Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+		: m_service(_service)
+		, m_endpoint(_endpoint)
 		, m_acceptor(m_service, _endpoint)
 		, m_name(_name)
 	{

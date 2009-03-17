@@ -1,6 +1,9 @@
 #	include "pch.hpp"
 
 #	include "Router.hpp"
+
+#	include "Communicator.hpp"
+
 #	include "RouterResponse.hpp"
 #	include "RouterSession.hpp"
 
@@ -11,51 +14,20 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Router::Router( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Service(_endpoint, _name)
+	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+		: Service(_communicator->getService(), _endpoint, _name)
+		, m_connectionCache(_communicator->getConnectionCache())
+		, m_endpointCache(_communicator->getEndpointCache())
+		, m_gridManager(_communicator->getGridManager())
+
 	{
-		m_connectionCache = new ConnectionCache( this );
-		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	class RouterGridConnectResponse
-		: public GridConnectResponse
-	{
-	public:
-		RouterGridConnectResponse( const RouterPtr & _router )
-			: m_router(_router)
-		{
-		}
-
-	protected:
-		void connectSuccessful( const Proxy_GridManagerPtr & _gridManager )
-		{
-			m_router->start( _gridManager );
-		}
-
-		void connectFailed()
-		{
-
-		}
-
-	protected:
-		RouterPtr m_router;
-	};	
-	//////////////////////////////////////////////////////////////////////////
-	void Router::initialize( const boost::asio::ip::tcp::endpoint & _grid )
-	{
-		GridConnectionPtr gridConnection = new GridConnection( m_service, m_endpointCache, m_connectionCache
-			, new RouterGridConnectResponse( this ) 
-			);
-
-		gridConnection->connect( _grid );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::onSessionManager( const Proxy_SessionManagerPtr & _sessionManager )
 	{
 		m_sessionManager = _sessionManager;
 
-		this->accept();
+		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class RouterResponse_GridManager_getUniqueSessionManager
@@ -119,12 +91,8 @@ namespace Axe
 		RouterPtr m_router;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Router::start( const Proxy_GridManagerPtr & _gridManager )
+	void Router::start()
 	{
-		m_gridManager = _gridManager;
-
-		m_endpointCache = new EndpointCache( m_gridManager );
-
 		m_gridManager->getUnique( "PermissionsVerifier"
 			, new RouterResponse_GridManager_getUniquePermissionsVerifier( this ) 
 			);
@@ -219,13 +187,6 @@ namespace Axe
 		m_permissionsVerifier->checkPermissions( _login, _password
 			, new RouterResponse_PermissionsVerifier_checkPermissions( _login, m_sessionManager, _session ) 
 			);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Router::createConnection( std::size_t _hostId )
-	{
-		AdapterConnectionPtr cn = new AdapterConnection( m_service, _hostId, m_endpointCache, m_connectionCache );
-
-		return cn;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Router::makeSession()

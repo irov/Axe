@@ -9,55 +9,32 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Host::Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Service(_endpoint, _name)
-		, m_hostId(0)
-	{
-		m_connectionCache = new ConnectionCache( this );
+	Host::Host( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId )
+		: Service(_service, _endpoint, _name)
+		, m_connectionCache(_connectionCache)
+		, m_hostId(_hostId)
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Host::addServant( const ServantPtr & _servant )
 	{
 		std::size_t servantId = _servant->getServantId();
 
-		ProxyPtr proxy = this->addServantByID( _servant, servantId );
-
-		return proxy;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ProxyPtr Host::addServantUnique( const ServantPtr & _servant )
-	{
-		std::size_t servantId = 0;
-
-		TMapServants::reverse_iterator it_back = m_servants.rbegin();
-
-		if( it_back != m_servants.rend() )
-		{
-			servantId = it_back->first + 1;
-		}
-
-		ProxyPtr proxy = this->addServantByID( _servant, servantId );
-
-		return proxy;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ProxyPtr Host::addServantByID( const ServantPtr & _servant, std::size_t _servantId )
-	{
 		_servant->setHost( this );
 
-		bool inserted = m_servants.insert( std::make_pair( _servantId, _servant ) ).second;
+		bool inserted = m_servants.insert( std::make_pair( servantId, _servant ) ).second;
 
 		if( inserted == false )
 		{
 			printf("Host::addServant host '%d' already exist servant '%d'\n"
 				, m_hostId
-				, _servantId 
+				, servantId 
 				);
 		}
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
 
-		ProxyPtr proxy = new Proxy( _servantId, cn );
+		ProxyPtr proxy = new Proxy( servantId, cn );
 
 		return proxy;
 	}

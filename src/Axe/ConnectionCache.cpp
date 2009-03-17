@@ -23,7 +23,7 @@ namespace Axe
 
 		if( it_found == m_connections.end() )
 		{
-			ConnectionPtr connection = m_provider->createConnection( _hostId );
+			ConnectionPtr connection = m_provider->createConnection( _hostId, this );
 
 			it_found = m_connections.insert( std::make_pair(_hostId, connection) ).first;
 		}

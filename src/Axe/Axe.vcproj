@@ -478,6 +478,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Communicator"
+			>
+			<File
+				RelativePath=".\Communicator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Communicator.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

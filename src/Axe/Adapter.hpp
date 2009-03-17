@@ -2,8 +2,7 @@
 
 #	include "Host.hpp"
 
-#	include "GridConnection.hpp"
-#	include "GridConnectResponse.hpp"
+#	include "EndpointCache.hpp"
 
 #	include "AxeProtocols/Player.hpp"
 
@@ -11,6 +10,7 @@ namespace Axe
 {
 	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
 	typedef AxeHandle<class Connection> ConnectionPtr;
+	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
 	typedef AxeHandle<class Adapter> AdapterPtr;
 
@@ -28,22 +28,16 @@ namespace Axe
 		: public Host		
 	{
 	public:
-		Adapter( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
 
 	public:
-		void initialize( const boost::asio::ip::tcp::endpoint & _grid, const AdapterInitializeResponsePtr & _response );
-
-	public:
-		void start( const Proxy_GridManagerPtr & _gridManager, std::size_t _hostId );
+		void start();
 
 	public:
 		void addUnique( const std::string & _name, const Servant_UniquePtr & _unique );
 
 	protected:
 		SessionPtr makeSession() override;
-
-	protected:
-		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;

@@ -3,8 +3,6 @@
 #	include "Service.hpp"
 #	include "Proxy.hpp"
 
-#	include "ConnectionCache.hpp"
-
 namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
@@ -13,15 +11,12 @@ namespace Axe
 
 	class Host
 		: public Service
-		, public ConnectionProvider
 	{
 	public:
-		Host( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Host( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
 
 	public:
 		ProxyPtr addServant( const ServantPtr & _servant );
-		ProxyPtr addServantUnique( const ServantPtr & _servant );
-		ProxyPtr addServantByID( const ServantPtr & _servant, std::size_t _servantId );
 
 	public:
 		void setHostId( std::size_t _hostId );
@@ -33,12 +28,12 @@ namespace Axe
 		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
 
 	protected:
-		typedef std::map<std::size_t, ServantPtr> TMapServants;
-		TMapServants m_servants;
+		ConnectionCachePtr m_connectionCache;
 
 		std::size_t m_hostId;
 
-		ConnectionCachePtr m_connectionCache;
+		typedef std::map<std::size_t, ServantPtr> TMapServants;
+		TMapServants m_servants;		
 	};
 
 	typedef AxeHandle<Host> HostPtr;

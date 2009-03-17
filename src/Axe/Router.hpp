@@ -10,20 +10,17 @@
 namespace Axe
 {
 	typedef AxeHandle<class Connection> ConnectionPtr;
+	typedef AxeHandle<class Communicator> CommunicatorPtr;	
 	typedef AxeHandle<class RouterSession> RouterSessionPtr;	
 
 	class Router
 		: public Service
-		, public ConnectionProvider
 	{
 	public:
-		Router( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		void initialize( const boost::asio::ip::tcp::endpoint & _grid );
-
-	public:
-		void start( const Proxy_GridManagerPtr & _gridManager );
+		void start();
 
 	public:
 		void onPermissionsVerifier( const Proxy_PermissionsVerifierPtr & _permissionsVerifier );
@@ -33,20 +30,17 @@ namespace Axe
 		void dispatchMethod( ArchiveRead & _ar, std::size_t _size, const RouterSessionPtr & _sn );
 		void permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session );
 
-	public:
-		ConnectionPtr createConnection( std::size_t _hostId ) override;
-
 	protected:
 		SessionPtr makeSession() override;
 
 	protected:
-		Proxy_SessionManagerPtr m_sessionManager;
-		Proxy_PermissionsVerifierPtr m_permissionsVerifier;
+		ConnectionCachePtr m_connectionCache;
+		EndpointCachePtr m_endpointCache;
 
 		Proxy_GridManagerPtr m_gridManager;
 
-		ConnectionCachePtr m_connectionCache;
-		EndpointCachePtr m_endpointCache;
+		Proxy_SessionManagerPtr m_sessionManager;
+		Proxy_PermissionsVerifierPtr m_permissionsVerifier;
 	};
 
 	typedef AxeHandle<Router> RouterPtr;

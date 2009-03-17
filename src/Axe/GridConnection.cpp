@@ -13,13 +13,13 @@
 
 namespace Axe
 {
-	const std::size_t grid_endpoint_id = 0;
+	const std::size_t grid_host_id = 0;
 	//////////////////////////////////////////////////////////////////////////
 	GridConnection::GridConnection( boost::asio::io_service & _service, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache, const GridConnectResponsePtr & _connectResponse )
-		: AdapterConnection( _service, grid_endpoint_id, _endpointCache, _connectionCache )
+		: AdapterConnection( _service, grid_host_id, _endpointCache, _connectionCache )
 		, m_connectResponse(_connectResponse)
 	{
-		m_connectionCache->addConnection( grid_endpoint_id, this );
+		m_connectionCache->addConnection( grid_host_id, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridConnection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )

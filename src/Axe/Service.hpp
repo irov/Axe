@@ -10,7 +10,7 @@ namespace Axe
 		: virtual public Shared
 	{
 	public:
-		Service( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
 		void run();
@@ -29,9 +29,9 @@ namespace Axe
 		void acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _sn );
 
 	protected:
-		boost::asio::ip::tcp::endpoint m_endpoint;
+		boost::asio::io_service & m_service;
 
-		boost::asio::io_service m_service;
+		boost::asio::ip::tcp::endpoint m_endpoint;
 		boost::asio::ip::tcp::acceptor m_acceptor;
 
 		std::string m_name;
