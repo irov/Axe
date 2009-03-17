@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "../Axe/pch.hpp"
+#	include "../Axe/Communicator.hpp"
 #	include "../Axe/Adapter.hpp"
 #	include "../AxeProtocols/Player.hpp"
 
@@ -78,7 +79,7 @@ public:
 	{
 		Axe::Servant_PlayerPtr player = new MyPlayer( _login );
 
-		Axe::ProxyPtr base = m_adapter->addServantUnique( player );
+		Axe::ProxyPtr base = m_adapter->addServant( player );
 
 		Axe::Proxy_PlayerPtr playerPrx = Axe::uncheckedCast<Axe::Proxy_PlayerPtr>( base );
 
@@ -89,11 +90,11 @@ protected:
 	Axe::AdapterPtr m_adapter;
 };
 
-class AdapterInitialize
-	: public Axe::AdapterInitializeResponse
+class MyAdapterCreateResponse
+	: public Axe::AdapterCreateResponse
 {
 public:
-	void onInitialize( const Axe::AdapterPtr & _adapter ) override
+	void onCreate( const Axe::AdapterPtr & _adapter ) override
 	{
 		MyPermissionsVerifierPtr permissionsVerifier = new MyPermissionsVerifier();
 
@@ -103,6 +104,8 @@ public:
 
 		_adapter->addUnique( "PermissionsVerifier", permissionsVerifier );
 		_adapter->addUnique( "SessionManager", sessionManager );
+
+		_adapter->run();
 	}
 
 	void onFailed() override
@@ -111,17 +114,29 @@ public:
 	}
 };
 
+class MyCommunicatorInitializeResponse
+	: public Axe::CommunicatorInitializeResponse
+{
+public:
+	void onInitialize( const Axe::CommunicatorPtr & _communicator ) override
+	{
+		boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12002);
+
+		_communicator->createAdapter( ep, "Server", new MyAdapterCreateResponse() );
+	}
+
+	void onFailed() override
+	{
+
+	}
+};
+
+
 void main()
 {
-	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12002);
-
-	unsigned short ep_port = ep.port();
-
-	Axe::AdapterPtr adapter = new Axe::Adapter( ep, "Test" );
+	Axe::CommunicatorPtr cm = new Axe::Communicator();
 
 	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 
-	adapter->initialize( grid_ep, new AdapterInitialize() );
-
-	adapter->run();
+	cm->run( grid_ep, new MyCommunicatorInitializeResponse() );
 }
