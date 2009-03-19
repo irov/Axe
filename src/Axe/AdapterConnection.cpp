@@ -1,13 +1,13 @@
 #	include "pch.hpp"
 
-#	include "AdapterConnection.hpp"
+#	include <Axe/AdapterConnection.hpp>
 
-#	include "Session.hpp"
-#	include "Adapter.hpp"
-#	include "Response.hpp"
+#	include <Axe/Session.hpp>
+#	include <Axe/Adapter.hpp>
+#	include <Axe/Response.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {

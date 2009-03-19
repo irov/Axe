@@ -1,17 +1,17 @@
 #	include "pch.hpp"
 
-#	include "Grid.hpp"
-#	include "GridSession.hpp"
-#	include "AdapterConnection.hpp"
+#	include <Axe/Grid.hpp>
+#	include <Axe/GridSession.hpp>
+#	include <Axe/AdapterConnection.hpp>
 
-#	include "GridManager.hpp"
+#	include <Axe/GridManager.hpp>
 
 namespace Axe
 {
 	const std::size_t grid_host_id = 0;
 	//////////////////////////////////////////////////////////////////////////
-	Grid::Grid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Host(m_service, new ConnectionCache(this), _endpoint, _name, grid_host_id)
+	Grid::Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+		: Host(_service, new ConnectionCache(this), _endpoint, _name, grid_host_id)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,5 +46,14 @@ namespace Axe
 		AdapterConnectionPtr connection = new AdapterConnection( m_service, _hostId, 0, _connectionCache );
 
 		return connection;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridInitializer::run( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+	{
+		m_grid = new Grid( m_service, _endpoint, _name );
+
+		m_grid->initialize();
+
+		m_grid->run();
 	}
 }

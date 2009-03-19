@@ -1,9 +1,9 @@
 #	pragma once
 
 
-#	include "Invocation.hpp"
+#	include <Axe/Invocation.hpp>
 
-#	include "ConnectionCache.hpp"
+#	include <Axe/ConnectionCache.hpp>
 
 namespace Axe
 {

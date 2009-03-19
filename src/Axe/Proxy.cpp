@@ -1,11 +1,11 @@
 #	include "pch.hpp"
 
-#	include "Proxy.hpp"
+#	include <Axe/Proxy.hpp>
 
-#	include "ConnectionCache.hpp"
+#	include <Axe/ConnectionCache.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {

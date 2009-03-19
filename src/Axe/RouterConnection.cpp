@@ -1,14 +1,14 @@
 #	include "pch.hpp"
 
-#	include "RouterConnection.hpp"
-#	include "RouterProxyConnection.hpp"
+#	include <Axe/RouterConnection.hpp>
+#	include <Axe/RouterProxyConnection.hpp>
 
-#	include "Response.hpp"
+#	include <Axe/Response.hpp>
 
-#	include "ArchiveRead.hpp"
-#	include "ArchiveWrite.hpp"
+#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveWrite.hpp>
 
-#	include "Client.hpp"
+#	include <Axe/Client.hpp>
 
 #	include <AxeProtocols/Player.hpp>
 

@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Shared.hpp"
+#	include <Axe/Shared.hpp>
 
-#	include "AdapterSession.hpp"
+#	include <Axe/AdapterSession.hpp>
 
 namespace Axe
 {

@@ -1,9 +1,9 @@
 #	include "pch.hpp"
 
-#	include "Invocation.hpp"
+#	include <Axe/Invocation.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {

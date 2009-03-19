@@ -1,10 +1,11 @@
 #	include "pch.hpp"
-#	include "Host.hpp"
 
-#	include "AdapterSession.hpp"
-#	include "AdapterConnection.hpp"
+#	include <Axe/Host.hpp>
 
-#	include "Servant.hpp"
+#	include <Axe/AdapterSession.hpp>
+#	include <Axe/AdapterConnection.hpp>
+
+#	include <Axe/Servant.hpp>
 
 namespace Axe
 {

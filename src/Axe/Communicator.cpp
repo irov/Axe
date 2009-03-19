@@ -1,11 +1,11 @@
 #	include "pch.hpp"
 
-#	include "Communicator.hpp"
+#	include <Axe/Communicator.hpp>
 
-#	include "GridConnection.hpp"
+#	include <Axe/GridConnection.hpp>
 
-#	include "Adapter.hpp"
-#	include "Router.hpp"
+#	include <Axe/Adapter.hpp>
+#	include <Axe/Router.hpp>
 
 namespace Axe
 {

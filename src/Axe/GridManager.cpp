@@ -1,6 +1,6 @@
 #	include "pch.hpp"
 
-#	include "GridManager.hpp"
+#	include <Axe/GridManager.hpp>
 
 namespace Axe
 {

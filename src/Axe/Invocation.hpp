@@ -1,9 +1,9 @@
 #	pragma once
 
-#	include "Dispatcher.hpp"
-#	include "Connection.hpp"
+#	include <Axe/Dispatcher.hpp>
+#	include <Axe/Connection.hpp>
 
-#	include "EndpointCache.hpp"
+#	include <Axe/EndpointCache.hpp>
 
 namespace Axe
 {

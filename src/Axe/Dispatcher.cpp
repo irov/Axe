@@ -1,6 +1,6 @@
 #	include "pch.hpp"
 
-#	include "Dispatcher.hpp"
+#	include <Axe/Dispatcher.hpp>
 
 namespace Axe
 {

@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Shared.hpp"
+#	include <Axe/Shared.hpp>
 
-#	include "Connection.hpp"
+#	include <Axe/Connection.hpp>
 
 namespace Axe
 {

@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "RouterConnection.hpp"
-#	include "ConnectionCache.hpp"
-#	include "ClientConnectResponse.hpp"
+#	include <Axe/RouterConnection.hpp>
+#	include <Axe/ConnectionCache.hpp>
+#	include <Axe/ClientConnectResponse.hpp>
 
 namespace Axe
 {

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Dispatcher.hpp"
+#	include <Axe/Dispatcher.hpp>
 
 namespace Axe
 {

@@ -1,15 +1,15 @@
 #	include "pch.hpp"
 
-#	include "GridConnection.hpp"
+#	include <Axe/GridConnection.hpp>
 
-#	include "Session.hpp"
-#	include "Adapter.hpp"
-#	include "Response.hpp"
+#	include <Axe/Session.hpp>
+#	include <Axe/Adapter.hpp>
+#	include <Axe/Response.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
-#	include "AxeProtocols/Player.hpp"
+#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {

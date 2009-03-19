@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include "Session.hpp"
-#	include "Host.hpp"
+#	include <Axe/Session.hpp>
+#	include <Axe/Host.hpp>
 
 namespace Axe
 {

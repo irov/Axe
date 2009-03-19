@@ -1,9 +1,9 @@
 #	pragma once
 
-#	include "ConnectionCache.hpp"
-#	include "EndpointCache.hpp"
+#	include <Axe/ConnectionCache.hpp>
+#	include <Axe/EndpointCache.hpp>
 
-#	include "AxeProtocols/Player.hpp"
+#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {

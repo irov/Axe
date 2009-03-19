@@ -1,7 +1,7 @@
 #	include "pch.hpp"
 
-#	include "GridSession.hpp"
-#	include "Grid.hpp"
+#	include <Axe/GridSession.hpp>
+#	include <Axe/Grid.hpp>
 
 namespace Axe
 {

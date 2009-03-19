@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "AdapterConnection.hpp"
+#	include <Axe/AdapterConnection.hpp>
 
-#	include "GridConnectResponse.hpp"
+#	include <Axe/GridConnectResponse.hpp>
 
 namespace Axe
 {

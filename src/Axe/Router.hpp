@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "Servant.hpp"
-#	include "Response.hpp"
+#	include <Axe/Servant.hpp>
+#	include <Axe/Response.hpp>
 
-#	include "GridConnection.hpp"
+#	include <Axe/GridConnection.hpp>
 
-#	include "AxeProtocols/Player.hpp"
+#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {

@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "../Axe/pch.hpp"
-#	include "../Axe/Communicator.hpp"
-#	include "../Axe/Router.hpp"
+#	include <Axe/pch.hpp>
+#	include <Axe/Communicator.hpp>
+#	include <Axe/Router.hpp>
 
 #	include <stdio.h>
 

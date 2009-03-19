@@ -1,9 +1,8 @@
 #	pragma once
 
-#	include "../Axe/pch.hpp"
-#	include "../Axe/Client.hpp"
-#	include "../Axe/Client.hpp"
-#	include "../AxeProtocols/Player.hpp"
+#	include <Axe/pch.hpp>
+#	include <Axe/Client.hpp>
+#	include <AxeProtocols/Player.hpp>
 
 #	include <stdio.h>
 

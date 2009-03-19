@@ -1,8 +1,8 @@
 #	include "pch.hpp"
 
-#	include "Service.hpp"
+#	include <Axe/Service.hpp>
 
-#	include "Session.hpp"
+#	include <Axe/Session.hpp>
 
 namespace Axe
 {
@@ -10,7 +10,7 @@ namespace Axe
 	Service::Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: m_service(_service)
 		, m_endpoint(_endpoint)
-		, m_acceptor(m_service, _endpoint)
+		, m_acceptor(_service, _endpoint)
 		, m_name(_name)
 	{
 	}

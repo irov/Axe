@@ -1,14 +1,14 @@
 #	include "pch.hpp"
-#	include "Adapter.hpp"
+#	include <Axe/Adapter.hpp>
 
-#	include "Communicator.hpp"
+#	include <Axe/Communicator.hpp>
 
-#	include "AdapterSession.hpp"
-#	include "AdapterConnection.hpp"
+#	include <Axe/AdapterSession.hpp>
+#	include <Axe/AdapterConnection.hpp>
 
-#	include "Servant.hpp"
+#	include <Axe/Servant.hpp>
 
-#	include "AxeProtocols/Player.hpp"
+#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {

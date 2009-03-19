@@ -1,11 +1,11 @@
 #	include "pch.hpp"
 
-#	include "AdapterSession.hpp"
+#	include <Axe/AdapterSession.hpp>
 
-#	include "Adapter.hpp"
+#	include <Axe/Adapter.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {

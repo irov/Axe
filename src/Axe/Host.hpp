@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include "Service.hpp"
-#	include "Proxy.hpp"
+#	include <Axe/Service.hpp>
+#	include <Axe/Proxy.hpp>
 
 namespace Axe
 {

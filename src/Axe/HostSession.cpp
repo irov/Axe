@@ -1,9 +1,9 @@
 #	include "pch.hpp"
 
-#	include "HostSession.hpp"
+#	include <Axe/HostSession.hpp>
 
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {

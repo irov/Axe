@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "AdapterConnection.hpp"
-#	include "ConnectionCache.hpp"
-#	include "ClientConnectResponse.hpp"
+#	include <Axe/AdapterConnection.hpp>
+#	include <Axe/ConnectionCache.hpp>
+#	include <Axe/ClientConnectResponse.hpp>
 
 namespace Axe
 {

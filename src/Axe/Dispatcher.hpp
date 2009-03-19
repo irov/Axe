@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Shared.hpp"
-#	include "ArchiveWrite.hpp"
-#	include "ArchiveRead.hpp"
+#	include <Axe/Shared.hpp>
+#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {
