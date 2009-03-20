@@ -625,7 +625,7 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
-			write() << "	void " << mt.name << "(";
+			write() << "	void " << mt.name << "( const " << response_name << " & _response";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -635,10 +635,10 @@ namespace Axe
 			{
 				const Argument & ar = *it_args;
 
-				m_stream << " " << writeArgumentType( ar.type.name ) << " " << ar.name << ",";
+				m_stream << ", " << writeArgumentType( ar.type.name ) << " " << ar.name;
 			}
 
-			m_stream << " const " << response_name << " & _response );" << std::endl;
+			m_stream << " );" << std::endl;			
 		}
 
 		write() << "};" << std::endl;
@@ -1142,6 +1142,36 @@ namespace Axe
 		//	this->response( *a0 );
 		//}
 
+		//template<>
+		//class BindF<Foo *>
+		//	: public Foo
+		//{
+		//	typedef boost::function<void (int, float)> TBindResponse;
+		//	typedef boost::function<void(const std::exception &)> TBindException;
+
+		//public:
+		//	BindF( const TBindResponse & _response, const TBindException & _exception )
+		//		: m_response(_response)
+		//		, m_exception(_exception)
+		//	{
+		//	}
+
+		//public:
+		//	void response( int _i, float _f ) override
+		//	{
+		//		m_response( _i, _f );
+		//	}
+
+		//	void throw_exception( const std::exception & _ex ) override
+		//	{
+		//		m_exception( _ex );
+		//	}
+
+		//protected:
+		//	TBindResponse m_response;
+		//	TBindException m_exception;
+		//};
+
 		write() << std::endl;
 
 		const Class & cl = _class;
@@ -1296,7 +1326,7 @@ namespace Axe
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
 			writeLine();
-			write() << "void " << proxy_name << "::" << mt.name << "(";
+			write() << "void " << proxy_name << "::" << mt.name << "( const " << response_name << " & _response";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -1306,10 +1336,10 @@ namespace Axe
 			{
 				const Argument & ar = *it_args;
 
-				m_stream << " " << writeArgumentType( ar.type.name ) << " " << ar.name << ",";
+				m_stream << ", " << writeArgumentType( ar.type.name ) << " " << ar.name;
 			}
 
-			m_stream << " const " << response_name << " & _response )" << std::endl;
+			m_stream << " )" << std::endl;
 
 			write() << "{" << std::endl;
 

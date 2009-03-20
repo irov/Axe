@@ -79,8 +79,7 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Response_Player_test> Response_Player_testPtr;
-	
-	
+
 	class Proxy_Player
 		: virtual public Axe::Proxy
 	{
@@ -88,7 +87,7 @@ namespace Axe
 		Proxy_Player( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void test( const PlayerInfo & info, const Response_Player_testPtr & _response );
+		void test( const Response_Player_testPtr & _response, const PlayerInfo & info );
 	};
 	
 	typedef AxeHandle<Proxy_Player> Proxy_PlayerPtr;
@@ -194,7 +193,7 @@ namespace Axe
 		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void checkPermissions( const std::string & _login, const std::string & _password, const Response_PermissionsVerifier_checkPermissionsPtr & _response );
+		void checkPermissions( const Response_PermissionsVerifier_checkPermissionsPtr & _response, const std::string & _login, const std::string & _password );
 	};
 	
 	typedef AxeHandle<Proxy_PermissionsVerifier> Proxy_PermissionsVerifierPtr;
@@ -264,7 +263,7 @@ namespace Axe
 		Proxy_SessionManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void create( const std::string & _login, const Response_SessionManager_createPtr & _response );
+		void create( const Response_SessionManager_createPtr & _response, const std::string & _login );
 	};
 	
 	typedef AxeHandle<Proxy_SessionManager> Proxy_SessionManagerPtr;
@@ -452,10 +451,10 @@ namespace Axe
 		Proxy_GridManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void addAdapter( const std::string & _name, const std::string & _endpoint, const Response_GridManager_addAdapterPtr & _response );
-		void getAdapterEndpoint( std::size_t _hostId, const Response_GridManager_getAdapterEndpointPtr & _response );
-		void addUnique( const std::string & _name, const Proxy_UniquePtr & _unique, const Response_GridManager_addUniquePtr & _response );
-		void getUnique( const std::string & _name, const Response_GridManager_getUniquePtr & _response );
+		void addAdapter( const Response_GridManager_addAdapterPtr & _response, const std::string & _name, const std::string & _endpoint );
+		void getAdapterEndpoint( const Response_GridManager_getAdapterEndpointPtr & _response, std::size_t _hostId );
+		void addUnique( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const Proxy_UniquePtr & _unique );
+		void getUnique( const Response_GridManager_getUniquePtr & _response, const std::string & _name );
 	};
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;
