@@ -15,7 +15,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid::initialize()
+	const Proxy_GridManagerPtr & Grid::initialize()
 	{
 		GridManagerPtr servant = new GridManager();
 
@@ -27,6 +27,8 @@ namespace Axe
 			= uncheckedCast<Proxy_GridManagerPtr>(base);
 
 		this->accept();
+
+		return m_gridManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Proxy_GridManagerPtr & Grid::getGridManager() const
@@ -46,14 +48,5 @@ namespace Axe
 		AdapterConnectionPtr connection = new AdapterConnection( m_service, _hostId, 0, _connectionCache );
 
 		return connection;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void GridInitializer::run( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-	{
-		m_grid = new Grid( m_service, _endpoint, _name );
-
-		m_grid->initialize();
-
-		m_grid->run();
 	}
 }

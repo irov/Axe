@@ -88,6 +88,22 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_Player_testPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_Player_testPtr>::response( int _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_Player_testPtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Response_Player_test::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		int arg0; _ar >> arg0;
@@ -96,9 +112,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_Player_test::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
 	}
 	
@@ -231,6 +251,22 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::response( bool _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		bool arg0; _ar >> arg0;
@@ -239,9 +275,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_PermissionsVerifier_checkPermissions::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
 	}
 	
@@ -335,6 +375,22 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_SessionManager_createPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_SessionManager_createPtr>::response( const Proxy_PlayerPtr & _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_SessionManager_createPtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Response_SessionManager_create::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		Proxy_PlayerPtr arg0 = Axe::makeProxy<Proxy_PlayerPtr>( _ar );
@@ -343,9 +399,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_SessionManager_create::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
 	}
 	
@@ -551,6 +611,22 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_GridManager_addAdapterPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_addAdapterPtr>::response( std::size_t _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_addAdapterPtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_addAdapter::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
 		std::size_t arg0; _ar >> arg0;
@@ -559,16 +635,39 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_addAdapter::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
-		if( ex_method_id == 2 )
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
 		{
-			AdapterAlreadyExistet ex;
-			ex.read( _ar );
-			this->throw_exception( ex ); 
+			return;
 		}
+		switch( exceptionId )
+		{
+		case 2:
+			{
+				AdapterAlreadyExistet ex;
+				ex.read( _ar );
+				this->throw_exception( ex ); 
+			}
+		};
 	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_GridManager_getAdapterEndpointPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_getAdapterEndpointPtr>::response( const std::string & _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_getAdapterEndpointPtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_getAdapterEndpoint::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
@@ -579,10 +678,30 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_getAdapterEndpoint::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_GridManager_addUniquePtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_addUniquePtr>::response()
+	{
+		m_response();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_addUniquePtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_addUnique::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
@@ -592,10 +711,30 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_addUnique::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BindResponse<Response_GridManager_getUniquePtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
+		: m_response(_response)
+		, m_exception(_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_getUniquePtr>::response( const Proxy_UniquePtr & _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<Response_GridManager_getUniquePtr>::throw_exception( const Axe::Exception & _ex )
+	{
+		m_exception( _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_getUnique::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )
@@ -606,9 +745,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_getUnique::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )
 	{
-		std::size_t ex_method_id;
-		_ar.readSize( ex_method_id );
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
 	
+		if( this->exceptionFilter( exceptionId, _ar ) == true )
+		{
+			return;
+		}
 	
 	}
 	

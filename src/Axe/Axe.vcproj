@@ -314,6 +314,10 @@
 			Name="Response"
 			>
 			<File
+				RelativePath=".\Response.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Response.hpp"
 				>
 			</File>

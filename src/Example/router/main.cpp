@@ -44,5 +44,7 @@ void main()
 
 	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 	
-	cm->run( grid_ep, new MyCommunicatorInitializeResponse() );
+	cm->initialize( grid_ep, new MyCommunicatorInitializeResponse() );
+
+	cm->run();
 }

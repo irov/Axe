@@ -63,8 +63,9 @@ namespace Axe
 
 		if( it_found == m_endpoints.end() )
 		{
-			m_gridManager->getAdapterEndpoint( _hostId
-				, new EndpointCacheResponse_GridManager_getAdapterEndpoint( this, _hostId, _cb )
+			m_gridManager->getAdapterEndpoint( 
+				new EndpointCacheResponse_GridManager_getAdapterEndpoint( this, _hostId, _cb )
+				, _hostId
 				);
 		}
 		else

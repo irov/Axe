@@ -60,8 +60,9 @@ namespace Axe
 	{
 		m_permissionsVerifier = _permissionsVerifier;
 
-		m_gridManager->getUnique( "SessionManager"
-			, new RouterResponse_GridManager_getUniqueSessionManager( this ) 
+		m_gridManager->getUnique( 
+			new RouterResponse_GridManager_getUniqueSessionManager( this ) 
+			, "SessionManager"
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,8 +94,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Router::run()
 	{
-		m_gridManager->getUnique( "PermissionsVerifier"
-			, new RouterResponse_GridManager_getUniquePermissionsVerifier( this ) 
+		m_gridManager->getUnique( 
+			new RouterResponse_GridManager_getUniquePermissionsVerifier( this )
+			, "PermissionsVerifier"
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -165,8 +167,9 @@ namespace Axe
 	public:
 		void response( bool _successful ) override
 		{
-			m_sessionManager->create( m_login
-				, new RouterResponse_SessionManager_create( m_session ) 
+			m_sessionManager->create( 
+				new RouterResponse_SessionManager_create( m_session ) 
+				, m_login
 				);
 		}
 
@@ -184,8 +187,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
-		m_permissionsVerifier->checkPermissions( _login, _password
-			, new RouterResponse_PermissionsVerifier_checkPermissions( _login, m_sessionManager, _session ) 
+		m_permissionsVerifier->checkPermissions( 
+			new RouterResponse_PermissionsVerifier_checkPermissions( _login, m_sessionManager, _session )
+			, _login, _password
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

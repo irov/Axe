@@ -5,6 +5,7 @@
 namespace Axe
 {
 	class ArchiveRead;
+	class Exception;
 
 	class Response
 		: virtual public Shared
@@ -12,6 +13,12 @@ namespace Axe
 	public:
 		virtual void responseCall( ArchiveRead & _ar, std::size_t _size ) = 0;
 		virtual void exceptionCall( ArchiveRead & _ar, std::size_t _size ) = 0;
+
+	protected:
+		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
+
+	protected:
+		bool exceptionFilter( std::size_t _exceptionId, ArchiveRead & _ar );
 	};
 
 	template<class F>

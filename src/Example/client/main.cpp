@@ -36,7 +36,9 @@ protected:
 		pi.id = 2;
 		pi.name = "test";
 
-		_player->test( pi, new MyClientResponse_Player_test );
+		_player->test( 
+			 new MyClientResponse_Player_test
+			 , pi );
 	}
 
 	void connectFailed() override

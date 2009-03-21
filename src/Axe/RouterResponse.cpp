@@ -33,4 +33,9 @@ namespace Axe
 		write.writeArchive( args_buff, lenght );
 		m_session->process();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterResponse::throw_exception( const Exception & _ex )
+	{
+		//Empty
+	}
 }

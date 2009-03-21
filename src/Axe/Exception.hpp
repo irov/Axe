@@ -19,6 +19,7 @@ namespace Axe
 		: public Exception
 	{
 	public:
+		LocalException();
 		LocalException( const std::string & _message );
 
 	public:

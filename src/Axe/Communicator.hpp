@@ -2,6 +2,7 @@
 
 #	include <Axe/ConnectionCache.hpp>
 #	include <Axe/EndpointCache.hpp>
+#	include <Axe/Grid.hpp>
 
 #	include <AxeProtocols/Player.hpp>
 
@@ -55,7 +56,13 @@ namespace Axe
 		const Proxy_GridManagerPtr & getGridManager() const;
 
 	public:
-		void run( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorInitializeResponsePtr & _initializeResponse );
+		void initialize( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorInitializeResponsePtr & _initializeResponse );
+		void initialize( const Proxy_GridManagerPtr & _gridManager, const CommunicatorInitializeResponsePtr & _initializeResponse );
+
+		void initializeGrid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, const CommunicatorInitializeResponsePtr & _initializeResponse );
+
+	public:
+		void run();
 
 	public:
 		void onInitialize( const Proxy_GridManagerPtr & _gridManager, const CommunicatorInitializeResponsePtr & _initializeResponse );
@@ -84,12 +91,23 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache ) override;
 
 	protected:
+		void addAdapterResponse( std::size_t _id
+			, const boost::asio::ip::tcp::endpoint & _endpoint
+			, const std::string & _name
+			, const AdapterCreateResponsePtr & _response 
+			);
+
+		void addAdapterException( const Axe::Exception & _ex );
+
+	protected:
 		boost::asio::io_service m_service;
 
 		Proxy_GridManagerPtr m_gridManager;
 
 		ConnectionCachePtr m_connectionCache;
 		EndpointCachePtr m_endpointCache;
+
+		GridPtr m_grid;
 
 		typedef std::map<std::string, AdapterPtr> TMapAdapters;
 		TMapAdapters m_adapters;

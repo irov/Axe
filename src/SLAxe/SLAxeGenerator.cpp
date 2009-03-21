@@ -519,6 +519,8 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name );
 
+			writeLine();
+
 			write() << "class " << response_name << std::endl;
 			write() << "	: public Axe::Response" << std::endl;
 
@@ -549,15 +551,88 @@ namespace Axe
 
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
-			write() << "	virtual void throw_exception( const Axe::Exception & _ex ) = 0;" << std::endl;
-			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
 			write() << "	void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
+			
 			write() << std::endl;
+
+			write() << "template<>" << std::endl;
+			write() << "class BindResponse<" << response_name << "Ptr>" << std::endl;
+			write() << "	: public " << response_name << std::endl;
+			write() << "{" << std::endl;
+			write() << "	typedef boost::function<void(";
+
+			{
+				TVectorArguments::const_iterator
+					it_arg = mt.outArguments.begin(),
+					it_arg_end = mt.outArguments.end();
+
+				if( it_arg != it_arg_end )
+				{
+					m_stream << writeArgumentType( it_arg->type.name );
+
+					for( ++it_arg; it_arg != it_arg_end; ++it_arg )
+					{
+						m_stream << ", " << writeArgumentType( it_arg->type.name );
+					}
+				}
+			}
+
+			m_stream << ")> TBindResponse;" << std::endl;
+
+			write() << "	typedef boost::function<void(const Axe::Exception &)> TBindException;" << std::endl;
+			write() << std::endl;
+			write() << "public:" << std::endl;
+			write() << "	BindResponse( const TBindResponse & _response, const TBindException & _exception );" << std::endl;
+			write() << std::endl;
+			write() << "public:" << std::endl;
+
+			//	void response( int _i, float _f ) override
+			//	{
+			//		m_response( _i, _f );
+			//	}
+
+			write() << "	void response(";
+
+			{
+				std::size_t bellhop_args = 0;
+
+				TVectorArguments::const_iterator 
+					it_args = mt.outArguments.begin(),
+					it_args_end = mt.outArguments.end();
+
+				if( it_args != it_args_end )
+				{
+					const Argument & ar = *it_args;
+
+					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+					++bellhop_args;
+
+					for( ++it_args; it_args != it_args_end; ++it_args )
+					{
+						const Argument & ar = *it_args;
+
+						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+						++bellhop_args;
+					}
+
+					m_stream << " ";
+				}
+			}
+
+			m_stream << ") override;" << std::endl;
+
+			write() << std::endl;
+			write() << "	void throw_exception( const Axe::Exception & _ex ) override;" << std::endl;
+			write() << std::endl;
+			write() << "protected:" << std::endl;
+			write() << "	TBindResponse m_response;" << std::endl;
+			write() << "	TBindException m_exception;" << std::endl;
+			write() << "};" << std::endl;
 		}
 	}
 	void SLAxeGenerator::generateHeaderProxy( const Declaration::Class & _class )
@@ -1143,14 +1218,14 @@ namespace Axe
 		//}
 
 		//template<>
-		//class BindF<Foo *>
+		//class BindResponse<Foo *>
 		//	: public Foo
 		//{
 		//	typedef boost::function<void (int, float)> TBindResponse;
 		//	typedef boost::function<void(const std::exception &)> TBindException;
 
 		//public:
-		//	BindF( const TBindResponse & _response, const TBindException & _exception )
+		//	BindResponse( const TBindResponse & _response, const TBindException & _exception )
 		//		: m_response(_response)
 		//		, m_exception(_exception)
 		//	{
@@ -1183,6 +1258,85 @@ namespace Axe
 		++it_method )
 		{
 			const Method & mt = *it_method;
+
+			writeLine();
+
+			std::string bindResponse = "BindResponse<" + writeResponseName( cl.name, mt.name ) + "Ptr>";
+
+			write() << bindResponse << "::BindResponse( const TBindResponse & _response, const TBindException & _exception )" << std::endl;
+			write() << "	: m_response(_response)" << std::endl;
+			write() << "	, m_exception(_exception)" << std::endl;
+			write() << "{" << std::endl;
+			write() << "}" << std::endl;
+			//	void response( int _i, float _f ) override
+			//	{
+			//		m_response( _i, _f );
+			//	}
+
+			writeLine();
+			write() << "void " << bindResponse << "::response(";
+
+			{
+				std::size_t bellhop_args = 0;
+
+				TVectorArguments::const_iterator 
+					it_args = mt.outArguments.begin(),
+					it_args_end = mt.outArguments.end();
+
+				if( it_args != it_args_end )
+				{
+					const Argument & ar = *it_args;
+
+					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+					++bellhop_args;
+
+					for( ++it_args; it_args != it_args_end; ++it_args )
+					{
+						const Argument & ar = *it_args;
+
+						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+						++bellhop_args;
+					}
+
+					m_stream << " ";
+				}
+			}
+
+			m_stream << ")" << std::endl;
+
+			write() << "{" << std::endl;
+
+			write() << "	m_response(";
+
+			{
+				std::size_t bellhop_args = 0;
+
+				TVectorArguments::const_iterator
+					it_arg = mt.outArguments.begin(),
+					it_arg_end = mt.outArguments.end();
+
+				if( it_arg != it_arg_end )
+				{
+					m_stream << " _arg" << bellhop_args;
+					++bellhop_args;
+
+					for( ++it_arg; it_arg != it_arg_end; ++it_arg )
+					{
+						m_stream << ", _arg" << bellhop_args;
+						++bellhop_args;
+					}
+
+					m_stream << " ";
+				}
+			}
+
+			m_stream << ");" << std::endl;
+			write() << "}" << std::endl;
+			writeLine();
+			write() << "void " << bindResponse << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	m_exception( _ex );" << std::endl;
+			write() << "}" << std::endl;
 
 			writeLine();
 			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
@@ -1233,39 +1387,41 @@ namespace Axe
 			writeLine();
 			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	std::size_t ex_method_id;" << std::endl;
-			write() << "	_ar.readSize( ex_method_id );" << std::endl;
+			write() << "	std::size_t exceptionId;" << std::endl;
+			write() << "	_ar.readSize( exceptionId );" << std::endl;
 			write() << std::endl;
-			
 
-			TVectorMethodExceptions::const_iterator
-				it_exception = mt.exceptions.begin(),
-				it_exception_end = mt.exceptions.end();
+			write() << "	if( this->exceptionFilter( exceptionId, _ar ) == true )" << std::endl;
+			write() << "	{" << std::endl;
+			write() << "		return;" << std::endl;
+			write() << "	}" << std::endl;
 
-			if( it_exception != it_exception_end )
+			if( mt.exceptions.empty() == false )
 			{
-				const MethodException & me = *it_exception;
-
-				write() << "	if( ex_method_id == 2 )" << std::endl;
+				write() << "	switch( exceptionId )" << std::endl;
 				write() << "	{" << std::endl;
-				write() << "		" << me.name << " ex;" << std::endl;
-				write() << "		ex.read( _ar );" << std::endl;
-				write() << "		this->throw_exception( ex ); " << std::endl;
-				write() << "	}" << std::endl;
 
-				std::size_t methodExceptionEnumerator = 3;
+				std::size_t exceptionEnumerator = 2;
 
-				for( ++it_exception;
-					it_exception != it_exception_end;
-					++it_exception, ++methodExceptionEnumerator )
+				for( TVectorMethodExceptions::const_iterator
+					it_exception = mt.exceptions.begin(),
+					it_exception_end = mt.exceptions.end();
+				it_exception != it_exception_end;
+				++it_exception )
 				{
-					write() << "	else if( ex_method_id == " << methodExceptionEnumerator << " )" << std::endl;
-					write() << "	{" << std::endl;
-					write() << "		" << me.name << "ex;" << std::endl;
-					write() << "		ex.read( _ar );" << std::endl;
-					write() << "		this->throw_exception( ex ); " << std::endl;
-					write() << "	}" << std::endl;
+					const MethodException & me = *it_exception;
+
+					write() << "	case " << exceptionEnumerator << ":" << std::endl;
+					write() << "		{" << std::endl;
+					write() << "			" << me.name << " ex;" << std::endl;
+					write() << "			ex.read( _ar );" << std::endl;
+					write() << "			this->throw_exception( ex ); " << std::endl;
+					write() << "		}" << std::endl;
+
+					++exceptionEnumerator;
 				}
+
+				write() << "	};" << std::endl;
 			}
 
 			write() << std::endl;

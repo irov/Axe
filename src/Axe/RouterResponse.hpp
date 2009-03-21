@@ -16,6 +16,9 @@ namespace Axe
 		void exceptionCall( ArchiveRead & _ar, std::size_t _size ) override;
 
 	protected:
+		void throw_exception( const Exception & _ex ) override;
+
+	protected:
 		std::size_t m_requestId;
 		RouterSessionPtr m_session;
 	};

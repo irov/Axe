@@ -27,7 +27,7 @@ namespace Axe
 	void Invocation::connect_( const boost::asio::ip::tcp::endpoint & _endpoint, const ConnectCallbackPtr & _cb )
 	{
 		m_socket.async_connect( _endpoint
-			, boost::bind( &Invocation::handleConnect, intrusivePtr(this), boost::asio::placeholders::error, _cb ) 
+			, boost::bind( &Invocation::handleConnect, handlePtr(this), boost::asio::placeholders::error, _cb ) 
 			);
 	}	
 	//////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( size, sizeof(std::size_t) )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Invocation::handleReadConnectSize, intrusivePtr(this), boost::asio::placeholders::error, size, _cb )
+			, boost::bind( &Invocation::handleReadConnectSize, handlePtr(this), boost::asio::placeholders::error, size, _cb )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ namespace Axe
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
 			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Invocation::handleReadConnect, intrusivePtr(this), boost::asio::placeholders::error, blob, _cb )
+			, boost::bind( &Invocation::handleReadConnect, handlePtr(this), boost::asio::placeholders::error, blob, _cb )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

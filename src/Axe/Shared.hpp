@@ -55,7 +55,7 @@ namespace Axe
 	}
 
 	template<class T>
-	inline AxeHandle<T> intrusivePtr( T * _t )
+	inline AxeHandle<T> handlePtr( T * _t )
 	{
 		return AxeHandle<T>(_t);
 	}

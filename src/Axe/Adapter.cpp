@@ -45,7 +45,7 @@ namespace Axe
 
 		Proxy_UniquePtr proxyUnique = uncheckedCast<Proxy_UniquePtr>( base );
 
-		m_gridManager->addUnique( _name, proxyUnique, new AdapterAddUniqueResponse() );
+		m_gridManager->addUnique( new AdapterAddUniqueResponse(), _name, proxyUnique );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()

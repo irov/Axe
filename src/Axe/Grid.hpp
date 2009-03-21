@@ -14,7 +14,7 @@ namespace Axe
 		Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		void initialize();
+		const Proxy_GridManagerPtr & initialize();
 
 	public:
 		const Proxy_GridManagerPtr & getGridManager() const;
@@ -30,17 +30,4 @@ namespace Axe
 	};
 
 	typedef AxeHandle<Grid> GridPtr;
-
-	class GridInitializer
-		: public Shared
-	{
-	public:
-		void run( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
-
-	protected:
-		boost::asio::io_service m_service;
-		GridPtr m_grid;
-	};
-
-	typedef AxeHandle<GridInitializer> GridInitializerPtr;
 }

@@ -65,13 +65,12 @@ namespace Axe
 	
 	typedef AxeHandle<Bellhop_Player_test> Bellhop_Player_testPtr;
 	
+	//////////////////////////////////////////////////////////////////////////
 	class Response_Player_test
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( int ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -79,7 +78,27 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Response_Player_test> Response_Player_testPtr;
-
+	
+	template<>
+	class BindResponse<Response_Player_testPtr>
+		: public Response_Player_test
+	{
+		typedef boost::function<void(int)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( int _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
+	
 	class Proxy_Player
 		: virtual public Axe::Proxy
 	{
@@ -170,13 +189,12 @@ namespace Axe
 	
 	typedef AxeHandle<Bellhop_PermissionsVerifier_checkPermissions> Bellhop_PermissionsVerifier_checkPermissionsPtr;
 	
+	//////////////////////////////////////////////////////////////////////////
 	class Response_PermissionsVerifier_checkPermissions
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( bool ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -185,6 +203,25 @@ namespace Axe
 	
 	typedef AxeHandle<Response_PermissionsVerifier_checkPermissions> Response_PermissionsVerifier_checkPermissionsPtr;
 	
+	template<>
+	class BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>
+		: public Response_PermissionsVerifier_checkPermissions
+	{
+		typedef boost::function<void(bool)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( bool _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
 	
 	class Proxy_PermissionsVerifier
 		:	public Proxy_Unique
@@ -240,13 +277,12 @@ namespace Axe
 	
 	typedef AxeHandle<Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
 	
+	//////////////////////////////////////////////////////////////////////////
 	class Response_SessionManager_create
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( const Proxy_PlayerPtr & ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -255,6 +291,25 @@ namespace Axe
 	
 	typedef AxeHandle<Response_SessionManager_create> Response_SessionManager_createPtr;
 	
+	template<>
+	class BindResponse<Response_SessionManager_createPtr>
+		: public Response_SessionManager_create
+	{
+		typedef boost::function<void(const Proxy_PlayerPtr &)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( const Proxy_PlayerPtr & _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
 	
 	class Proxy_SessionManager
 		:	public Proxy_Unique
@@ -383,13 +438,12 @@ namespace Axe
 	
 	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
 	
+	//////////////////////////////////////////////////////////////////////////
 	class Response_GridManager_addAdapter
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( std::size_t ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -398,13 +452,31 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_addAdapter> Response_GridManager_addAdapterPtr;
 	
+	template<>
+	class BindResponse<Response_GridManager_addAdapterPtr>
+		: public Response_GridManager_addAdapter
+	{
+		typedef boost::function<void(std::size_t)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( std::size_t _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Response_GridManager_getAdapterEndpoint
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( const std::string & ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -413,13 +485,31 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_getAdapterEndpoint> Response_GridManager_getAdapterEndpointPtr;
 	
+	template<>
+	class BindResponse<Response_GridManager_getAdapterEndpointPtr>
+		: public Response_GridManager_getAdapterEndpoint
+	{
+		typedef boost::function<void(const std::string &)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( const std::string & _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Response_GridManager_addUnique
 		: public Axe::Response
 	{
 	protected:
 		virtual void response() = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -428,13 +518,31 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_addUnique> Response_GridManager_addUniquePtr;
 	
+	template<>
+	class BindResponse<Response_GridManager_addUniquePtr>
+		: public Response_GridManager_addUnique
+	{
+		typedef boost::function<void()> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response() override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Response_GridManager_getUnique
 		: public Axe::Response
 	{
 	protected:
 		virtual void response( const Proxy_UniquePtr & ) = 0;
-	
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;
@@ -443,6 +551,25 @@ namespace Axe
 	
 	typedef AxeHandle<Response_GridManager_getUnique> Response_GridManager_getUniquePtr;
 	
+	template<>
+	class BindResponse<Response_GridManager_getUniquePtr>
+		: public Response_GridManager_getUnique
+	{
+		typedef boost::function<void(const Proxy_UniquePtr &)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( const Proxy_UniquePtr & _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
 	
 	class Proxy_GridManager
 		: virtual public Axe::Proxy
