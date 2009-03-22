@@ -51,9 +51,16 @@ namespace Axe
 			return;
 		}
 
-		const Archive & ar = m_permission.getArchive();
+		if( m_permission.empty() == false )
+		{
+			const Archive & ar = m_permission.getArchive();
 
-		this->processArchive( ar );
+			this->processArchive( ar );
+		}
+		else
+		{
+			this->process();
+		}
 
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
@@ -110,31 +117,6 @@ namespace Axe
 			_cb->connectionFailed( m_streamIn, size );				
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	class InvocationonEndpointConnectCallback
-		: public ConnectCallback
-	{
-	public:
-		InvocationonEndpointConnectCallback( const InvocationPtr & _invocation )
-			: m_invocation(_invocation)
-		{
-		}
-
-	public:
-		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override
-		{
-			//m_invocation->run();
-			
-		}
-
-		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override
-		{
-			printf("InvocationonEndpointConnectCallback::connectionFailed\n");
-		}
-
-	protected:
-		InvocationPtr m_invocation;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{

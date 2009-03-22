@@ -106,8 +106,6 @@ public:
 
 		_adapter->addUnique( 0, "PermissionsVerifier", permissionsVerifier );
 		_adapter->addUnique( 1, "SessionManager", sessionManager );
-
-		_adapter->run();
 	}
 
 	void onFailed() override
