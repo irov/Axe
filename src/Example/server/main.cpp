@@ -70,6 +70,7 @@ class MySessionManager
 public:
 	MySessionManager( const Axe::AdapterPtr & _adapter )
 		: m_adapter(_adapter)
+		, m_playerEnumerator(100)
 	{
 
 	}
@@ -79,7 +80,7 @@ public:
 	{
 		Axe::Servant_PlayerPtr player = new MyPlayer( _login );
 
-		Axe::ProxyPtr base = m_adapter->addServant( player );
+		Axe::ProxyPtr base = m_adapter->addServant( ++m_playerEnumerator, player );
 
 		Axe::Proxy_PlayerPtr playerPrx = Axe::uncheckedCast<Axe::Proxy_PlayerPtr>( base );
 
@@ -88,6 +89,7 @@ public:
 
 protected:
 	Axe::AdapterPtr m_adapter;
+	std::size_t m_playerEnumerator;
 };
 
 class MyAdapterCreateResponse
@@ -102,8 +104,8 @@ public:
 
 		Axe::Servant_SessionManagerPtr sessionManager = new MySessionManager( _adapter );
 
-		_adapter->addUnique( "PermissionsVerifier", permissionsVerifier );
-		_adapter->addUnique( "SessionManager", sessionManager );
+		_adapter->addUnique( 0, "PermissionsVerifier", permissionsVerifier );
+		_adapter->addUnique( 1, "SessionManager", sessionManager );
 
 		_adapter->run();
 	}

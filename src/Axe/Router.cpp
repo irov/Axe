@@ -35,7 +35,8 @@ namespace Axe
 		m_permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
 
 		m_gridManager->getUnique_async( 
-			bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 ) )
+			bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 )
+				, noneExceptionFilter() )
 			, "SessionManager"
 			);
 	}
@@ -43,7 +44,8 @@ namespace Axe
 	void Router::run()
 	{
 		m_gridManager->getUnique_async(
-			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 ) )
+			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
+				, noneExceptionFilter() )
 			, "PermissionsVerifier"
 			);
 	}
@@ -86,7 +88,8 @@ namespace Axe
 		if( _session )
 		{
 			m_sessionManager->create_async( 
-				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session ) )
+				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session )
+					, noneExceptionFilter() )
 				, _login
 				);
 		}
@@ -99,7 +102,8 @@ namespace Axe
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
 		m_permissionsVerifier->checkPermissions_async( 
-			bindResponse( boost::bind( &Router::checkPermissionsResponse, handlePtr(this), _1, _login, _session ) )
+			bindResponse( boost::bind( &Router::checkPermissionsResponse, handlePtr(this), _1, _login, _session )
+				, noneExceptionFilter() )
 			, _login
 			, _password
 			);

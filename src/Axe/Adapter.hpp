@@ -34,7 +34,7 @@ namespace Axe
 		void start();
 
 	public:
-		void addUnique( const std::string & _name, const Servant_UniquePtr & _unique );
+		Proxy_UniquePtr addUnique( std::size_t _servantId, const std::string & _name, const Servant_UniquePtr & _unique );
 
 	protected:
 		SessionPtr makeSession() override;

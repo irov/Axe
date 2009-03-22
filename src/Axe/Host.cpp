@@ -17,25 +17,26 @@ namespace Axe
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ProxyPtr Host::addServant( const ServantPtr & _servant )
+	ProxyPtr Host::addServant( std::size_t _servantId, const ServantPtr & _servant )
 	{
-		std::size_t servantId = _servant->getServantId();
-
-		_servant->setHost( this );
-
-		bool inserted = m_servants.insert( std::make_pair( servantId, _servant ) ).second;
+		bool inserted = m_servants.insert( std::make_pair( _servantId, _servant ) ).second;
 
 		if( inserted == false )
 		{
 			printf("Host::addServant host '%d' already exist servant '%d'\n"
 				, m_hostId
-				, servantId 
+				, _servantId 
 				);
+
+			return 0;
 		}
+
+		_servant->setServantId( _servantId );
+		_servant->setHost( this );
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
 
-		ProxyPtr proxy = new Proxy( servantId, cn );
+		ProxyPtr proxy = new Proxy( _servantId, cn );
 
 		return proxy;
 	}

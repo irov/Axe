@@ -30,17 +30,19 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::addUnique( const std::string & _name, const Servant_UniquePtr & _unique )
+	Proxy_UniquePtr Adapter::addUnique( std::size_t _servantId, const std::string & _name, const Servant_UniquePtr & _unique )
 	{
-		ProxyPtr base = this->addServant( _unique );
+		ProxyPtr base = this->addServant( _servantId, _unique );
 
 		Proxy_UniquePtr proxyUnique = uncheckedCast<Proxy_UniquePtr>( base );
 
 		m_gridManager->addUnique_async( 
-			bindResponse( boost::bind( &addUniqueResponse ) )
+			bindResponse( boost::bind( &addUniqueResponse ), noneExceptionFilter() )
 			, _name
 			, proxyUnique 
 			);
+
+		return proxyUnique;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()

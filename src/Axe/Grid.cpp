@@ -19,9 +19,7 @@ namespace Axe
 	{
 		GridManagerPtr servant = new GridManager();
 
-		servant->setServantId(0);
-
-		ProxyPtr base = this->addServant( servant );
+		ProxyPtr base = this->addServant( 0, servant );
 
 		m_gridManager 
 			= uncheckedCast<Proxy_GridManagerPtr>(base);

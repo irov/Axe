@@ -16,7 +16,7 @@ namespace Axe
 		Host( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
 
 	public:
-		ProxyPtr addServant( const ServantPtr & _servant );
+		ProxyPtr addServant( std::size_t _servantId, const ServantPtr & _servant );
 
 	public:
 		void setHostId( std::size_t _hostId );

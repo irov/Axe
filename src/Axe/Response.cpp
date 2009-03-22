@@ -27,4 +27,15 @@ namespace Axe
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	static void nullExceptionFilter( const Exception & )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TBindNullException noneExceptionFilter()
+	{
+		return boost::bind( &nullExceptionFilter, _1 );
+	}
+
 }

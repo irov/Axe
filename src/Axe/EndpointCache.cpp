@@ -41,7 +41,8 @@ namespace Axe
 		if( it_found == m_endpoints.end() )
 		{
 			m_gridManager->getAdapterEndpoint_async( 
-				bindResponse( boost::bind( &EndpointCache::getEndpointResponse, handlePtr(this), _1, _hostId, _cb ) )
+				bindResponse( boost::bind( &EndpointCache::getEndpointResponse, handlePtr(this), _1, _hostId, _cb )
+					, noneExceptionFilter() )
 				, _hostId
 				);
 		}
