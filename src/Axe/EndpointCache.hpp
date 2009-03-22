@@ -24,6 +24,9 @@ namespace Axe
 		void getEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb );
 
 	protected:
+		void getEndpointResponse( const std::string & _endpoint, std::size_t _hostId, const EndpointCallbackPtr & _cb );
+
+	protected:
 		Proxy_GridManagerPtr m_gridManager;
 
 		typedef std::map<std::size_t, boost::asio::ip::tcp::endpoint> TMapEndpoints;

@@ -128,7 +128,7 @@ namespace Axe
 
 		std::string endpoint = ss.str();
 
-		m_gridManager->addAdapter( 
+		m_gridManager->addAdapter_async( 
 			bindResponse( 
 				boost::bind( &Communicator::addAdapterResponse, handlePtr(this), _1, _endpoint, _name, _response )
 				, boost::bind( &Communicator::addAdapterException, handlePtr(this), _1 )

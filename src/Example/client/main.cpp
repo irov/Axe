@@ -36,7 +36,7 @@ protected:
 		pi.id = 2;
 		pi.name = "test";
 
-		_player->test( 
+		_player->test_async( 
 			 new MyClientResponse_Player_test
 			 , pi );
 	}

@@ -23,79 +23,27 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::onSessionManager( const Proxy_SessionManagerPtr & _sessionManager )
+	void Router::getSessionManagerResponse( const Proxy_UniquePtr & _unique )
 	{
-		m_sessionManager = _sessionManager;
+		m_sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
 
 		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_GridManager_getUniqueSessionManager
-		: public Response_GridManager_getUnique
+	void Router::getPermissionsVerifierResponse( const Proxy_UniquePtr & _unique )
 	{
-	public:
-		RouterResponse_GridManager_getUniqueSessionManager( const RouterPtr & _router )
-			: m_router(_router)
-		{
-		}
+		m_permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
 
-	protected:
-		void response( const Proxy_UniquePtr & _unique ) override
-		{
-			Proxy_SessionManagerPtr sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
-
-			m_router->onSessionManager( sessionManager );
-		}
-
-		void throw_exception( const Axe::Exception & _ex ) override
-		{
-		}
-
-	protected:
-		RouterPtr m_router;
-		
-	};
-	//////////////////////////////////////////////////////////////////////////
-	void Router::onPermissionsVerifier( const Proxy_PermissionsVerifierPtr & _permissionsVerifier )
-	{
-		m_permissionsVerifier = _permissionsVerifier;
-
-		m_gridManager->getUnique( 
-			new RouterResponse_GridManager_getUniqueSessionManager( this ) 
+		m_gridManager->getUnique_async( 
+			bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 ) )
 			, "SessionManager"
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_GridManager_getUniquePermissionsVerifier
-		: public Response_GridManager_getUnique
-	{
-	public:
-		RouterResponse_GridManager_getUniquePermissionsVerifier( const RouterPtr & _router )
-			: m_router(_router)
-		{
-		}
-
-	protected:
-		void response( const Proxy_UniquePtr & _unique ) override
-		{
-			Proxy_PermissionsVerifierPtr permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
-
-			m_router->onPermissionsVerifier( permissionsVerifier );
-		}
-
-		void throw_exception( const Axe::Exception & _ex ) override
-		{
-
-		}
-
-	protected:
-		RouterPtr m_router;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void Router::run()
 	{
-		m_gridManager->getUnique( 
-			new RouterResponse_GridManager_getUniquePermissionsVerifier( this )
+		m_gridManager->getUnique_async(
+			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 ) )
 			, "PermissionsVerifier"
 			);
 	}
@@ -125,71 +73,35 @@ namespace Axe
 		cn->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_SessionManager_create
-		: public Response_SessionManager_create
+	void Router::createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session )
 	{
-	public:
-		RouterResponse_SessionManager_create( const SessionPtr & _session )
-			: m_session(_session)
-		{
-		}
-
-	protected:
-		void response( const Proxy_PlayerPtr & _player ) override
-		{
-			ArchiveWrite & ar = m_session->beginConnect( true );
-			ar << _player;
-			m_session->process();
-			m_session->run();
-		}
-
-		void throw_exception( const Axe::Exception & _ex ) override
-		{
-
-		}
-		
-
-	protected:
-		SessionPtr m_session;
-	};
+		ArchiveWrite & ar = _session->beginConnect( true );
+		ar << _player;
+		_session->process();
+		_session->run();
+	}
 	//////////////////////////////////////////////////////////////////////////
-	class RouterResponse_PermissionsVerifier_checkPermissions
-		: public Response_PermissionsVerifier_checkPermissions
+	void Router::checkPermissionsResponse( bool _successful, const std::string & _login, const SessionPtr & _session )
 	{
-	public:
-		RouterResponse_PermissionsVerifier_checkPermissions( const std::string & _login, const Proxy_SessionManagerPtr & _sessionManager, const SessionPtr & _session )
-			: m_login(_login)
-			, m_session(_session)
-			, m_sessionManager(_sessionManager)			
+		if( _session )
 		{
-		}
-
-	public:
-		void response( bool _successful ) override
-		{
-			m_sessionManager->create( 
-				new RouterResponse_SessionManager_create( m_session ) 
-				, m_login
+			m_sessionManager->create_async( 
+				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session ) )
+				, _login
 				);
 		}
-
-		void throw_exception( const Axe::Exception & _ex ) override
+		else
 		{
-
+			_session->close();
 		}
-
-	protected:
-		std::string m_login;
-
-		SessionPtr m_session;
-		Proxy_SessionManagerPtr m_sessionManager;
-	};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
-		m_permissionsVerifier->checkPermissions( 
-			new RouterResponse_PermissionsVerifier_checkPermissions( _login, m_sessionManager, _session )
-			, _login, _password
+		m_permissionsVerifier->checkPermissions_async( 
+			bindResponse( boost::bind( &Router::checkPermissionsResponse, handlePtr(this), _1, _login, _session ) )
+			, _login
+			, _password
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

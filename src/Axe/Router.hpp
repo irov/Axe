@@ -34,6 +34,13 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
+		void getPermissionsVerifierResponse( const Proxy_UniquePtr & _unique );
+		void getSessionManagerResponse( const Proxy_UniquePtr & _unique );
+
+		void checkPermissionsResponse( bool _successful, const std::string & _login, const SessionPtr & _session );
+		void createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session );
+
+	protected:
 		ConnectionCachePtr m_connectionCache;
 		EndpointCachePtr m_endpointCache;
 

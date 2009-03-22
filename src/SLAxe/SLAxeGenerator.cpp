@@ -700,7 +700,7 @@ namespace Axe
 
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
-			write() << "	void " << mt.name << "( const " << response_name << " & _response";
+			write() << "	void " << mt.name << "_async( const " << response_name << " & _response";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),
@@ -1482,7 +1482,7 @@ namespace Axe
 			std::string response_name = writeResponseName( cl.name, mt.name ) + "Ptr";
 
 			writeLine();
-			write() << "void " << proxy_name << "::" << mt.name << "( const " << response_name << " & _response";
+			write() << "void " << proxy_name << "::" << mt.name << "_async( const " << response_name << " & _response";
 
 			for( TVectorArguments::const_iterator
 				it_args = mt.inArguments.begin(),

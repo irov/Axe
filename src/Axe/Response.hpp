@@ -46,9 +46,27 @@ namespace Axe
 		const E & m_exception;
 	};
 
+	inline static void nullExceptionFilter( const Exception & )
+	{
+
+	}
+
+	typedef boost::function<void (const Exception &)> TBindNullException;
+
+	inline TBindNullException nullException()
+	{
+		return &nullExceptionFilter;
+	}
+
 	template<class R, class E>
 	BindHelperResponse<R, E> bindResponse( const R & _response, const E & _exception )
 	{
 		return BindHelperResponse<R, E>( _response, _exception );
+	}
+
+	template<class R>
+	BindHelperResponse<R, TBindNullException> bindResponse( const R & _response )
+	{
+		return BindHelperResponse<R, TBindNullException>( _response, nullException() );
 	}
 }

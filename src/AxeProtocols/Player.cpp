@@ -129,7 +129,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_Player::test( const Response_Player_testPtr & _response, const PlayerInfo & info )
+	void Proxy_Player::test_async( const Response_Player_testPtr & _response, const PlayerInfo & info )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_Player_test, _response );
 		ar << info;
@@ -293,7 +293,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_PermissionsVerifier::checkPermissions( const Response_PermissionsVerifier_checkPermissionsPtr & _response, const std::string & _login, const std::string & _password )
+	void Proxy_PermissionsVerifier::checkPermissions_async( const Response_PermissionsVerifier_checkPermissionsPtr & _response, const std::string & _login, const std::string & _password )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_PermissionsVerifier_checkPermissions, _response );
 		ar << _login;
@@ -417,7 +417,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_SessionManager::create( const Response_SessionManager_createPtr & _response, const std::string & _login )
+	void Proxy_SessionManager::create_async( const Response_SessionManager_createPtr & _response, const std::string & _login )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_SessionManager_create, _response );
 		ar << _login;
@@ -762,7 +762,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::addAdapter( const Response_GridManager_addAdapterPtr & _response, const std::string & _name, const std::string & _endpoint )
+	void Proxy_GridManager::addAdapter_async( const Response_GridManager_addAdapterPtr & _response, const std::string & _name, const std::string & _endpoint )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addAdapter, _response );
 		ar << _name;
@@ -772,7 +772,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::getAdapterEndpoint( const Response_GridManager_getAdapterEndpointPtr & _response, std::size_t _hostId )
+	void Proxy_GridManager::getAdapterEndpoint_async( const Response_GridManager_getAdapterEndpointPtr & _response, std::size_t _hostId )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getAdapterEndpoint, _response );
 		ar << _hostId;
@@ -781,7 +781,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::addUnique( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const Proxy_UniquePtr & _unique )
+	void Proxy_GridManager::addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const Proxy_UniquePtr & _unique )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_addUnique, _response );
 		ar << _name;
@@ -791,7 +791,7 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::getUnique( const Response_GridManager_getUniquePtr & _response, const std::string & _name )
+	void Proxy_GridManager::getUnique_async( const Response_GridManager_getUniquePtr & _response, const std::string & _name )
 	{
 		Axe::ArchiveWrite & ar = this->beginMessage( ESMD_GridManager_getUnique, _response );
 		ar << _name;
