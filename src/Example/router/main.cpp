@@ -12,6 +12,7 @@ class MyRouterCreateResponse
 public:
 	void onCreate( const Axe::RouterPtr & _router ) override
 	{
+		_router->start();
 	}
 
 	void onFailed() override

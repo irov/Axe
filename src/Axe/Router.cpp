@@ -41,7 +41,7 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::run()
+	void Router::start()
 	{
 		m_gridManager->getUnique_async(
 			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )

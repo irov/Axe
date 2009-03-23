@@ -20,7 +20,7 @@ namespace Axe
 		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		void run();
+		void start();
 
 	public:
 		void onPermissionsVerifier( const Proxy_PermissionsVerifierPtr & _permissionsVerifier );

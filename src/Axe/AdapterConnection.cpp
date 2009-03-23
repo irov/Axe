@@ -84,6 +84,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void AdapterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
 	{
-
+		printf("Invocation::connectionFailed %d \n"
+			, m_hostId
+			);
 	}
 }
