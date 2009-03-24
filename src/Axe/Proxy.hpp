@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 #	include <Axe/Connection.hpp>
 
@@ -13,7 +13,7 @@ namespace Axe
 	class ArchiveWrite;
 
 	class Proxy
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		Proxy( std::size_t _servantId, const ConnectionPtr & _connection );

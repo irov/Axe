@@ -5,7 +5,7 @@
 namespace Axe
 {
 	class EndpointCallback
-		: virtual public Axe::Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint ) = 0;
@@ -14,7 +14,7 @@ namespace Axe
 	typedef AxeHandle<EndpointCallback> EndpointCallbackPtr;
 
 	class EndpointCache
-		: virtual public Axe::Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		EndpointCache( const Proxy_GridManagerPtr & _gridManager );

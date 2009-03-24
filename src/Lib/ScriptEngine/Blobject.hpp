@@ -2,4 +2,7 @@
 
 #	include <vector>
 
-typedef std::vector<char> TBlobject;
+namespace AxeScript
+{
+	typedef std::vector<char> TBlobject;
+}

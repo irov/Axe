@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{262A64F5-7AC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptEngine", "src\Lib\ScriptEngine\ScriptEngine.vcproj", "{55C971A2-D0A1-4E0E-A83B-100DD4A32052}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AxeUtil", "src\AxeUtil\AxeUtil.vcproj", "{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}"
+EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
@@ -86,6 +88,10 @@ Global
 		{55C971A2-D0A1-4E0E-A83B-100DD4A32052}.Debug|Win32.Build.0 = Debug|Win32
 		{55C971A2-D0A1-4E0E-A83B-100DD4A32052}.Release|Win32.ActiveCfg = Release|Win32
 		{55C971A2-D0A1-4E0E-A83B-100DD4A32052}.Release|Win32.Build.0 = Release|Win32
+		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Debug|Win32.Build.0 = Debug|Win32
+		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Release|Win32.ActiveCfg = Release|Win32
+		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

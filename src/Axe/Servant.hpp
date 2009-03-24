@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 #	include <Axe/Host.hpp>
 
 namespace Axe
@@ -15,7 +15,7 @@ namespace Axe
 	typedef AxeHandle<class Proxy> ProxyPtr;
 	
 	class Servant
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		Servant();

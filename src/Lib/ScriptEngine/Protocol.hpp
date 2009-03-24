@@ -44,11 +44,11 @@ public:
 		boost::python::object obj_module = boost::python::import( moduleName.c_str() );
 		boost::python::object obj_type = boost::python::getattr( obj_module, moduleName.c_str() );
 
-		EmbeddingEntity * ec = new EmbeddingEntity( obj_type );
+		EmbeddingEntityPtr ec = new EmbeddingEntity( obj_type );
 
 		m_embeddingEntities.insert( std::make_pair( moduleName, ec ) );
 
-		return boost::python::object( boost::ref( ec ) );
+		return boost::python::object( ec );
 	}
 
 	boost::python::object create_class( const boost::python::tuple & _args, const boost::python::dict & _kw )
@@ -64,6 +64,8 @@ public:
 		}
 
 		EmbeddingEntity * embedding = it_found->second;
+
+		embedding->createEntity( entityName );
 
 		const boost::python::object & type = embedding->getType();
 

@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 namespace Axe
 {
 	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
 
 	class GridConnectResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void connectSuccessful( const Proxy_GridManagerPtr & _gridManager ) = 0;

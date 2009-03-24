@@ -7,7 +7,7 @@
 namespace Axe
 {
 	class Client
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 		, public ConnectionProvider
 	{
 	public:

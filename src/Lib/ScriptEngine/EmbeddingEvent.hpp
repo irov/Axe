@@ -1,19 +1,25 @@
 #	pragma once
 
+#	include <AxeUtil/Shared.hpp>
+
 #	include <string>
 
-#	include <boost/python.hpp>
-
-class EmbeddingEvent
+namespace AxeScript
 {
-public:
-	EmbeddingEvent( const std::string & _name, const boost::python::tuple & _args );
+	class EmbeddingEvent
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		EmbeddingEvent( const std::string & _name, const boost::python::tuple & _args );
 
-public:
-	const std::string & getName() const;
-	const boost::python::tuple & getArgs() const;
+	public:
+		const std::string & getName() const;
+		const boost::python::tuple & getArgs() const;
 
-protected:
-	std::string m_name;
-	boost::python::tuple m_args;
-};
+	protected:
+		std::string m_name;
+		boost::python::tuple m_args;
+	};
+
+	typedef AxeHandle<EmbeddingEvent> EmbeddingEventPtr;
+}

@@ -13,7 +13,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void GridSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
 	{
-		GridPtr grid = handleCast<GridPtr>( m_host );
+		GridPtr grid = AxeUtil::handleCast<GridPtr>( m_host );
 
 		const Proxy_GridManagerPtr & gridManager = grid->getGridManager();
 

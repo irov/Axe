@@ -2,7 +2,7 @@
 
 #	include <boost/intrusive_ptr.hpp>
 
-namespace Axe
+namespace AxeUtil
 {
 	class Shared
 	{

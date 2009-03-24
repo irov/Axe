@@ -2,6 +2,8 @@
 
 #	include "Blobject.hpp"
 
+#	include <AxeUtil/Shared.hpp>
+
 #	include "EmbeddingMethod.hpp"
 #	include "EmbeddingEvent.hpp"
 #	include "EmbeddingProperty.hpp"
@@ -12,35 +14,43 @@
 #	include <vector>
 #	include <string>
 
-typedef std::map<std::string, EmbeddingMethod *> TMapEmbeddingMethods;
-typedef std::map<std::string, EmbeddingEvent *> TMapEmbeddingEvents;
-typedef std::map<std::string, EmbeddingProperty *> TMapEmbeddingProperties;
-
-class EmbeddingEntity
+namespace AxeScript
 {
-public:
-	EmbeddingEntity( const boost::python::object & _type );
+	typedef AxeHandle<class Entity> EntityPtr;
+	typedef AxeHandle<class EntityListener> EntityListenerPtr;
 
-public:
-	static void embedding();
+	class EmbeddingEntity
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		EmbeddingEntity( const boost::python::object & _type );
 
-public:
-	void def_method( const std::string & _name, const boost::python::tuple & _args );
-	void def_event( const std::string & _name, const boost::python::tuple & _args );
-	void def_property( const std::string & _name, const boost::python::object & _type );
+	public:
+		const boost::python::object & getType() const;
 
-public:
-	TMapEmbeddingMethods::const_iterator get_methods_begin() const;
-	TMapEmbeddingMethods::const_iterator get_methods_end() const;
-	TMapEmbeddingProperties::const_iterator get_properties_begin() const;
-	TMapEmbeddingProperties::const_iterator get_properties_end() const;
+	public:
+		static void embedding();
 
-public:
-	const boost::python::object & getType() const;
+	public:
+		void def_method( const std::string & _name, const boost::python::tuple & _args );
+		void def_event( const std::string & _name, const boost::python::tuple & _args );
+		void def_property( const std::string & _name, const boost::python::object & _type );
 
-protected:	
-	boost::python::object m_type;
-	TMapEmbeddingMethods m_embeddingMethods;
-	TMapEmbeddingEvents m_embeddingEvents;
-	TMapEmbeddingProperties m_embeddingProperties;
-};
+	public:
+		EntityPtr createEntity( const std::string & _entityName, const EntityListenerPtr & _listener );
+
+	protected:	
+		boost::python::object m_type;
+
+		typedef std::map<std::string, EmbeddingMethodPtr> TMapEmbeddingMethods;
+		TMapEmbeddingMethods m_methods;
+
+		typedef std::map<std::string, EmbeddingEventPtr> TMapEmbeddingEvents;
+		TMapEmbeddingEvents m_events;
+
+		typedef std::map<std::string, EmbeddingPropertyPtr> TMapEmbeddingProperties;
+		TMapEmbeddingProperties m_properties;
+	};
+
+	typedef AxeHandle<EmbeddingEntity> EmbeddingEntityPtr;
+}

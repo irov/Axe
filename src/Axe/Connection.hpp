@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 namespace Axe
 {
@@ -9,7 +9,7 @@ namespace Axe
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class Connection
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		Connection( std::size_t _hostId );

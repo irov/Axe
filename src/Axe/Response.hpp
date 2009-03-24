@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 namespace Axe
 {
@@ -8,7 +8,7 @@ namespace Axe
 	class Exception;
 
 	class Response
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void responseCall( ArchiveRead & _ar, std::size_t _size ) = 0;

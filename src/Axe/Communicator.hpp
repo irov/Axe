@@ -13,7 +13,7 @@ namespace Axe
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
 	class CommunicatorInitializeResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onInitialize( const CommunicatorPtr & _communicator ) = 0;
@@ -23,7 +23,7 @@ namespace Axe
 	typedef AxeHandle<CommunicatorInitializeResponse> CommunicatorInitializeResponsePtr;
 
 	class AdapterCreateResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onCreate( const AdapterPtr & _adapter ) = 0;
@@ -33,7 +33,7 @@ namespace Axe
 	typedef AxeHandle<AdapterCreateResponse> AdapterCreateResponsePtr;
 
 	class RouterCreateResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onCreate( const RouterPtr & _router ) = 0;
@@ -43,7 +43,7 @@ namespace Axe
 	typedef AxeHandle<RouterCreateResponse> RouterCreateResponsePtr;
 
 	class Communicator
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 		, public ConnectionProvider
 	{
 	public:

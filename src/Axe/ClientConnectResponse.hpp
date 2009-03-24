@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 namespace Axe
 {
 	typedef AxeHandle<class Proxy_Player> Proxy_PlayerPtr;
 
 	class ClientConnectResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void connectSuccessful( const Proxy_PlayerPtr & _player ) = 0;

@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 #	include <Axe/ArchiveWrite.hpp>
 #	include <Axe/ArchiveRead.hpp>
 
 namespace Axe
 {
 	class Dispatcher
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		Dispatcher( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache );

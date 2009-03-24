@@ -1,8 +1,7 @@
 #	include "pch.hpp"
 
-#	include <Axe/ConnectionCache.hpp>
-
 #	include <Axe/Connection.hpp>
+#	include <Axe/ConnectionCache.hpp>
 
 namespace Axe
 {

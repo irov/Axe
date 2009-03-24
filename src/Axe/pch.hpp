@@ -10,3 +10,4 @@
 
 #	include <boost/asio.hpp>
 #	include <boost/bind.hpp>
+#	include <boost/intrusive_ptr.hpp>

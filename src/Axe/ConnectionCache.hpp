@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Shared.hpp>
+#	include <AxeUtil/Shared.hpp>
 
 namespace Axe
 {
@@ -9,7 +9,7 @@ namespace Axe
 
 
 	class ConnectionProvider
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) = 0;
@@ -18,7 +18,7 @@ namespace Axe
 	typedef AxeHandle<ConnectionProvider> ConnectionProviderPtr;
 
 	class ConnectionCache
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		ConnectionCache( const ConnectionProviderPtr & _provider );

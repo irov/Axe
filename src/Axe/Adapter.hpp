@@ -15,7 +15,7 @@ namespace Axe
 	typedef AxeHandle<class Adapter> AdapterPtr;
 
 	class AdapterInitializeResponse
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onInitialize( const Axe::AdapterPtr & _adapter ) = 0;

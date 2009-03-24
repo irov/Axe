@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include <Axe\Shared.hpp>
+#	include <AxeUtil\Shared.hpp>
 
 namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
 
 	class Service
-		: virtual public Shared
+		: virtual public AxeUtil::Shared
 	{
 	public:
 		Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );

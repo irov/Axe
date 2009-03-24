@@ -1,54 +1,55 @@
 #	pragma once
 
-#	include "Blobject.hpp"
+#	include <AxeUtil/Shared.hpp>
 
-#	include <boost/python.hpp>
+#	include "Blobject.hpp"
 
 #	include <vector>
 
-
-class EmbeddingProperty
+namespace AxeScript
 {
-public:
-	static void embedding( const std::string & _name )
+	class EmbeddingProperty
+		: virtual public AxeUtil::Shared
 	{
-		boost::python::class_<EmbeddingProperty, boost::noncopyable>( _name.c_str(), boost::python::no_init )
-			;
-	}
+	public:
+		static void embedding( const std::string & _name );
 
-public:
-	virtual void write( TBlobject & _blob, const boost::python::object & _obj ) = 0;
-};
+	public:
+		virtual void write( TBlobject & _blob, const boost::python::object & _obj ) = 0;
+	};
 
-template<class T>
-class EmbeddingPropertyTemplate
-	: public EmbeddingProperty
-{
-public:
-	static boost::python::object embedding( const std::string & _name )
+	typedef AxeHandle<EmbeddingProperty> EmbeddingPropertyPtr;
+
+	template<class T>
+	class EmbeddingPropertyTemplate
+		: public EmbeddingProperty
 	{
-		boost::python::class_<EmbeddingPropertyTemplate<T>, boost::python::bases<EmbeddingProperty> >( _name.c_str(), boost::python::no_init )
-			;
+	public:
+		static boost::python::object embedding( const std::string & _name )
+		{
+			boost::python::class_<EmbeddingPropertyTemplate<T>, boost::python::bases<EmbeddingProperty> >( _name.c_str(), boost::python::no_init )
+				;
 
-		EmbeddingPropertyTemplate<T> * propertyTemplate = new EmbeddingPropertyTemplate<T>();
-		boost::python::object obj( boost::ref(propertyTemplate) );
+			EmbeddingPropertyTemplate<T> * propertyTemplate = new EmbeddingPropertyTemplate<T>();
+			boost::python::object obj( boost::ref(propertyTemplate) );
 
-		return obj;		
-	}
+			return obj;		
+		}
 
-public:
-	void write( TBlobject & _blob, const boost::python::object & _obj ) override
-	{
-		T value = boost::python::extract<T>(_obj);
+	public:
+		void write( TBlobject & _blob, const boost::python::object & _obj ) override
+		{
+			T value = boost::python::extract<T>(_obj);
 
-		write_blob( _blob, &value, &value + 1 );
-	}
+			write_blob( _blob, &value, &value + 1 );
+		}
 
-	void write_blob( TBlobject & _blob, void * _begin, void * _end )
-	{
-		_blob.insert( _blob.end()
-			, (TBlobject::value_type*)_begin
-			, (TBlobject::value_type*)_end 
-			);
-	}
-};
+		void write_blob( TBlobject & _blob, void * _begin, void * _end )
+		{
+			_blob.insert( _blob.end()
+				, (TBlobject::value_type*)_begin
+				, (TBlobject::value_type*)_end 
+				);
+		}
+	};
+}

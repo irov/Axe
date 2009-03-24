@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="ScriptEngine"
-	ProjectGUID="{55C971A2-D0A1-4E0E-A83B-100DD4A32052}"
-	RootNamespace="ScriptEngine"
+	Name="AxeUtil"
+	ProjectGUID="{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}"
+	RootNamespace="AxeUtil"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,13 +40,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\;D:\projects\Carbon\thirdparty\python\PC;D:\projects\Carbon\thirdparty\python\Include"
+				AdditionalIncludeDirectories="../"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderThrough="pch.hpp"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -144,86 +143,14 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
-			<File
-				RelativePath=".\EmbeddingEntity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingMethod.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingProperty.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Entity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Method.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
+			Name="Shared"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\bind_raw_method.hpp"
+				RelativePath=".\Shared.hpp"
 				>
 			</File>
-			<File
-				RelativePath=".\Blobject.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEntity.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEvent.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingMethod.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingProperty.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Entity.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Method.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\pch.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Protocol.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
