@@ -11,6 +11,9 @@ namespace Axe
 		: public std::exception
 	{
 	public:
+		virtual void rethrow() const = 0;
+
+	public:
 		virtual void write( ArchiveWrite & _ar ) const = 0;
 		virtual void read( ArchiveRead & _ar ) = 0;
 	};
@@ -23,6 +26,9 @@ namespace Axe
 		LocalException( const std::string & _message );
 
 	public:
+		void rethrow() const override;
+
+	public:
 		void write( ArchiveWrite & _aw ) const;
 		void read( ArchiveRead & _ar );
 
@@ -33,6 +39,9 @@ namespace Axe
 	class UnknownException
 		: public Exception
 	{
+	public:
+		void rethrow() const override;
+
 	public:
 		void write( ArchiveWrite & _ar ) const;
 		void read( ArchiveRead & _ar );
