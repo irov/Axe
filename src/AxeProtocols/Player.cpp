@@ -46,18 +46,12 @@ namespace Axe
 	void Servant_Player::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		ArchiveWrite & aw = _session->beginException( _requestId );
-		this->write_exception( aw, _methodId, _ex );
+		this->writeException( aw, _methodId, _ex );
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
+	void Servant_Player::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
 	{
-		switch( _methodId )
-		{
-		case ESMD_Player_test:
-			{
-			}break;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PlayerPtr & _value )
@@ -83,7 +77,7 @@ namespace Axe
 	void Bellhop_Player_test::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_Player_test, _ex );
+		m_servant->writeException( ar, ESMD_Player_test, _ex );
 		m_session->process();
 	}
 	
@@ -156,11 +150,11 @@ namespace Axe
 	void Servant_Unique::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		ArchiveWrite & aw = _session->beginException( _requestId );
-		this->write_exception( aw, _methodId, _ex );
+		this->writeException( aw, _methodId, _ex );
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Unique::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
+	void Servant_Unique::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -209,18 +203,12 @@ namespace Axe
 	void Servant_PermissionsVerifier::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		ArchiveWrite & aw = _session->beginException( _requestId );
-		this->write_exception( aw, _methodId, _ex );
+		this->writeException( aw, _methodId, _ex );
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
+	void Servant_PermissionsVerifier::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
 	{
-		switch( _methodId )
-		{
-		case ESMD_PermissionsVerifier_checkPermissions:
-			{
-			}break;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_PermissionsVerifierPtr & _value )
@@ -246,7 +234,7 @@ namespace Axe
 	void Bellhop_PermissionsVerifier_checkPermissions::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_PermissionsVerifier_checkPermissions, _ex );
+		m_servant->writeException( ar, ESMD_PermissionsVerifier_checkPermissions, _ex );
 		m_session->process();
 	}
 	
@@ -333,18 +321,12 @@ namespace Axe
 	void Servant_SessionManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		ArchiveWrite & aw = _session->beginException( _requestId );
-		this->write_exception( aw, _methodId, _ex );
+		this->writeException( aw, _methodId, _ex );
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
+	void Servant_SessionManager::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
 	{
-		switch( _methodId )
-		{
-		case ESMD_SessionManager_create:
-			{
-			}break;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveWrite & _ar, const Servant_SessionManagerPtr & _value )
@@ -370,7 +352,7 @@ namespace Axe
 	void Bellhop_SessionManager_create::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_SessionManager_create, _ex );
+		m_servant->writeException( ar, ESMD_SessionManager_create, _ex );
 		m_session->process();
 	}
 	
@@ -431,6 +413,11 @@ namespace Axe
 		_value->write( _ar );
 	}
 	
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterAlreadyExistet::rethrow() const
+	{
+		throw *this;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void AdapterAlreadyExistet::write( Axe::ArchiveWrite & _ar ) const
 	{
@@ -493,31 +480,32 @@ namespace Axe
 	void Servant_GridManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		ArchiveWrite & aw = _session->beginException( _requestId );
-		this->write_exception( aw, _methodId, _ex );
+		this->writeException( aw, _methodId, _ex );
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
+	void Servant_GridManager::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )
 	{
 		switch( _methodId )
 		{
 		case ESMD_GridManager_addAdapter:
 			{
-				if( const AdapterAlreadyExistet * method_ex = dynamic_cast<const AdapterAlreadyExistet *>( &_ex ) )
+				try
 				{
-					_ar.writeSize( 2 );
-					method_ex->write( _ar );
+					_ex.rethrow();
+				}
+				catch( const AdapterAlreadyExistet & _ex )
+				{
+					_ar.writeSize( 3 );
+					_ex.write( _ar );
+				}
+				catch( ... )
+				{
+					this->writeExceptionFilter( _ar );
 				}
 			}break;
-		case ESMD_GridManager_getAdapterEndpoint:
-			{
-			}break;
-		case ESMD_GridManager_addUnique:
-			{
-			}break;
-		case ESMD_GridManager_getUnique:
-			{
-			}break;
+		default:
+			break;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -544,7 +532,7 @@ namespace Axe
 	void Bellhop_GridManager_addAdapter::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_GridManager_addAdapter, _ex );
+		m_servant->writeException( ar, ESMD_GridManager_addAdapter, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -565,7 +553,7 @@ namespace Axe
 	void Bellhop_GridManager_getAdapterEndpoint::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_GridManager_getAdapterEndpoint, _ex );
+		m_servant->writeException( ar, ESMD_GridManager_getAdapterEndpoint, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -585,7 +573,7 @@ namespace Axe
 	void Bellhop_GridManager_addUnique::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_GridManager_addUnique, _ex );
+		m_servant->writeException( ar, ESMD_GridManager_addUnique, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -606,7 +594,7 @@ namespace Axe
 	void Bellhop_GridManager_getUnique::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );
-		m_servant->write_exception( ar, ESMD_GridManager_getUnique, _ex );
+		m_servant->writeException( ar, ESMD_GridManager_getUnique, _ex );
 		m_session->process();
 	}
 	

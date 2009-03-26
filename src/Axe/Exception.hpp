@@ -36,6 +36,16 @@ namespace Axe
 		std::string m_message;
 	};
 
+	class StdException
+		: public LocalException
+	{
+	public:
+		StdException( const std::string & _message );
+
+	public:
+		void rethrow() const override;
+	};
+
 	class UnknownException
 		: public Exception
 	{

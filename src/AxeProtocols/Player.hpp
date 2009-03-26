@@ -36,7 +36,7 @@ namespace Axe
 	protected:
 	
 	public:
-		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+		void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
@@ -122,7 +122,7 @@ namespace Axe
 	protected:
 	
 	public:
-		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+		void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
@@ -160,7 +160,7 @@ namespace Axe
 	protected:
 	
 	public:
-		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+		void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
@@ -248,7 +248,7 @@ namespace Axe
 	protected:
 	
 	public:
-		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+		void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;
@@ -331,6 +331,8 @@ namespace Axe
 		: virtual public Axe::Exception
 	{
 	public:
+		void rethrow() const override;
+	
 	public:
 		std::string name;
 	
@@ -361,7 +363,7 @@ namespace Axe
 		std::size_t m_enumeratorID;
 	
 	public:
-		void write_exception( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
+		void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );
 	
 	private:
 		void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;

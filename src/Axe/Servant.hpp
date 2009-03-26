@@ -37,6 +37,9 @@ namespace Axe
 		void write( ArchiveWrite & _ar ) const;
 
 	protected:
+		void writeExceptionFilter( ArchiveWrite & _ar );
+
+	protected:
 		std::size_t m_servantId;
 		HostPtr m_host;
 	};
