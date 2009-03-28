@@ -61,6 +61,7 @@ namespace AxeScript
 			en->add_attr( key, none );
 		}
 
+
 		for( TMapEmbeddingMethods::const_iterator 
 			it = m_methods.begin(),
 			it_end = m_methods.end();
@@ -68,9 +69,16 @@ namespace AxeScript
 		++it )
 		{
 			const std::string & key = it->first;
-			const EmbeddingMethodPtr & embedding = it->second;
+			
+			try
+			{
+				boost::python::getattr( obj, key );
+			}
+			catch( const )
+			
+			const EmbeddingMethodPtr & method = it->second;
 
-			MethodPtr mt = new Method( embedding, en );
+			MethodPtr mt = new Method( method, en );
 
 			en->add_method( key, mt );
 		}
