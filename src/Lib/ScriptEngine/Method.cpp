@@ -3,7 +3,7 @@
 
 #	include "EmbeddingProperty.hpp"
 
-#	include "bind_raw_method.hpp"
+#	include "PythonBindRawMethod.hpp"
 
 namespace AxeScript
 {

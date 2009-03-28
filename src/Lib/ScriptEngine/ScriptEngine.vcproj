@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\;D:\projects\Carbon\thirdparty\python\PC;D:\projects\Carbon\thirdparty\python\Include"
+				AdditionalIncludeDirectories="..\..\;D:\projects\Python\PC;D:\projects\Python\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

@@ -124,18 +124,18 @@ namespace Axe
 		printf("Invocation::handleReadConnect host - %d size - %d, result - %d\n"
 			, m_hostId
 			, size
-			, (int)result			
+			, (int)result
 			);
 
 		if( result == true )
-		{		
-			this->connectionSuccessful( m_streamIn, size );				
+		{
+			this->connectionSuccessful( m_streamIn, size );
 			this->run();
 		}
 		else
 		{
 			this->close();
-			this->connectionFailed( m_streamIn, size );				
+			this->connectionFailed( m_streamIn, size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

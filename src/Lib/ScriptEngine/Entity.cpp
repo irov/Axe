@@ -2,7 +2,7 @@
 
 #	include "Entity.hpp"
 
-#	include "bind_raw_method.hpp"
+#	include "PythonBindRawMethod.hpp"
 
 namespace AxeScript
 {
@@ -126,21 +126,19 @@ namespace AxeScript
 			m_listener->onCallEntityMethod( m_name, _method, _args );
 		}
 	}
-
-
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::embedding()
 	{
 		boost::python::class_<Entity> en("Entity", boost::python::init<>())
 			;
 
-		bind_raw_method( en, "__setattr__", &Entity::embedding_setattr);
-		bind_raw_method( en, "__getattr__", &Entity::embedding_getattr);
-		bind_raw_method( en, "__hasattr__", &Entity::embedding_hasattr);
+		boost_ext::python::bind_raw_method( en, "__setattr__", &Entity::embedding_setattr);
+		boost_ext::python::bind_raw_method( en, "__getattr__", &Entity::embedding_getattr);
+		boost_ext::python::bind_raw_method( en, "__hasattr__", &Entity::embedding_hasattr);
 
 		boost::python::class_<Method, boost::noncopyable> mt("Method", boost::python::no_init )
 			;
 
-		bind_raw_method( mt, "__call__", &Method::embedding_call );
+		boost_ext::python::bind_raw_method( mt, "__call__", &Method::embedding_call );
 	}
 }
