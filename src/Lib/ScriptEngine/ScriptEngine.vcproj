@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -148,54 +148,14 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\EmbeddingEntity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingMethod.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingProperty.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Entity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Method.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
+			Name="Property"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Blobject.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEntity.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingEvent.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingMethod.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EmbeddingProperty.hpp"
+				RelativePath=".\Entity.cpp"
 				>
 			</File>
 			<File
@@ -203,11 +163,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Method.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Method.hpp"
 				>
 			</File>
 			<File
+				RelativePath=".\MethodAdapter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MethodAdapter.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pch.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Property.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Property.hpp"
 				>
 			</File>
 			<File
@@ -230,6 +210,50 @@
 			</File>
 			<File
 				RelativePath=".\PythonIntrusivePtr.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Embedding"
+			>
+			<File
+				RelativePath=".\EmbeddingEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingEntity.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingEvent.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingMethod.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingMethod.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingProperty.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EmbeddingProperty.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Util"
+			>
+			<File
+				RelativePath=".\Blobject.hpp"
 				>
 			</File>
 		</Filter>

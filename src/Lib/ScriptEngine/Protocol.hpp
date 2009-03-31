@@ -27,6 +27,8 @@ public:
 		boost::python::object create_class_obj = boost::python::raw_function( create_class_func );
 		boost::python::setattr( m_module, "create_class", create_class_obj );
 
+		Method::embedding();
+		MethodAdapter::embedding();
 		Entity::embedding();
 		EmbeddingEntity::embedding();
 		EmbeddingProperty::embedding("Property");

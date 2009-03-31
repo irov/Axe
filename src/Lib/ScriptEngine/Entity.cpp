@@ -19,17 +19,14 @@ namespace AxeScript
 		m_listener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::add_attr( const std::string & _name, const boost::python::object & _obj  )
+	void Entity::addProperty( const std::string & _name, const PropertyPtr & _property )
 	{
-		Member mb;
-		mb.revision = 0;
-		mb.value = _obj;
-		m_protocolMembers.insert( std::make_pair( _name, mb ) );
+		m_properties.insert( std::make_pair( _name, _property ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::add_method( const std::string & _name, const MethodPtr & _method )
+	void Entity::addMethodAdapter( const std::string & _name, const MethodAdapterPtr & _methodAdapter )
 	{
-		m_methods.insert( std::make_pair( _name, _method ) );
+		m_methodAdapters.insert( std::make_pair( _name, _methodAdapter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	boost::python::object Entity::embedding_setattr( const boost::python::tuple & _args, const boost::python::dict & _kwds )
@@ -37,19 +34,16 @@ namespace AxeScript
 		std::string name = boost::python::extract<std::string>(_args[0]);
 		boost::python::object obj = _args[1];
 
-		TMapProtocolMembers::iterator it_found = m_protocolMembers.find( name );
+		TMapProperties::iterator it_found = m_properties.find( name );
 
-		if( it_found == m_protocolMembers.end() )
+		if( it_found == m_properties.end() )
 		{
-			m_nativeMembers[ name ] = obj;
+			m_members[ name ] = obj;
 
 			return boost::python::object(1);
 		}
 
-		Member & mb = it_found->second;
-
-		mb.revision = ++m_revision;
-		mb.value = obj;
+		it_found->second->update( obj );
 
 		return boost::python::object(1);
 	}
@@ -58,25 +52,27 @@ namespace AxeScript
 	{
 		std::string key = boost::python::extract<std::string>(_args[0]);
 
-		TMapProtocolMembers::iterator it_protocol_found = m_protocolMembers.find( key );
+		TMapProperties::iterator it_protocol_found = m_properties.find( key );
 
-		if( it_protocol_found != m_protocolMembers.end() )
+		if( it_protocol_found != m_properties.end() )
 		{
-			return it_protocol_found->second.value;
+			const PropertyPtr & property = it_protocol_found->second;
+
+			return property->getValue();
 		}
 
-		TMapMethods::iterator it_method_found = m_methods.find( key );
+		TMapMethodAdapters::iterator it_method_found = m_methodAdapters.find( key );
 
-		if( it_method_found != m_methods.end() )
+		if( it_method_found != m_methodAdapters.end() )
 		{
-			const MethodPtr & mt = it_method_found->second;
+			const MethodAdapterPtr & mt = it_method_found->second;
 			boost::python::object obj( mt );
 			return obj;
 		}
 
-		TMapNativeMembers::iterator it_native_found = m_nativeMembers.find( key );
+		TMapMembers::iterator it_native_found = m_members.find( key );
 
-		if( it_native_found != m_nativeMembers.end() )
+		if( it_native_found != m_members.end() )
 		{
 			return it_native_found->second;
 		}
@@ -88,23 +84,23 @@ namespace AxeScript
 	{
 		std::string key = boost::python::extract<std::string>(_args[0]);
 
-		TMapProtocolMembers::iterator it_protocol_found = m_protocolMembers.find( key );
+		TMapProperties::iterator it_protocol_found = m_properties.find( key );
 
-		if( it_protocol_found != m_protocolMembers.end() )
+		if( it_protocol_found != m_properties.end() )
 		{
 			return boost::python::object( true );
 		}
 
-		TMapMethods::iterator it_method_found = m_methods.find( key );
+		TMapMethodAdapters::iterator it_method_found = m_methodAdapters.find( key );
 
-		if( it_method_found != m_methods.end() )
+		if( it_method_found != m_methodAdapters.end() )
 		{
 			return boost::python::object( true );
 		}
 
-		TMapNativeMembers::iterator it_native_found = m_nativeMembers.find( key );
+		TMapMembers::iterator it_native_found = m_members.find( key );
 
-		if( it_native_found != m_nativeMembers.end() )
+		if( it_native_found != m_members.end() )
 		{
 			return boost::python::object( true );
 		}
@@ -114,13 +110,6 @@ namespace AxeScript
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCallMethod( const std::string & _method, const TBlobject & _args )
 	{
-		TMapMethods::iterator it_found = m_methods.find( _method );
-
-		if( it_found == m_methods.end() )
-		{
-			return;
-		}
-
 		if( m_listener )
 		{
 			m_listener->onCallEntityMethod( m_name, _method, _args );
@@ -135,10 +124,5 @@ namespace AxeScript
 		boost_ext::python::bind_raw_method( en, "__setattr__", &Entity::embedding_setattr);
 		boost_ext::python::bind_raw_method( en, "__getattr__", &Entity::embedding_getattr);
 		boost_ext::python::bind_raw_method( en, "__hasattr__", &Entity::embedding_hasattr);
-
-		boost::python::class_<Method, boost::noncopyable> mt("Method", boost::python::no_init )
-			;
-
-		boost_ext::python::bind_raw_method( mt, "__call__", &Method::embedding_call );
 	}
 }

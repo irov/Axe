@@ -26,6 +26,9 @@ namespace AxeScript
 	public:
 		boost::python::object embedding_call( const boost::python::tuple & _args, const boost::python::dict & _kwds );
 
+	public:
+		static void embedding();
+
 	protected:
 		EmbeddingMethodPtr m_embedding;
 		MethodCallbackPtr m_callback;

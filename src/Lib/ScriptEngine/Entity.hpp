@@ -5,7 +5,8 @@
 #	include "EmbeddingEntity.hpp"
 #	include "EmbeddingProperty.hpp"
 
-#	include "Method.hpp"
+#	include "MethodAdapter.hpp"
+#	include "Property.hpp"
 
 namespace AxeScript
 {
@@ -34,9 +35,9 @@ namespace AxeScript
 		boost::python::object embedding_hasattr( const boost::python::tuple & _args, const boost::python::dict & _kwds );
 
 	public:
-		void add_attr( const std::string & _name, const boost::python::object & _obj );
-		void add_method( const std::string & _name, const MethodPtr & _embedding );
-
+		void addProperty( const std::string & _name, const PropertyPtr & _obj );
+		void addMethodAdapter( const std::string & _name, const MethodAdapterPtr & _obj );
+				
 	public:
 		void onCallMethod( const std::string & _method, const TBlobject & _properties ) override;
 
@@ -51,21 +52,14 @@ namespace AxeScript
 		EmbeddingEntityPtr m_embedding;
 		EntityListenerPtr m_listener;
 
-		typedef std::map<std::string, MethodPtr> TMapMethods;
-		TMapMethods m_methods;
+		typedef std::map<std::string, PropertyPtr> TMapProperties;
+		TMapProperties m_properties;
 
-		struct Member
-		{
-			std::size_t revision;
-			EmbeddingPropertyPtr embeddingProperty;
-			boost::python::object value;
-		};
+		typedef std::map<std::string, MethodAdapterPtr> TMapMethodAdapters;
+		TMapMethodAdapters m_methodAdapters;
 
-		typedef std::map<std::string, Member> TMapProtocolMembers;
-		TMapProtocolMembers m_protocolMembers;
-
-		typedef std::map<std::string, boost::python::object> TMapNativeMembers;
-		TMapNativeMembers m_nativeMembers;
+		typedef std::map<std::string, boost::python::object> TMapMembers;
+		TMapMembers m_members;
 	};
 
 	typedef AxeHandle<Entity> EntityPtr;

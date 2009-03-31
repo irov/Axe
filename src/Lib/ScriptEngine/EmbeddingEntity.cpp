@@ -56,32 +56,29 @@ namespace AxeScript
 		++it )
 		{
 			const std::string & key = it->first;
+			const EmbeddingPropertyPtr & embedding = it->second;
 
 			boost::python::object none;
-			en->add_attr( key, none );
+			PropertyPtr property = new Property( embedding, none );
+			
+			en->addProperty( key, property );
 		}
 
-
+		MethodAdapterPtr ma = new MethodAdapter( en );
+		
 		for( TMapEmbeddingMethods::const_iterator 
 			it = m_methods.begin(),
 			it_end = m_methods.end();
 		it != it_end;
 		++it )
 		{
-			const std::string & key = it->first;
-			
-			try
-			{
-				boost::python::getattr( obj, key );
-			}
-			catch( const )
-			
-			const EmbeddingMethodPtr & method = it->second;
+			const std::string & key = it->first;			
+			const EmbeddingMethodPtr & embedding = it->second;
 
-			MethodPtr mt = new Method( method, en );
-
-			en->add_method( key, mt );
+			ma->makeMethod( key, embedding );
 		}
+
+		en->addMethodAdapter( "server", ma );
 
 		return en;
 	}
