@@ -72,14 +72,14 @@ namespace Axe
 		}
 		catch( const std::exception & _ex )
 		{
-			ArchiveWrite & aw = _session->beginException( _requestId );
+			ArchiveInvocation & aw = _session->beginException( _requestId );
 			const char * message = _ex.what();
 			aw << LocalException( message );
 			_session->process();
 		}
 		catch( ... )
 		{
-			ArchiveWrite & aw = _session->beginException( _requestId );
+			ArchiveInvocation & aw = _session->beginException( _requestId );
 			aw << UnknownException();
 			_session->process();
 		}

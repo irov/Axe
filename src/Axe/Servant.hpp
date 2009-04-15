@@ -5,8 +5,7 @@
 
 namespace Axe
 {
-	class ArchiveRead;
-	class ArchiveWrite;
+	class ArchiveInvocation;
 
 	class Exception;
 
@@ -34,10 +33,10 @@ namespace Axe
 		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) = 0;
 
 	public:
-		void write( ArchiveWrite & _ar ) const;
+		void write( ArchiveInvocation & _ar ) const;
 
 	protected:
-		void writeExceptionFilter( ArchiveWrite & _ar );
+		void writeExceptionFilter( ArchiveInvocation & _ar );
 
 	protected:
 		std::size_t m_servantId;

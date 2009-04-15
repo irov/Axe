@@ -1,8 +1,6 @@
-#	include "pch.hpp"
+#	include <AxeUtil/ArchiveWrite.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-
-namespace Axe
+namespace AxeUtil
 {
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::begin()
@@ -37,7 +35,7 @@ namespace Axe
 		writeBuffer( buff, buff + size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArchiveWrite::writeArchive( const Archive::value_type * _buffer, std::size_t _size )
+	void ArchiveWrite::writeArchive( const AxeUtil::Archive::value_type * _buffer, std::size_t _size )
 	{
 		writeBuffer( _buffer, _buffer + _size );
 	}
@@ -47,8 +45,8 @@ namespace Axe
 		std::size_t old_size = m_archive.size();
 
 		m_archive.insert( m_archive.end()
-			, (const Archive::value_type *)_begin
-			, (const Archive::value_type *)_end
+			, (const AxeUtil::Archive::value_type *)_begin
+			, (const AxeUtil::Archive::value_type *)_end
 			);
 
 		std::size_t new_size = m_archive.size();

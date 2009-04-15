@@ -4,21 +4,21 @@
 
 namespace Axe
 {
-	class ArchiveRead;
+	class ArchiveDispatcher;
 	class Exception;
 
 	class Response
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void responseCall( ArchiveRead & _ar, std::size_t _size ) = 0;
-		virtual void exceptionCall( ArchiveRead & _ar, std::size_t _size ) = 0;
+		virtual void responseCall( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
+		virtual void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
 
 	protected:
 		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
 
 	protected:
-		bool exceptionFilter( std::size_t _exceptionId, ArchiveRead & _ar );
+		bool exceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar );
 	};
 
 	template<class F>

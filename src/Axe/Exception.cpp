@@ -2,8 +2,8 @@
 
 #	include <Axe/Exception.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -22,12 +22,12 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LocalException::write( ArchiveWrite & _aw ) const
+	void LocalException::write( ArchiveInvocation & _aw ) const
 	{
 		_aw << m_message;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LocalException::read( ArchiveRead & _ar )
+	void LocalException::read( ArchiveDispatcher & _ar )
 	{
 		_ar >> m_message;
 	}
@@ -47,11 +47,11 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void UnknownException::write( ArchiveWrite & _ar ) const
+	void UnknownException::write( ArchiveInvocation & _ar ) const
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void UnknownException::read( ArchiveRead & _ar )
+	void UnknownException::read( ArchiveDispatcher & _ar )
 	{
 	}
 }

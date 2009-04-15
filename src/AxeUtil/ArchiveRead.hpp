@@ -1,16 +1,11 @@
 #	pragma once
 
-#	include <Axe/Archive.hpp>
+#	include <AxeUtil/Archive.hpp>
 
-#	include <Axe/ConnectionCache.hpp>
-
-namespace Axe
+namespace AxeUtil
 {
 	class ArchiveRead
 	{
-	public:
-		ArchiveRead( const ConnectionCachePtr & _connectionCache );
-
 	public:
 		void begin();
 
@@ -31,7 +26,7 @@ namespace Axe
 		void readSize( std::size_t & _value );
 		void readString( std::string & _value );
 
-		const Archive::value_type * selectBuffer( std::size_t _size );
+		const AxeUtil::Archive::value_type * selectBuffer( std::size_t _size );
 
 		Archive::value_type * keepBuffer( std::size_t _size );
 
@@ -47,14 +42,9 @@ namespace Axe
 		std::size_t length( std::size_t _pos ) const;
 		bool eof() const;
 
-	public:
-		const ConnectionCachePtr & getConnectionCache() const;
-
 	protected:
 		Archive m_archive;
 		Archive::const_iterator m_seek;
-
-		ConnectionCachePtr m_connectionCache;
 	};
 
 	void operator >> ( ArchiveRead & ar, std::string & _value );

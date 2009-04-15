@@ -2,8 +2,8 @@
 
 #	include <Axe/HostSession.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -14,7 +14,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HostSession::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
+	void HostSession::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		std::size_t servantId;
 		std::size_t methodId;

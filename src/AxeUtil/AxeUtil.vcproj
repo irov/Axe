@@ -152,6 +152,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Archive"
+			>
+			<File
+				RelativePath=".\Archive.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveRead.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveRead.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveWrite.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArchiveWrite.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

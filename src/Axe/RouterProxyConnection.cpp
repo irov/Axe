@@ -2,7 +2,7 @@
 
 #	include <Axe/RouterProxyConnection.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
 
 namespace Axe
 {
@@ -13,9 +13,9 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & RouterProxyConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	ArchiveInvocation & RouterProxyConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & ar 
+		ArchiveInvocation & ar 
 			= m_base->beginMessage( _servantId, _methodId, _response );
 
 		ar.writeSize( m_hostId );

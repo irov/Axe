@@ -4,8 +4,8 @@
 
 #	include <Axe/Adapter.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -15,7 +15,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	void AdapterSession::permissionVerify( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		this->beginConnect( true );
 		this->process();

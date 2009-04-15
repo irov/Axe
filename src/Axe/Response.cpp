@@ -5,7 +5,7 @@
 
 namespace Axe
 {
-	bool Response::exceptionFilter( std::size_t _exceptionId, ArchiveRead & _ar )
+	bool Response::exceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar )
 	{
 		switch( _exceptionId )
 		{

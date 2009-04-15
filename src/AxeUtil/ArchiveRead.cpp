@@ -1,15 +1,7 @@
-#	include "pch.hpp"
+#	include <AxeUtil/ArchiveRead.hpp>
 
-#	include <Axe/ArchiveRead.hpp>
-
-namespace Axe
+namespace AxeUtil
 {
-	//////////////////////////////////////////////////////////////////////////
-	ArchiveRead::ArchiveRead( const ConnectionCachePtr & _connectionCache )
-		: m_connectionCache(_connectionCache)
-	{
-
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
@@ -47,9 +39,9 @@ namespace Axe
 		readBuffer( &*_value.begin(), size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Archive::value_type * ArchiveRead::selectBuffer( std::size_t _size )
+	const AxeUtil::Archive::value_type * ArchiveRead::selectBuffer( std::size_t _size )
 	{
-		const Archive::value_type * buff = &*m_seek;
+		const AxeUtil::Archive::value_type * buff = &*m_seek;
 		std::advance( m_seek, _size );
 		return buff;
 	}
@@ -93,10 +85,5 @@ namespace Axe
 	void operator >> ( ArchiveRead & ar, std::string & _value )
 	{
 		ar.readString( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConnectionCachePtr & ArchiveRead::getConnectionCache() const
-	{
-		return m_connectionCache;
 	}
 }

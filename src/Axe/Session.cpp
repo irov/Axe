@@ -2,8 +2,7 @@
 
 #	include <Axe/Session.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
 
 namespace Axe
 {
@@ -27,7 +26,7 @@ namespace Axe
 			);
 	}
 	////////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginConnect( bool _successful )
+	ArchiveInvocation & Session::beginConnect( bool _successful )
 	{
 		m_streamWrite.begin();
 
@@ -36,7 +35,7 @@ namespace Axe
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginResponse( std::size_t _responseId )
+	ArchiveInvocation & Session::beginResponse( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
 
@@ -47,7 +46,7 @@ namespace Axe
 		return m_streamWrite;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Session::beginException( std::size_t _responseId )
+	ArchiveInvocation & Session::beginException( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
 
@@ -70,7 +69,7 @@ namespace Axe
 		
 		if( size_blob )
 		{
-			Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+			AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
 
 			boost::asio::async_read( m_socket
 				, boost::asio::buffer( blob, size_blob )

@@ -21,8 +21,8 @@ namespace Axe
 		ConnectionPtr createProxyConnection( std::size_t _hostId );
 
 	protected:
-		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
-		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
+		void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) override;
+		void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:
 		ClientConnectResponsePtr m_connectResponse;		

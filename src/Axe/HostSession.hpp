@@ -5,7 +5,7 @@
 
 namespace Axe
 {
-	class ArchiveWrite;
+	class ArchiveInvocation;
 
 	class HostSession
 		: public Session
@@ -14,7 +14,7 @@ namespace Axe
 		HostSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache );
 
 	public:
-		void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) override;
+		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:
 		HostPtr m_host;

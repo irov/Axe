@@ -4,7 +4,7 @@
 
 namespace Axe
 {
-	class ArchiveWrite;
+	class ArchiveInvocation;
 
 	class AdapterSession
 		: public HostSession
@@ -13,7 +13,7 @@ namespace Axe
 		AdapterSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache );
 
 	public:
-		void permissionVerify( ArchiveRead & _ar, std::size_t _size ) override;
+		void permissionVerify( ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 
 	typedef AxeHandle<AdapterSession> AdapterSessionPtr;

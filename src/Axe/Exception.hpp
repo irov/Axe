@@ -4,8 +4,8 @@
 
 namespace Axe
 {
-	class ArchiveWrite;
-	class ArchiveRead;
+	class ArchiveInvocation;
+	class ArchiveDispatcher;
 
 	class Exception
 		: public std::exception
@@ -14,8 +14,8 @@ namespace Axe
 		virtual void rethrow() const = 0;
 
 	public:
-		virtual void write( ArchiveWrite & _ar ) const = 0;
-		virtual void read( ArchiveRead & _ar ) = 0;
+		virtual void write( ArchiveInvocation & _ar ) const = 0;
+		virtual void read( ArchiveDispatcher & _ar ) = 0;
 	};
 
 	class LocalException
@@ -29,8 +29,8 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		void write( ArchiveWrite & _aw ) const;
-		void read( ArchiveRead & _ar );
+		void write( ArchiveInvocation & _aw ) const;
+		void read( ArchiveDispatcher & _ar );
 
 	protected:
 		std::string m_message;
@@ -53,7 +53,7 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		void write( ArchiveWrite & _ar ) const;
-		void read( ArchiveRead & _ar );
+		void write( ArchiveInvocation & _ar ) const;
+		void read( ArchiveDispatcher & _ar );
 	};
 }

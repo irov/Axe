@@ -5,8 +5,8 @@
 
 #	include <Axe/Response.hpp>
 
-#	include <Axe/ArchiveRead.hpp>
-#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
 
 #	include <Axe/Client.hpp>
 
@@ -25,7 +25,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password )
 	{
-		ArchiveWrite & permission = this->connect( _endpoint );
+		ArchiveInvocation & permission = this->connect( _endpoint );
 
 		permission.writeString( _login );
 		permission.writeString( _password );
@@ -38,13 +38,13 @@ namespace Axe
 		return cn;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
+	void RouterConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		Proxy_PlayerPtr proxy = makeProxy<Proxy_PlayerPtr>( _ar );
 
 		m_connectResponse->connectSuccessful( proxy );
 	}
-	void RouterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
+	void RouterConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		m_connectResponse->connectFailed();
 	}

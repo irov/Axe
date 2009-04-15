@@ -4,7 +4,7 @@
 
 namespace Axe
 {
-	class ArchiveWrite;
+	class ArchiveInvocation;
 
 	class RouterProxyConnection
 		: public Connection
@@ -13,7 +13,7 @@ namespace Axe
 		RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _hostId );
 
 	public:
-		ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
+		ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
 		void processMessage() override;
 

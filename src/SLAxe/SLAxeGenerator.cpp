@@ -106,8 +106,8 @@ namespace Axe
 
 		m_stream << "namespace Axe" << std::endl;
 		m_stream << "{" << std::endl;
-		m_stream << "	class ArchiveWrite;" << std::endl;
-		m_stream << "	class ArchiveRead;" << std::endl;
+		m_stream << "	class ArchiveInvocation;" << std::endl;
+		m_stream << "	class ArchiveDispatcher;" << std::endl;
 		m_stream << "}" << std::endl;
 		m_stream << std::endl;
 
@@ -224,8 +224,8 @@ namespace Axe
 
 		write() << std::endl;
 
-		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << st.name << " & _value );" << std::endl;
-		write() << "void operator >> ( Axe::ArchiveRead & ar, " << st.name << " & _value );" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & ar, const " << st.name << " & _value );" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveDispatcher & ar, " << st.name << " & _value );" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderTypedef( const Typedef & _typedef )
@@ -298,8 +298,8 @@ namespace Axe
 
 		write() << std::endl;
 		write() << "public:" << std::endl;
-		write() << "	void write( ArchiveWrite & _ar ) const override;" << std::endl;
-		write() << "	void read( Axe::ArchiveRead & _ar ) override;" << std::endl;
+		write() << "	void write( Axe::ArchiveInvocation & _ar ) const override;" << std::endl;
+		write() << "	void read( Axe::ArchiveDispatcher & _ar ) override;" << std::endl;
 		write() << "};" << std::endl;
 		
 		write() << std::endl;
@@ -480,7 +480,7 @@ namespace Axe
 		
 		write() << std::endl;
 		write() << "public:" << std::endl;
-		write() << "	void writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex );" << std::endl;
+		write() << "	void writeException( Axe::ArchiveInvocation & _ar, std::size_t _methodId, const Axe::Exception & _ex );" << std::endl;
 		write() << std::endl;
 		write() << "private:" << std::endl;
 		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;" << std::endl;
@@ -489,7 +489,7 @@ namespace Axe
 		write() << std::endl;
 		writeTypedefHandle( servant_name );
 		write() << std::endl;
-		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << servant_name << "Ptr & _value );" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << servant_name << "Ptr & _value );" << std::endl;
 		write() << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -551,8 +551,8 @@ namespace Axe
 			m_stream << ") = 0;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void responseCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
-			write() << "	void exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size ) override;" << std::endl;
+			write() << "	void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;" << std::endl;
+			write() << "	void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;" << std::endl;
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -718,13 +718,13 @@ namespace Axe
 		write() << "};" << std::endl;
 		write() << std::endl;
 
-		//write() << "void operator << ( Axe::ArchiveWrite & ar, const " << proxy_name << " & _value );" << std::endl;
-		//write() << "void operator >> ( Axe::ArchiveRead & ar, " << proxy_name << " & _value );" << std::endl;
+		//write() << "void operator << ( Axe::ArchiveInvocation & ar, const " << proxy_name << " & _value );" << std::endl;
+		//write() << "void operator >> ( Axe::ArchiveDispatcher & ar, " << proxy_name << " & _value );" << std::endl;
 		/*write() << std::endl;*/
 
 		writeTypedefHandle( proxy_name );
 		write() << std::endl;
-		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << proxy_name << "Ptr & _value );" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value );" << std::endl;
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -736,8 +736,8 @@ namespace Axe
 		m_stream << std::endl;
 		m_stream << "#	include \"" << _fileName << ".hpp\"" << std::endl;
 		m_stream << std::endl;
-		m_stream << "#	include <Axe/ArchiveWrite.hpp>" << std::endl;
-		m_stream << "#	include <Axe/ArchiveRead.hpp>" << std::endl;
+		m_stream << "#	include <Axe/ArchiveInvocation.hpp>" << std::endl;
+		m_stream << "#	include <Axe/ArchiveDispatcher.hpp>" << std::endl;
 		m_stream << std::endl;
 
 		const Namespace & ns = m_parser->getNamespace();
@@ -812,7 +812,7 @@ namespace Axe
 		const Struct & st = _struct;
 
 		writeLine();
-		write() << "void operator << ( Axe::ArchiveWrite & ar, const " << st.name << " & _value )" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & ar, const " << st.name << " & _value )" << std::endl;
 		write() <<	"{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -840,7 +840,7 @@ namespace Axe
 		write() << "}" << std::endl;
 
 		writeLine();
-		write() << "void operator >> ( Axe::ArchiveRead & ar, " << st.name << " & _value )" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveDispatcher & ar, " << st.name << " & _value )" << std::endl;
 		write() <<	"{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -887,7 +887,7 @@ namespace Axe
 		write() << "	throw *this;" << std::endl;
 		write() << "}" << std::endl;
 		writeLine();
-		write() << "void " << _ex.name << "::write( Axe::ArchiveWrite & _ar ) const" << std::endl;
+		write() << "void " << _ex.name << "::write( Axe::ArchiveInvocation & _ar ) const" << std::endl;
 		write() << "{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -914,7 +914,7 @@ namespace Axe
 
 		write() << "}" << std::endl;
 		writeLine();
-		write() << "void " << _ex.name << "::read( Axe::ArchiveRead & _ar )" << std::endl;
+		write() << "void " << _ex.name << "::read( Axe::ArchiveDispatcher & _ar )" << std::endl;
 		write() << "{" << std::endl;
 
 		for( TVectorParents::const_iterator
@@ -1005,7 +1005,7 @@ namespace Axe
 
 			m_stream << ")" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveWrite & ar = m_session->beginResponse( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );" << std::endl;
 
 			arg_enumerator = 0;
 
@@ -1026,7 +1026,7 @@ namespace Axe
 			writeLine();
 			write() << "void " << bellhop_name << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveWrite & ar = m_session->beginException( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );" << std::endl;
 			write() << "	m_servant->writeException( ar, " << writeEnumMethodName( cl.name, mt.name ) << ", _ex );" << std::endl;
 			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
@@ -1085,7 +1085,7 @@ namespace Axe
 
 		if( cl.methods.empty() == false )
 		{
-			write() << "	Axe::ArchiveRead & ar = _session->getArchiveRead();" << std::endl;
+			write() << "	Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();" << std::endl;
 			write() << "	switch( _methodId )" << std::endl;
 			write() << "	{" << std::endl;
 
@@ -1143,12 +1143,12 @@ namespace Axe
 		writeLine();
 		write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
 		write() << "{" << std::endl;
-		write() << "	ArchiveWrite & aw = _session->beginException( _requestId );" << std::endl;
+		write() << "	Axe::ArchiveInvocation & aw = _session->beginException( _requestId );" << std::endl;
 		write() << "	this->writeException( aw, _methodId, _ex );" << std::endl;
 		write() << "	_session->process();" << std::endl;
 		write() << "}" << std::endl;
 		writeLine();
-		write() << "void " << servant_name << "::writeException( Axe::ArchiveWrite & _ar, std::size_t _methodId, const Axe::Exception & _ex )" << std::endl;
+		write() << "void " << servant_name << "::writeException( Axe::ArchiveInvocation & _ar, std::size_t _methodId, const Axe::Exception & _ex )" << std::endl;
 		write() << "{" << std::endl;
 
 
@@ -1219,7 +1219,7 @@ namespace Axe
 		write() << "}" << std::endl;
 
 		writeLine();
-		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << servant_name << "Ptr & _value )" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << servant_name << "Ptr & _value )" << std::endl;
 		write() << "{" << std::endl;
 		write() << "	_value->write( _ar );" << std::endl;
 		write() << "}" << std::endl;
@@ -1357,7 +1357,7 @@ namespace Axe
 			write() << "}" << std::endl;
 
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )" << std::endl;
 			write() << "{" << std::endl;
 			
 
@@ -1403,7 +1403,7 @@ namespace Axe
 			m_stream << ");" << std::endl;
 			write() << "}" << std::endl;
 			writeLine();
-			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveRead & _ar, std::size_t _size )" << std::endl;
+			write() << "void " << writeResponseName( cl.name, mt.name ) << "::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	std::size_t exceptionId;" << std::endl;
 			write() << "	_ar.readSize( exceptionId );" << std::endl;
@@ -1517,7 +1517,7 @@ namespace Axe
 
 			write() << "{" << std::endl;
 
-			write() << "	Axe::ArchiveWrite & ar = this->beginMessage( " << writeEnumMethodName( cl.name, mt.name ) << ", _response );" << std::endl;
+			write() << "	Axe::ArchiveInvocation & ar = this->beginMessage( " << writeEnumMethodName( cl.name, mt.name ) << ", _response );" << std::endl;
 
 			for( TVectorArguments::const_iterator
 				it_arg = mt.inArguments.begin(),
@@ -1536,7 +1536,7 @@ namespace Axe
 			write() << std::endl;
 		}
 		writeLine();
-		write() << "void operator << ( Axe::ArchiveWrite & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
 		write() << "{" << std::endl;
 		write() << "	_value->write( _ar );" << std::endl;
 		write() << "}" << std::endl;

@@ -17,12 +17,12 @@ namespace Axe
 		return m_socket;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveRead & Dispatcher::getArchiveRead()
+	ArchiveDispatcher & Dispatcher::getArchiveDispatcher()
 	{
 		return m_streamIn;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Dispatcher::getArchiveWrite()
+	ArchiveInvocation & Dispatcher::getArchiveInvocation()
 	{
 		return m_streamWrite;
 	}
@@ -52,13 +52,13 @@ namespace Axe
 		{
 			std::swap( m_streamWrite, m_streamSend );
 
-			const Archive & ar = m_streamSend.getArchive();
+			const AxeUtil::Archive & ar = m_streamSend.getArchive();
 
 			this->processArchive( ar );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Dispatcher::processArchive( const Archive & _ar )
+	void Dispatcher::processArchive( const AxeUtil::Archive & _ar )
 	{
 		std::size_t size_ar = _ar.size();
 
@@ -94,7 +94,7 @@ namespace Axe
 
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
-		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )

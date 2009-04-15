@@ -9,8 +9,8 @@ namespace Axe
 	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	typedef AxeHandle<class Response> ResponsePtr;
 
-	class ArchiveRead;
-	class ArchiveWrite;
+	class ArchiveDispatcher;
+	class ArchiveInvocation;
 
 	class Proxy
 		: virtual public AxeUtil::Shared
@@ -19,7 +19,7 @@ namespace Axe
 		Proxy( std::size_t _servantId, const ConnectionPtr & _connection );
 
 	public:
-		ArchiveWrite & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
+		ArchiveInvocation & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
 		void processMessage();
 
 	public:
@@ -27,7 +27,7 @@ namespace Axe
 		const ConnectionPtr & getConnection() const;
 
 	public:
-		void write( ArchiveWrite & _ar ) const;
+		void write( ArchiveInvocation & _ar ) const;
 
 	protected:
 		std::size_t m_servantId;
@@ -47,10 +47,10 @@ namespace Axe
 		return new element_type( servantId, connection );
 	}
 
-	const ConnectionPtr & makeProxyInfo( ArchiveRead & ar, std::size_t & servantId );
+	const ConnectionPtr & makeProxyInfo( ArchiveDispatcher & ar, std::size_t & servantId );
 
 	template<class T>
-	T makeProxy( ArchiveRead & _ar )
+	T makeProxy( ArchiveDispatcher & _ar )
 	{
 		std::size_t servantId;
 

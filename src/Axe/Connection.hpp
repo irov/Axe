@@ -4,7 +4,7 @@
 
 namespace Axe
 {
-	class ArchiveWrite;
+	class ArchiveInvocation;
 
 	typedef AxeHandle<class Response> ResponsePtr;
 
@@ -15,7 +15,7 @@ namespace Axe
 		Connection( std::size_t _hostId );
 
 	public:
-		virtual ArchiveWrite & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) = 0;
+		virtual ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) = 0;
 
 		virtual void processMessage() = 0;
 

@@ -2,7 +2,7 @@
 
 #	include <vector>
 
-namespace Axe
+namespace AxeUtil
 {
 	typedef std::vector<char> Archive;
 }

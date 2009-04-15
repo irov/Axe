@@ -1,8 +1,9 @@
 #	pragma once
 
 #	include <AxeUtil/Shared.hpp>
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -18,11 +19,11 @@ namespace Axe
 	public:
 		boost::asio::ip::tcp::socket & getSocket();
 
-		ArchiveRead & getArchiveRead();
-		ArchiveWrite & getArchiveWrite();
+		ArchiveDispatcher & getArchiveDispatcher();
+		ArchiveInvocation & getArchiveInvocation();
 
 	protected:
-		void processArchive( const Archive & _ar );
+		void processArchive( const AxeUtil::Archive & _ar );
 
 	public:
 		void run();
@@ -36,16 +37,16 @@ namespace Axe
 		void handleReadBody( const boost::system::error_code & _ec );
 
 	public:
-		virtual void dispatchMessage( ArchiveRead & _ar, std::size_t _size ) = 0;
+		virtual void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
 
 	protected:
 		static bool handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait );
 
 	protected:
-		ArchiveWrite m_streamWrite;
-		ArchiveWrite m_streamSend;
+		ArchiveInvocation m_streamWrite;
+		ArchiveInvocation m_streamSend;
 
-		ArchiveRead m_streamIn;
+		ArchiveDispatcher m_streamIn;
 
 		ConnectionCachePtr m_connectionCache;
 

@@ -4,8 +4,8 @@
 
 #	include <Axe/ConnectionCache.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -16,9 +16,9 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Proxy::beginMessage( std::size_t _methodId, const ResponsePtr & _response )
+	ArchiveInvocation & Proxy::beginMessage( std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & ar = m_connection->beginMessage( m_servantId, _methodId, _response );
+		ArchiveInvocation & ar = m_connection->beginMessage( m_servantId, _methodId, _response );
 
 		return ar;
 	}
@@ -38,7 +38,7 @@ namespace Axe
 		return m_connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy::write( ArchiveWrite & _ar ) const
+	void Proxy::write( ArchiveInvocation & _ar ) const
 	{
 		_ar.write( m_servantId );
 
@@ -47,7 +47,7 @@ namespace Axe
 		_ar.writeSize( endpointId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & makeProxyInfo( ArchiveRead & _ar, std::size_t & _servantId )
+	const ConnectionPtr & makeProxyInfo( ArchiveDispatcher & _ar, std::size_t & _servantId )
 	{
 		_ar.read( _servantId );
 

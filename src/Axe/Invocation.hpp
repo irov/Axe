@@ -19,24 +19,24 @@ namespace Axe
 		void processMessage() override;
 
 	protected:
-		ArchiveWrite & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
+		ArchiveInvocation & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	protected:
 		void handleConnect( const boost::system::error_code & _ec );
 
 		void handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size );
-		void handleReadConnect( const boost::system::error_code & _ec, Archive::value_type * _blob );
+		void handleReadConnect( const boost::system::error_code & _ec, AxeUtil::Archive::value_type * _blob );
 
 	protected:
 		void onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint ) override;
 
 	protected:
-		virtual void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) = 0;
-		virtual void connectionFailed( ArchiveRead & _ar, std::size_t _size ) = 0;
+		virtual void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
+		virtual void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
 
 	protected:
 		EndpointCachePtr m_endpointCache;
-		ArchiveWrite m_permission;
+		ArchiveInvocation m_permission;
 	};
 
 	typedef AxeHandle<Invocation> InvocationPtr;

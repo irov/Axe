@@ -1,10 +1,10 @@
 #	pragma once
 
-#	include <Axe/Archive.hpp>
+#	include <AxeUtil/Archive.hpp>
 
 #	include <string>
 
-namespace Axe
+namespace AxeUtil
 {
 	class ArchiveWrite
 	{
@@ -26,7 +26,7 @@ namespace Axe
 
 		void writeSize( std::size_t _size );
 		void writeString( const std::string & _value );
-		void writeArchive( const Archive::value_type * _buffer, std::size_t _size );
+		void writeArchive( const AxeUtil::Archive::value_type * _buffer, std::size_t _size );
 
 	public:
 		const Archive & getArchive() const;

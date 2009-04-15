@@ -8,8 +8,8 @@
 #	include <Axe/RouterSession.hpp>
 
 #	include <Axe/Connection.hpp>
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -50,7 +50,7 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::dispatchMethod( ArchiveRead & _ar, std::size_t _size, const RouterSessionPtr & _session )
+	void Router::dispatchMethod( ArchiveDispatcher & _ar, std::size_t _size, const RouterSessionPtr & _session )
 	{
 		std::size_t servantId;
 		std::size_t methodId;
@@ -64,11 +64,11 @@ namespace Axe
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( hostId );
 
-		ArchiveWrite & write = cn->beginMessage( servantId, methodId, new RouterResponse( requestId, _session ) );
+		ArchiveInvocation & write = cn->beginMessage( servantId, methodId, new RouterResponse( requestId, _session ) );
 
 		std::size_t lenght = _ar.length( _size );
 
-		const Archive::value_type * args_buff = _ar.selectBuffer( lenght );
+		const AxeUtil::Archive::value_type * args_buff = _ar.selectBuffer( lenght );
 
 		write.writeArchive( args_buff, lenght );
 
@@ -77,7 +77,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Router::createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session )
 	{
-		ArchiveWrite & ar = _session->beginConnect( true );
+		ArchiveInvocation & ar = _session->beginConnect( true );
 		ar << _player;
 		_session->process();
 		_session->run();

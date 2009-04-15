@@ -2,8 +2,8 @@
 
 #	include <Axe/Invocation.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -15,7 +15,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
+	ArchiveInvocation & Invocation::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		m_permission.begin();
 
@@ -72,7 +72,7 @@ namespace Axe
 			printf("Invocation::handleConnect send permission \n"
 				);
 
-			const Archive & ar = m_permission.getArchive();
+			const AxeUtil::Archive & ar = m_permission.getArchive();
 
 			this->processArchive( ar );
 		}
@@ -96,7 +96,7 @@ namespace Axe
 
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 
-		Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
 
 		boost::asio::async_read( m_socket
 			, boost::asio::buffer( blob, size_blob )
@@ -105,7 +105,7 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Invocation::handleReadConnect( const boost::system::error_code & _ec, Archive::value_type * _blob )
+	void Invocation::handleReadConnect( const boost::system::error_code & _ec, AxeUtil::Archive::value_type * _blob )
 	{
 		if( _ec )
 		{

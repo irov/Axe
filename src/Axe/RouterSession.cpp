@@ -2,8 +2,8 @@
 
 #	include <Axe/RouterSession.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -14,12 +14,12 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterSession::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
+	void RouterSession::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		m_router->dispatchMethod( _ar, _size, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	void RouterSession::permissionVerify( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		std::string login;
 		std::string password;

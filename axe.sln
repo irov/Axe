@@ -43,10 +43,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptEngine", "src\Lib\Scr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AxeUtil", "src\AxeUtil\AxeUtil.vcproj", "{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PropertySystem", "src\Lib\PropertySystem\PropertySystem.vcproj", "{EA006B52-5FE8-4994-9768-1E526BC4BD26}"
+EndProject
 Global
-	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
-		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -92,6 +91,10 @@ Global
 		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Debug|Win32.Build.0 = Debug|Win32
 		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Release|Win32.ActiveCfg = Release|Win32
 		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C}.Release|Win32.Build.0 = Release|Win32
+		{EA006B52-5FE8-4994-9768-1E526BC4BD26}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EA006B52-5FE8-4994-9768-1E526BC4BD26}.Debug|Win32.Build.0 = Debug|Win32
+		{EA006B52-5FE8-4994-9768-1E526BC4BD26}.Release|Win32.ActiveCfg = Release|Win32
+		{EA006B52-5FE8-4994-9768-1E526BC4BD26}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +105,9 @@ Global
 		{82D1BDA2-8C54-401A-AF95-60A4FA99FDC9} = {34AE27EB-E6A6-4331-8B23-36B645D0B074}
 		{41916002-DFC8-4AF4-BA10-782A173B9653} = {34AE27EB-E6A6-4331-8B23-36B645D0B074}
 		{55C971A2-D0A1-4E0E-A83B-100DD4A32052} = {262A64F5-7AC7-4880-AEAA-D34E5B440A4F}
+		{EA006B52-5FE8-4994-9768-1E526BC4BD26} = {262A64F5-7AC7-4880-AEAA-D34E5B440A4F}
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 EndGlobal

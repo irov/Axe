@@ -6,8 +6,8 @@
 #	include <Axe/Adapter.hpp>
 #	include <Axe/Response.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 #	include <AxeProtocols/Player.hpp>
 
@@ -27,7 +27,7 @@ namespace Axe
 		Invocation::connect( _endpoint );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
+	void GridConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		Proxy_GridManagerPtr gridManager = 
 			makeProxy<Proxy_GridManagerPtr>( _ar );
@@ -35,7 +35,7 @@ namespace Axe
 		m_connectResponse->connectSuccessful( gridManager );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
+	void GridConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		m_connectResponse->connectFailed();
 	}

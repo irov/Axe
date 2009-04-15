@@ -4,8 +4,7 @@
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Exception.hpp>
 
-#	include <Axe/ArchiveRead.hpp>
-#	include <Axe/ArchiveWrite.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
 
 
 #	include <Axe/ConnectionCache.hpp>
@@ -47,7 +46,7 @@ namespace Axe
 		return new Proxy( m_servantId, cn );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::write( ArchiveWrite & _ar ) const
+	void Servant::write( ArchiveInvocation & _ar ) const
 	{
 		_ar.write( m_servantId );
 
@@ -55,7 +54,7 @@ namespace Axe
 		_ar.write( hostId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::writeExceptionFilter( ArchiveWrite & _ar )
+	void Servant::writeExceptionFilter( ArchiveInvocation & _ar )
 	{
 		try
 		{

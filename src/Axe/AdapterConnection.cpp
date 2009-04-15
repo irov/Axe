@@ -6,8 +6,8 @@
 #	include <Axe/Adapter.hpp>
 #	include <Axe/Response.hpp>
 
-#	include <Axe/ArchiveWrite.hpp>
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveInvocation.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -18,9 +18,9 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveWrite & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	ArchiveInvocation & AdapterConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
-		ArchiveWrite & ar = this->getArchiveWrite();
+		ArchiveInvocation & ar = this->getArchiveInvocation();
 		
 		ar.begin();
 
@@ -42,7 +42,7 @@ namespace Axe
 		return m_messageEnum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::writeBody( ArchiveWrite & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	void AdapterConnection::writeBody( ArchiveInvocation & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
 	{
 		std::size_t messageId = this->addDispatch( _response );
 
@@ -51,7 +51,7 @@ namespace Axe
 		_archive.writeSize( messageId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::dispatchMessage( ArchiveRead & _ar, std::size_t _size )
+	void AdapterConnection::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		bool true_response;
 		_ar.read( true_response );
@@ -77,12 +77,12 @@ namespace Axe
 		_ar.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::connectionSuccessful( ArchiveRead & _ar, std::size_t _size )
+	void AdapterConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::connectionFailed( ArchiveRead & _ar, std::size_t _size )
+	void AdapterConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		printf("Invocation::connectionFailed %d \n"
 			, m_hostId

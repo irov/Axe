@@ -11,13 +11,13 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridSession::permissionVerify( ArchiveRead & _ar, std::size_t _size )
+	void GridSession::permissionVerify( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		GridPtr grid = AxeUtil::handleCast<GridPtr>( m_host );
 
 		const Proxy_GridManagerPtr & gridManager = grid->getGridManager();
 
-		ArchiveWrite & ar = this->beginConnect( true );
+		ArchiveInvocation & ar = this->beginConnect( true );
 		ar.write( gridManager );
 
 		this->process();

@@ -27,7 +27,7 @@ namespace Axe
 		void onSessionManager( const Proxy_SessionManagerPtr & _sessionManager );
 
 	public:
-		void dispatchMethod( ArchiveRead & _ar, std::size_t _size, const RouterSessionPtr & _sn );
+		void dispatchMethod( ArchiveDispatcher & _ar, std::size_t _size, const RouterSessionPtr & _sn );
 		void permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session );
 
 	protected:

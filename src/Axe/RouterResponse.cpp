@@ -3,7 +3,7 @@
 #	include <Axe/RouterResponse.hpp>
 #	include <Axe/RouterSession.hpp>
 
-#	include <Axe/ArchiveRead.hpp>
+#	include <Axe/ArchiveDispatcher.hpp>
 
 namespace Axe
 {
@@ -14,22 +14,22 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterResponse::responseCall( ArchiveRead & _ar, std::size_t _size )
+	void RouterResponse::responseCall( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		std::size_t lenght = _ar.length( _size );
-		const Archive::value_type * args_buff = _ar.selectBuffer( lenght );
+		const AxeUtil::Archive::value_type * args_buff = _ar.selectBuffer( lenght );
 
-		ArchiveWrite & write = m_session->beginResponse( m_requestId );
+		ArchiveInvocation & write = m_session->beginResponse( m_requestId );
 		write.writeArchive( args_buff, lenght );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterResponse::exceptionCall( ArchiveRead & _ar, std::size_t _size )
+	void RouterResponse::exceptionCall( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		std::size_t lenght = _ar.length( _size );
-		const Archive::value_type * args_buff = _ar.selectBuffer( lenght );
+		const AxeUtil::Archive::value_type * args_buff = _ar.selectBuffer( lenght );
 
-		ArchiveWrite & write = m_session->beginException( m_requestId );
+		ArchiveInvocation & write = m_session->beginException( m_requestId );
 		write.writeArchive( args_buff, lenght );
 		m_session->process();
 	}

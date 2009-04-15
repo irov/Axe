@@ -6,7 +6,7 @@
 
 namespace Axe
 {
-	class ArchiveRead;
+	class ArchiveDispatcher;
 
 	typedef AxeHandle<class Response> ResponsePtr;
 
@@ -20,8 +20,8 @@ namespace Axe
 		void connect( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	protected:
-		void connectionSuccessful( ArchiveRead & _ar, std::size_t _size ) override;
-		void connectionFailed( ArchiveRead & _ar, std::size_t _size ) override;
+		void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) override;
+		void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:
 		GridConnectResponsePtr m_connectResponse;

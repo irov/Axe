@@ -162,23 +162,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Archive.hpp"
+				RelativePath=".\ArchiveDispatcher.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ArchiveRead.cpp"
+				RelativePath=".\ArchiveDispatcher.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ArchiveRead.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ArchiveWrite.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ArchiveWrite.hpp"
+				RelativePath=".\ArchiveInvocation.hpp"
 				>
 			</File>
 		</Filter>
