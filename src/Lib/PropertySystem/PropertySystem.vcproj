@@ -267,6 +267,14 @@
 				RelativePath=".\ArchiveToProperty.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\PropertyToArchive.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyToArchive.hpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

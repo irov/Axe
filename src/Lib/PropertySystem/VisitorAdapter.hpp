@@ -2,7 +2,7 @@
 
 #	include "Visitor.hpp"
 
-#	include "Arithmetics.hpp"
+#	include "Numeric.hpp"
 #	include "String.hpp"
 #	include "Array.hpp"
 
