@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Axe", "src\Axe\Axe.vcproj", "{188ABE90-731A-48D5-9D39-8015CEBA83A8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{BD75F40C-6D5A-4871-8D71-37CD74D7F98C} = {BD75F40C-6D5A-4871-8D71-37CD74D7F98C}
 		{0815A219-E9A5-4E3A-9A1B-6CD74B3CBC49} = {0815A219-E9A5-4E3A-9A1B-6CD74B3CBC49}
 	EndProjectSection
 EndProject
