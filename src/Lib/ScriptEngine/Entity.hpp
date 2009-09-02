@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Blobject.hpp"
-
 #	include "EmbeddingEntity.hpp"
 #	include "EmbeddingProperty.hpp"
 
@@ -14,7 +12,7 @@ namespace AxeScript
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void onCallEntityMethod( const std::string & _entity, const std::string & _method, const TBlobject & _blobject ) = 0;		
+		virtual void onCallEntityMethod( const std::string & _entity, const std::string & _method, const AxeUtil::Archive & _blobject ) = 0;		
 	};
 
 	typedef AxeHandle<EntityListener> EntityListenerPtr;
@@ -39,7 +37,7 @@ namespace AxeScript
 		void addMethodAdapter( const std::string & _name, const MethodAdapterPtr & _obj );
 				
 	public:
-		void onCallMethod( const std::string & _method, const TBlobject & _properties ) override;
+		void onCallMethod( const std::string & _method, const AxeUtil::Archive & _properties ) override;
 
 	public:
 		static void embedding();

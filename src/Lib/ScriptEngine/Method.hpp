@@ -2,8 +2,7 @@
 
 #	include "EmbeddingMethod.hpp"
 
-#	include "Blobject.hpp"
-
+#	include <AxeUtil/Archive.hpp>
 #	include <AxeUtil/Shared.hpp>
 
 namespace AxeScript
@@ -12,7 +11,7 @@ namespace AxeScript
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void onCallMethod( const std::string & _method, const TBlobject & _properties ) = 0;
+		virtual void onCallMethod( const std::string & _method, const AxeUtil::Archive & _properties ) = 0;
 	};
 
 	typedef AxeHandle<MethodCallback> MethodCallbackPtr;

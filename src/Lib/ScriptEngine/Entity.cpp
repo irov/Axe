@@ -108,7 +108,7 @@ namespace AxeScript
 		return boost::python::object( false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::onCallMethod( const std::string & _method, const TBlobject & _args )
+	void Entity::onCallMethod( const std::string & _method, const AxeUtil::Archive & _args )
 	{
 		if( m_listener )
 		{

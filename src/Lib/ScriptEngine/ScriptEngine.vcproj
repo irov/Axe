@@ -249,14 +249,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Util"
-			>
-			<File
-				RelativePath=".\Blobject.hpp"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

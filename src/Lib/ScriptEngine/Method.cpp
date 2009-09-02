@@ -22,7 +22,7 @@ namespace AxeScript
 
 		boost::python::ssize_t argsType_len = boost::python::len( argsType );
 
-		TBlobject blobject; 
+		AxeUtil::Archive blobject; 
 
 		for( boost::python::ssize_t 
 			it = 0,

@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "Blobject.hpp"
-
+#	include <AxeUtil/Archive.hpp>
 #	include <AxeUtil/Shared.hpp>
 
 #	include "EmbeddingMethod.hpp"

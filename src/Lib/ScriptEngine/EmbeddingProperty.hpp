@@ -1,8 +1,7 @@
 #	pragma once
 
+#	include <AxeUtil/Archive.hpp>
 #	include <AxeUtil/Shared.hpp>
-
-#	include "Blobject.hpp"
 
 #	include <vector>
 
@@ -15,7 +14,7 @@ namespace AxeScript
 		static void embedding( const std::string & _name );
 
 	public:
-		virtual void write( TBlobject & _blob, const boost::python::object & _obj ) = 0;
+		virtual void write( AxeUtil::Archive & _blob, const boost::python::object & _obj ) = 0;
 	};
 
 	typedef AxeHandle<EmbeddingProperty> EmbeddingPropertyPtr;
@@ -37,18 +36,18 @@ namespace AxeScript
 		}
 
 	public:
-		void write( TBlobject & _blob, const boost::python::object & _obj ) override
+		void write( AxeUtil::Archive & _blob, const boost::python::object & _obj ) override
 		{
 			T value = boost::python::extract<T>(_obj);
 
 			write_blob( _blob, &value, &value + 1 );
 		}
 
-		void write_blob( TBlobject & _blob, void * _begin, void * _end )
+		void write_blob( AxeUtil::Archive & _blob, void * _begin, void * _end )
 		{
 			_blob.insert( _blob.end()
-				, (TBlobject::value_type*)_begin
-				, (TBlobject::value_type*)_end 
+				, (AxeUtil::Archive::value_type*)_begin
+				, (AxeUtil::Archive::value_type*)_end 
 				);
 		}
 	};
