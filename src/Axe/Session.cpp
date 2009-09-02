@@ -30,7 +30,7 @@ namespace Axe
 	{
 		m_streamWrite.begin();
 
-		m_streamWrite.write( _successful );
+		m_streamWrite << _successful;
 
 		return m_streamWrite;
 	}

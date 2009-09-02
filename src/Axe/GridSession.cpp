@@ -18,7 +18,7 @@ namespace Axe
 		const Proxy_GridManagerPtr & gridManager = grid->getGridManager();
 
 		ArchiveInvocation & ar = this->beginConnect( true );
-		ar.write( gridManager );
+		ar << gridManager;
 
 		this->process();
 

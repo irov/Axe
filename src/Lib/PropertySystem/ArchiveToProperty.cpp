@@ -48,9 +48,10 @@ namespace AxeProperty
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void blobjectToProperty( const TypePtr & _type, AxeUtil::ArchiveRead & _archive, const BasePtr & _property )
+	void archiveToProperty( AxeUtil::ArchiveRead & _archive, const BasePtr & _property )
 	{
 		ArchiveToProperty ap( _archive, _property );
-		_type->visit( &ap );
+		const TypePtr & type = _property->getType();
+		type->visit( &ap );
 	}
 }

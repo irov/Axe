@@ -48,10 +48,10 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::write( ArchiveInvocation & _ar ) const
 	{
-		_ar.write( m_servantId );
+		_ar << m_servantId;
 
 		std::size_t hostId = m_host->getHostId();
-		_ar.write( hostId );
+		_ar << hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::writeExceptionFilter( ArchiveInvocation & _ar )

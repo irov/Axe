@@ -40,7 +40,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Proxy::write( ArchiveInvocation & _ar ) const
 	{
-		_ar.write( m_servantId );
+		_ar << m_servantId;
 
 		const ConnectionPtr & connection = this->getConnection();
 		std::size_t endpointId = connection->getHostId();

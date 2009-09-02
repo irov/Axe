@@ -18,7 +18,7 @@ namespace AxeProperty
 		void process( Numeric<T> * _property )
 		{
 			T value = _property->getValue();
-			m_archive.write( value );
+			m_archive << value;
 		}
 
 		void process( String * _property );

@@ -46,7 +46,8 @@ namespace Axe
 	{
 		std::size_t messageId = this->addDispatch( _response );
 
-		_archive.write( _servantId );
+		_archive << _servantId;
+
 		_archive.writeSize( _methodId );
 		_archive.writeSize( messageId );
 	}

@@ -17,7 +17,7 @@ namespace AxeUtil
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readSize( std::size_t & _value )
 	{
-		char low_size;
+		unsigned char low_size;
 		read( low_size );
 
 		if( low_size == 255 )

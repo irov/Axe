@@ -36,5 +36,5 @@ namespace AxeProperty
 		BasePtr m_property;
 	};
 
-	void blobjectToProperty( const TypePtr & _type, AxeUtil::ArchiveRead & _archive, const BasePtr & _property );
+	void archiveToProperty( AxeUtil::ArchiveRead & _archive, const BasePtr & _property );
 }
