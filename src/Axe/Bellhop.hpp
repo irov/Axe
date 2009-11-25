@@ -6,8 +6,6 @@
 
 namespace Axe
 {
-	//typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
-
 	class Bellhop
 		: virtual public AxeUtil::Shared
 	{

@@ -4,8 +4,6 @@
 
 namespace Axe
 {
-	class ArchiveInvocation;
-
 	class AdapterSession
 		: public HostSession
 	{

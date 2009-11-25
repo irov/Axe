@@ -9,7 +9,6 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Connection> ConnectionPtr;
 	typedef AxeHandle<class Communicator> CommunicatorPtr;	
 	typedef AxeHandle<class RouterSession> RouterSessionPtr;	
 
@@ -42,7 +41,7 @@ namespace Axe
 
 	protected:
 		ConnectionCachePtr m_connectionCache;
-		EndpointCachePtr m_endpointCache;
+		//EndpointCachePtr m_endpointCache;
 
 		Proxy_GridManagerPtr m_gridManager;
 

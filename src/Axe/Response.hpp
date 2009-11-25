@@ -15,7 +15,7 @@ namespace Axe
 		virtual void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
 
 	protected:
-		virtual void throw_exception( const Axe::Exception & _ex ) = 0;
+		virtual void throw_exception( const Exception & _ex ) = 0;
 
 	protected:
 		bool exceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar );

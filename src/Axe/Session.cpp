@@ -15,7 +15,7 @@ namespace Axe
 	void Session::accept()
 	{
 		m_streamIn.clear();
-		m_streamIn.begin();		
+		m_streamIn.begin();
 
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 

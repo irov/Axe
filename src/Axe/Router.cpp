@@ -17,7 +17,7 @@ namespace Axe
 	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: Service(_communicator->getService(), _endpoint, _name)
 		, m_connectionCache(_communicator->getConnectionCache())
-		, m_endpointCache(_communicator->getEndpointCache())
+		//, m_endpointCache(_communicator->getEndpointCache())
 		, m_gridManager(_communicator->getGridManager())
 
 	{
@@ -64,7 +64,9 @@ namespace Axe
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( hostId );
 
-		ArchiveInvocation & write = cn->beginMessage( servantId, methodId, new RouterResponse( requestId, _session ) );
+		ResponsePtr response = new RouterResponse( requestId, _session );
+
+		ArchiveInvocation & write = cn->beginMessage( servantId, methodId, response );
 
 		std::size_t lenght = _ar.length( _size );
 

@@ -22,11 +22,11 @@ namespace Axe
 
 	protected:
 		boost::asio::io_service m_service;
-		RouterConnectionPtr m_router;
+		RouterConnectionPtr m_routerConnection;
 
 		ConnectionCachePtr m_connectionCache;
 		ClientConnectResponsePtr m_response;
 	};
 
-	typedef AxeHandle<Client> ReceptionPtr;
+	typedef AxeHandle<Client> ClientPtr;
 }

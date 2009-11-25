@@ -8,8 +8,6 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class AdapterSession> AdapterSessionPtr;
-	typedef AxeHandle<class Connection> ConnectionPtr;
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
 	typedef AxeHandle<class Adapter> AdapterPtr;

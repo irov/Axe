@@ -327,7 +327,7 @@ namespace Axe
 	
 	typedef std::map<std::string, std::size_t> TMapAdapterIds;
 	
-	class AdapterAlreadyExistet
+	class AdapterAlreadyExistetException
 		: virtual public Axe::Exception
 	{
 	public:
@@ -341,7 +341,58 @@ namespace Axe
 		void read( Axe::ArchiveDispatcher & _ar ) override;
 	};
 	
-	typedef AxeHandle<AdapterAlreadyExistet> AdapterAlreadyExistetPtr;
+	typedef AxeHandle<AdapterAlreadyExistetException> AdapterAlreadyExistetExceptionPtr;
+	
+	
+	class HostNotFoundException
+		: virtual public Axe::Exception
+	{
+	public:
+		void rethrow() const override;
+	
+	public:
+		std::size_t hostId;
+	
+	public:
+		void write( Axe::ArchiveInvocation & _ar ) const override;
+		void read( Axe::ArchiveDispatcher & _ar ) override;
+	};
+	
+	typedef AxeHandle<HostNotFoundException> HostNotFoundExceptionPtr;
+	
+	
+	class UniqueAlreadyExistetException
+		: virtual public Axe::Exception
+	{
+	public:
+		void rethrow() const override;
+	
+	public:
+		std::string name;
+	
+	public:
+		void write( Axe::ArchiveInvocation & _ar ) const override;
+		void read( Axe::ArchiveDispatcher & _ar ) override;
+	};
+	
+	typedef AxeHandle<UniqueAlreadyExistetException> UniqueAlreadyExistetExceptionPtr;
+	
+	
+	class UniqueNotFoundException
+		: virtual public Axe::Exception
+	{
+	public:
+		void rethrow() const override;
+	
+	public:
+		std::string name;
+	
+	public:
+		void write( Axe::ArchiveInvocation & _ar ) const override;
+		void read( Axe::ArchiveDispatcher & _ar ) override;
+	};
+	
+	typedef AxeHandle<UniqueNotFoundException> UniqueNotFoundExceptionPtr;
 	
 	
 	typedef AxeHandle<class Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;

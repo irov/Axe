@@ -7,7 +7,6 @@ namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
 	typedef AxeHandle<class Servant> ServantPtr;
-	typedef AxeHandle<class Connection> ConnectionPtr;
 
 	class Host
 		: public Service

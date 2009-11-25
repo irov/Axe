@@ -6,8 +6,6 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Client> ClientPtr;
-
 	class RouterConnection
 		: public AdapterConnection
 	{

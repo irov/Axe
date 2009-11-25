@@ -414,17 +414,65 @@ namespace Axe
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterAlreadyExistet::rethrow() const
+	void AdapterAlreadyExistetException::rethrow() const
 	{
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterAlreadyExistet::write( Axe::ArchiveInvocation & _ar ) const
+	void AdapterAlreadyExistetException::write( Axe::ArchiveInvocation & _ar ) const
 	{
 		_ar << name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AdapterAlreadyExistet::read( Axe::ArchiveDispatcher & _ar )
+	void AdapterAlreadyExistetException::read( Axe::ArchiveDispatcher & _ar )
+	{
+		_ar >> name;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void HostNotFoundException::rethrow() const
+	{
+		throw *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HostNotFoundException::write( Axe::ArchiveInvocation & _ar ) const
+	{
+		_ar << hostId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HostNotFoundException::read( Axe::ArchiveDispatcher & _ar )
+	{
+		_ar >> hostId;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueAlreadyExistetException::rethrow() const
+	{
+		throw *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueAlreadyExistetException::write( Axe::ArchiveInvocation & _ar ) const
+	{
+		_ar << name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueAlreadyExistetException::read( Axe::ArchiveDispatcher & _ar )
+	{
+		_ar >> name;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueNotFoundException::rethrow() const
+	{
+		throw *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueNotFoundException::write( Axe::ArchiveInvocation & _ar ) const
+	{
+		_ar << name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void UniqueNotFoundException::read( Axe::ArchiveDispatcher & _ar )
 	{
 		_ar >> name;
 	}
@@ -494,7 +542,55 @@ namespace Axe
 				{
 					_ex.rethrow();
 				}
-				catch( const AdapterAlreadyExistet & _ex )
+				catch( const AdapterAlreadyExistetException & _ex )
+				{
+					_ar.writeSize( 3 );
+					_ex.write( _ar );
+				}
+				catch( ... )
+				{
+					this->writeExceptionFilter( _ar );
+				}
+			}break;
+		case ESMD_GridManager_getAdapterEndpoint:
+			{
+				try
+				{
+					_ex.rethrow();
+				}
+				catch( const HostNotFoundException & _ex )
+				{
+					_ar.writeSize( 3 );
+					_ex.write( _ar );
+				}
+				catch( ... )
+				{
+					this->writeExceptionFilter( _ar );
+				}
+			}break;
+		case ESMD_GridManager_addUnique:
+			{
+				try
+				{
+					_ex.rethrow();
+				}
+				catch( const UniqueAlreadyExistetException & _ex )
+				{
+					_ar.writeSize( 3 );
+					_ex.write( _ar );
+				}
+				catch( ... )
+				{
+					this->writeExceptionFilter( _ar );
+				}
+			}break;
+		case ESMD_GridManager_getUnique:
+			{
+				try
+				{
+					_ex.rethrow();
+				}
+				catch( const UniqueNotFoundException & _ex )
 				{
 					_ar.writeSize( 3 );
 					_ex.write( _ar );
@@ -634,7 +730,7 @@ namespace Axe
 		{
 		case 2:
 			{
-				AdapterAlreadyExistet ex;
+				AdapterAlreadyExistetException ex;
 				ex.read( _ar );
 				this->throw_exception( ex ); 
 			}
@@ -673,6 +769,15 @@ namespace Axe
 		{
 			return;
 		}
+		switch( exceptionId )
+		{
+		case 2:
+			{
+				HostNotFoundException ex;
+				ex.read( _ar );
+				this->throw_exception( ex ); 
+			}
+		};
 	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -706,6 +811,15 @@ namespace Axe
 		{
 			return;
 		}
+		switch( exceptionId )
+		{
+		case 2:
+			{
+				UniqueAlreadyExistetException ex;
+				ex.read( _ar );
+				this->throw_exception( ex ); 
+			}
+		};
 	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -740,6 +854,15 @@ namespace Axe
 		{
 			return;
 		}
+		switch( exceptionId )
+		{
+		case 2:
+			{
+				UniqueNotFoundException ex;
+				ex.read( _ar );
+				this->throw_exception( ex ); 
+			}
+		};
 	
 	}
 	

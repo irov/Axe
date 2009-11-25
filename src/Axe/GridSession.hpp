@@ -4,8 +4,6 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Grid> GridPtr;
-
 	class GridSession
 		: public HostSession
 	{
