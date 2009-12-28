@@ -87,7 +87,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Router::checkPermissionsResponse( bool _successful, const std::string & _login, const SessionPtr & _session )
 	{
-		if( _session )
+		if( _successful )
 		{
 			m_sessionManager->create_async( 
 				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session )

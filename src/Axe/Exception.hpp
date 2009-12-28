@@ -56,4 +56,14 @@ namespace Axe
 		void write( ArchiveInvocation & _ar ) const;
 		void read( ArchiveDispatcher & _ar );
 	};
+
+	class CriticalException
+		: public LocalException
+	{
+	public:
+		CriticalException( const std::string & _message );
+
+	public:
+		void rethrow() const override;
+	};
 }

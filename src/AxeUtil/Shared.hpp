@@ -59,4 +59,10 @@ namespace AxeUtil
 	{
 		return AxeHandle<T>(_t);
 	}
+
+	template<class T>
+	inline AxeHandle<const T> handlePtr( const T * _t )
+	{
+		return AxeHandle<const T>(_t);
+	}
 }

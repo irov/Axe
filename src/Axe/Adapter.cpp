@@ -25,11 +25,6 @@ namespace Axe
 		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void addUniqueResponse()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Proxy_UniquePtr Adapter::addUnique( std::size_t _servantId, const std::string & _name, const Servant_UniquePtr & _unique )
 	{
 		ProxyPtr base = this->addServant( _servantId, _unique );
@@ -37,7 +32,7 @@ namespace Axe
 		Proxy_UniquePtr proxyUnique = uncheckedCast<Proxy_UniquePtr>( base );
 
 		m_gridManager->addUnique_async( 
-			bindResponse( boost::bind( &addUniqueResponse ), noneExceptionFilter() )
+			bindResponseEmpty()
 			, _name
 			, proxyUnique 
 			);

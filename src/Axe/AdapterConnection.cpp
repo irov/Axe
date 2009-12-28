@@ -62,6 +62,11 @@ namespace Axe
 
 		TMapResponse::iterator it_found = m_dispatch.find( responseId );
 
+		if( it_found == m_dispatch.end() )
+		{
+			throw CriticalException("AdapterConnection::dispatchMessage unknown responseId");
+		}
+
 		const ResponsePtr & response = it_found->second;
 
 		if( true_response )

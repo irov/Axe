@@ -37,7 +37,7 @@ protected:
 		pi.name = "test";
 
 		_player->test_async( 
-			 new MyClientResponse_Player_test
+			Axe::bindResponseMethod( &MyClient::testResponse, this )
 			 , pi );
 	}
 
@@ -45,6 +45,17 @@ protected:
 	{
 		printf("connectFailed");
 	}
+
+protected:
+	void testResponse( int _id )
+	{
+		printf( "Response_Player_test %d"
+			, _id
+			);
+	}
+
+protected:
+	Axe::Proxy_PlayerPtr m_player;
 };
 
 void main()

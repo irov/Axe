@@ -54,4 +54,14 @@ namespace Axe
 	void UnknownException::read( ArchiveDispatcher & _ar )
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	CriticalException::CriticalException( const std::string & _message )
+		: LocalException(_message)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CriticalException::rethrow() const
+	{
+		throw *this;
+	}
 }
