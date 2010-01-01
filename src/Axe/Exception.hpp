@@ -66,4 +66,6 @@ namespace Axe
 	public:
 		void rethrow() const override;
 	};
+
+	void writeExceptionFilter( ArchiveInvocation & _ar );
 }

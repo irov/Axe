@@ -53,34 +53,4 @@ namespace Axe
 		std::size_t hostId = m_host->getHostId();
 		_ar << hostId;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Servant::writeExceptionFilter( ArchiveInvocation & _ar )
-	{
-		try
-		{
-			throw;
-		}
-		catch( const ::Axe::Exception & _ex )
-		{
-			const char * ch_what = _ex.what();
-			std::string message = ( ch_what )?ch_what:std::string();
-			::Axe::LocalException lex( message );
-			_ar.writeSize( 1 );
-			lex.write( _ar );
-		}
-		catch( const std::exception & _ex )
-		{
-			const char * ch_what = _ex.what();
-			std::string message = ( ch_what )?ch_what:std::string();
-			::Axe::StdException lex( message );
-			_ar.writeSize( 2 );
-			lex.write( _ar );
-		}
-		catch( ... )
-		{
-			::Axe::UnknownException uex;
-			_ar.writeSize(0);
-			uex.write( _ar );
-		}
-	}
 }

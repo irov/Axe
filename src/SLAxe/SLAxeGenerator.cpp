@@ -484,6 +484,7 @@ namespace Axe
 		write() << std::endl;
 		write() << "private:" << std::endl;
 		write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId , const Axe::SessionPtr & _session ) override;" << std::endl;
+
 		write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;" << std::endl;
 		write() << "};" << std::endl;
 		write() << std::endl;
@@ -1027,7 +1028,7 @@ namespace Axe
 			write() << "void " << bellhop_name << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );" << std::endl;
-			write() << "	m_servant->writeException( ar, " << writeEnumMethodName( cl.name, mt.name ) << ", _ex );" << std::endl;
+			write() << "	s_" << servant_name << "_writeException_" << mt.name << "( ar, _ex );" << std::endl;
 			write() << "	m_session->process();" << std::endl;
 			write() << "}" << std::endl;
 		}
@@ -1059,36 +1060,25 @@ namespace Axe
 
 		std::string servant_name = writeServantName( cl.name );
 
-		write() << "enum" << std::endl;
-		write() << "{" << std::endl;
-		write() << "	ESMD_" << cl.name << " = 0" << std::endl;
+		//write() << "enum" << std::endl;
+		//write() << "{" << std::endl;
+		//write() << "	ESMD_" << cl.name << " = 0" << std::endl;
 
-		for( TVectorMethods::const_iterator
-			it_method = cl.methods.begin(),
-			it_method_end = cl.methods.end();
-		it_method != it_method_end;
-		++it_method )
-		{
-			const Method & mt = *it_method;
-			write() << "	,	" << writeEnumMethodName( cl.name, mt.name ) << std::endl;
-		}
+		//for( TVectorMethods::const_iterator
+		//	it_method = cl.methods.begin(),
+		//	it_method_end = cl.methods.end();
+		//it_method != it_method_end;
+		//++it_method )
+		//{
+		//	const Method & mt = *it_method;
+		//	write() << "	,	" << writeEnumMethodName( cl.name, mt.name ) << std::endl;
+		//}
 
-		write() << "};" << std::endl;
-		write() << std::endl;
-
-		writeLine();
-		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
-		write() << "{" << std::endl;
-
-		//		stream_read * stream = _session->get_streamIn();
-		//		switch( _methodId ){
+		//write() << "};" << std::endl;
+		//write() << std::endl;
 
 		if( cl.methods.empty() == false )
 		{
-			write() << "	Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();" << std::endl;
-			write() << "	switch( _methodId )" << std::endl;
-			write() << "	{" << std::endl;
-
 			for( TVectorMethods::const_iterator
 				it_method = cl.methods.begin(),
 				it_method_end = cl.methods.end();
@@ -1097,10 +1087,12 @@ namespace Axe
 			{
 				const Method & mt = *it_method;
 
-				write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
-				write() << "		{" << std::endl;
-				write() << "			" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session, this );" << std::endl;
+				writeLine();
+				write() << "void s_" << servant_name << "_callMethod_" << mt.name << "( " << servant_name << " * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
+				write() << "{" << std::endl;
+				write() << "	" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session, _servant );" << std::endl;
 				write() << std::endl;
+				write() << "	Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();" << std::endl;
 
 				unsigned int bellhop_args = 0;
 
@@ -1112,12 +1104,13 @@ namespace Axe
 				{
 					const Argument & ar = *it_arg;
 
-					write() << "			";
+					write() << "	";
 					writeSelectType( "ar", ar.type.name, bellhop_args );
 					++bellhop_args;
 				}
 
-				write() << "			this->" << mt.name << "( bellhop";
+				write() << std::endl;
+				write() << "	_servant->" << mt.name << "( bellhop";
 
 				bellhop_args = 0;
 
@@ -1133,29 +1126,47 @@ namespace Axe
 
 				m_stream << " );" << std::endl;
 
-				write() << "		}break;" << std::endl;
+				write() << "}" << std::endl;
 			}
 
-			write() << "	}" << std::endl;
+			std::string typedef_servant_method = "T" + servant_name + "_callMethod";
+
+			writeLine();
+			write() << "typedef void (*" << typedef_servant_method << ")( " << servant_name << " * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );" << std::endl;
+			writeLine();
+			write() << "static " << typedef_servant_method << " s_" << servant_name << "_callMethods[] =" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	0" << std::endl;
+
+			for( TVectorMethods::const_iterator
+				it_method = cl.methods.begin(),
+				it_method_end = cl.methods.end();
+			it_method != it_method_end;
+			++it_method )
+			{
+				const Method & mt = *it_method;
+				write() << "	, &s_" << servant_name << "_callMethod_" << it_method->name << std::endl;
+			}
+
+			write() << "};" << std::endl;
 		}
-		write() << "}" << std::endl;
 
 		writeLine();
-		write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
-		write() << "{" << std::endl;
-		write() << "	Axe::ArchiveInvocation & aw = _session->beginException( _requestId );" << std::endl;
-		write() << "	this->writeException( aw, _methodId, _ex );" << std::endl;
-		write() << "	_session->process();" << std::endl;
-		write() << "}" << std::endl;
-		writeLine();
-		write() << "void " << servant_name << "::writeException( Axe::ArchiveInvocation & _ar, std::size_t _methodId, const Axe::Exception & _ex )" << std::endl;
+		write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
 		write() << "{" << std::endl;
 
+		//		stream_read * stream = _session->get_streamIn();
+		//		switch( _methodId ){
 
 		if( cl.methods.empty() == false )
 		{
-			bool havemethods = false;
+			write() << "	(*s_" << servant_name << "_callMethods[ _methodId ])( this, _requestId, _session );" << std::endl;
+		}
 
+		write() << "}" << std::endl;
+
+		if( cl.methods.empty() == false )
+		{
 			for( TVectorMethods::const_iterator 
 				it_method = cl.methods.begin(), 
 				it_method_end = cl.methods.end();
@@ -1164,23 +1175,16 @@ namespace Axe
 			{
 				const Method & mt = *it_method;
 
+				writeLine();
+				write() << "static void s_" << servant_name << "_writeException_" << mt.name << "( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )" << std::endl;
+				write() << "{" << std::endl;
+
 				if( mt.exceptions.empty() == false )
 				{
-					if( havemethods == false )
-					{
-						write() << "	switch( _methodId )" << std::endl;
-						write() << "	{" << std::endl;
-
-						havemethods = true;
-					}
-
-					write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
-					write() << "		{" << std::endl;
-
-					write() << "			try" << std::endl;
-					write() << "			{" << std::endl;
-					write() << "				_ex.rethrow();" << std::endl;
-					write() << "			}" << std::endl;
+					write() << "	try" << std::endl;
+					write() << "	{" << std::endl;
+					write() << "		_ex.rethrow();" << std::endl;
+					write() << "	}" << std::endl;
 
 					std::size_t methodExceptionEnumerator = 3;
 
@@ -1192,31 +1196,133 @@ namespace Axe
 					{
 						const MethodException & me = *it_exception;
 
-						write() << "			catch( const " << me.name << " & _ex )" << std::endl;
-						write() << "			{" << std::endl;
-						write() << "				_ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
-						write() << "				_ex.write( _ar );" << std::endl;
-						write() << "			}" << std::endl;		
+						write() << "	catch( const " << me.name << " & _ex )" << std::endl;
+						write() << "	{" << std::endl;
+						write() << "		_ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
+						write() << "		_ex.write( _ar );" << std::endl;
+						write() << "	}" << std::endl;		
 					}
 
-					write() << "			catch( ... )" << std::endl;
-					write() << "			{" << std::endl;
-					write() << "				this->writeExceptionFilter( _ar );" << std::endl;
-					write() << "			}" << std::endl;
-					
-					write() << "		}break;" << std::endl;
-				}			
+					write() << "	catch( ... )" << std::endl;
+					write() << "	{" << std::endl;
+					write() << "		Axe::writeExceptionFilter( _ar );" << std::endl;
+					write() << "	}" << std::endl;
+				}
+				else
+				{
+					//unknown exeption filter
+					write() << "	Axe::writeExceptionFilter( _ar );" << std::endl;
+				}
+
+				write() << "}" << std::endl;
 			}
 
-			if( havemethods == true )
+			std::string typedef_servant_exception = "T" + servant_name + "_writeException";
+
+			writeLine();
+			write() << "typedef void (*" << typedef_servant_exception << ")( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );" << std::endl;
+			writeLine();
+			write() << "static " << typedef_servant_exception << " s_" << servant_name << "_writeExceptions[] =" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	0" << std::endl;
+
+			for( TVectorMethods::const_iterator
+				it_method = cl.methods.begin(),
+				it_method_end = cl.methods.end();
+			it_method != it_method_end;
+			++it_method )
 			{
-				write() << "	default:" << std::endl;
-				write() << "		break;" << std::endl;
-				write() << "	}" << std::endl;
+				const Method & mt = *it_method;
+				write() << "	, &s_" << servant_name << "_writeException_" << it_method->name << std::endl;
 			}
+
+			write() << "};" << std::endl;
+		}
+
+		writeLine();
+		write() << "void " << servant_name << "::writeException( Axe::ArchiveInvocation & _ar, std::size_t _methodId, const Axe::Exception & _ex )" << std::endl;
+		write() << "{" << std::endl;
+
+		if( cl.methods.empty() == false )
+		{
+			write() << "	(*s_" << servant_name << "_writeExceptions[ _methodId ])( _ar, _ex );" << std::endl;
 		}
 
 		write() << "}" << std::endl;
+
+		writeLine();
+		write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	Axe::ArchiveInvocation & aw = _session->beginException( _requestId );" << std::endl;
+		write() << "	this->writeException( aw, _methodId, _ex );" << std::endl;
+		write() << "	_session->process();" << std::endl;
+		write() << "}" << std::endl;
+
+		//if( cl.methods.empty() == false )
+		//{
+		//	bool havemethods = false;
+
+		//	for( TVectorMethods::const_iterator 
+		//		it_method = cl.methods.begin(), 
+		//		it_method_end = cl.methods.end();
+		//	it_method != it_method_end;
+		//	++it_method	)
+		//	{
+		//		const Method & mt = *it_method;
+
+		//		if( mt.exceptions.empty() == false )
+		//		{
+		//			if( havemethods == false )
+		//			{
+		//				write() << "	switch( _methodId )" << std::endl;
+		//				write() << "	{" << std::endl;
+
+		//				havemethods = true;
+		//			}
+
+		//			write() << "	case " << writeEnumMethodName( cl.name, mt.name ) << ":" << std::endl;
+		//			write() << "		{" << std::endl;
+
+		//			write() << "			try" << std::endl;
+		//			write() << "			{" << std::endl;
+		//			write() << "				_ex.rethrow();" << std::endl;
+		//			write() << "			}" << std::endl;
+
+		//			std::size_t methodExceptionEnumerator = 3;
+
+		//			for( TVectorMethodExceptions::const_iterator 
+		//				it_exception = mt.exceptions.begin(),
+		//				it_exception_end = mt.exceptions.end();
+		//			it_exception != it_exception_end;
+		//			++it_exception )
+		//			{
+		//				const MethodException & me = *it_exception;
+
+		//				write() << "			catch( const " << me.name << " & _ex )" << std::endl;
+		//				write() << "			{" << std::endl;
+		//				write() << "				_ar.writeSize( " << methodExceptionEnumerator << " );" << std::endl;
+		//				write() << "				_ex.write( _ar );" << std::endl;
+		//				write() << "			}" << std::endl;		
+		//			}
+
+		//			write() << "			catch( ... )" << std::endl;
+		//			write() << "			{" << std::endl;
+		//			write() << "				this->writeExceptionFilter( _ar );" << std::endl;
+		//			write() << "			}" << std::endl;
+		//			
+		//			write() << "		}break;" << std::endl;
+		//		}			
+		//	}
+
+		//	if( havemethods == true )
+		//	{
+		//		write() << "	default:" << std::endl;
+		//		write() << "		break;" << std::endl;
+		//		write() << "	}" << std::endl;
+		//	}
+		//}
+
+		//write() << "}" << std::endl;
 
 		writeLine();
 		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << servant_name << "Ptr & _value )" << std::endl;
@@ -1517,7 +1623,8 @@ namespace Axe
 
 			write() << "{" << std::endl;
 
-			write() << "	Axe::ArchiveInvocation & ar = this->beginMessage( " << writeEnumMethodName( cl.name, mt.name ) << ", _response );" << std::endl;
+			std::size_t methodId = std::distance( cl.methods.begin(), it_method ) + 1;
+			write() << "	Axe::ArchiveInvocation & ar = this->beginMessage( " << methodId << ", _response );" << std::endl;
 
 			for( TVectorArguments::const_iterator
 				it_arg = mt.inArguments.begin(),
@@ -1557,12 +1664,6 @@ namespace Axe
 	{
 		std::string servant_name = "Servant_" + _class;
 		return servant_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::string SLAxeGenerator::writeEnumMethodName( const std::string & _class, const std::string & _method )
-	{
-		std::string enum_method_name = "ESMD_" + _class + "_" + _method;
-		return enum_method_name;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeResponseName( const std::string & _class, const std::string & _method )
