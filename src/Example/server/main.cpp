@@ -17,7 +17,7 @@ public:
 	}
 
 protected:
-	void checkPermissions( const Axe::Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) override
+	void checkPermissions_async( const Axe::Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) override
 	{
 		TMapAuthentication::const_iterator it_found = m_authentication.find( _login );
 
@@ -48,7 +48,7 @@ public:
 	}
 
 public:
-	void test( const Axe::Bellhop_Player_testPtr & _cb, const Axe::PlayerInfo & _info ) override
+	void test_async( const Axe::Bellhop_Player_testPtr & _cb, const Axe::PlayerInfo & _info ) override
 	{
 		int result = 0;
 
@@ -76,7 +76,7 @@ public:
 	}
 
 public:
-	void create( const Axe::Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) override
+	void create_async( const Axe::Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) override
 	{
 		Axe::Servant_PlayerPtr player = new MyPlayer( _login );
 

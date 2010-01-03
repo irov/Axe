@@ -29,8 +29,8 @@ namespace Axe
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
 	public:
-		virtual void callMethod( std::size_t _id, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session );
-		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex );
+		virtual void callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session );
+		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex );
 
 	public:
 		void write( ArchiveInvocation & _ar ) const;

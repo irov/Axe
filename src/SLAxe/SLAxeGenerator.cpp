@@ -453,7 +453,7 @@ namespace Axe
 
 				std::string bellhop_name = writeBellhopName( cl.name, mt.name ) + "Ptr";
 
-				write() << "	virtual void " << mt.name << "( const " << bellhop_name << " & _cb";
+				write() << "	virtual void " << mt.name << "_async( const " << bellhop_name << " & _cb";
 
 				for( TVectorArguments::const_iterator
 					it_args = mt.inArguments.begin(),
@@ -487,9 +487,9 @@ namespace Axe
 			//write() << "	void writeException( Axe::ArchiveInvocation & _ar, std::size_t _methodId, const Axe::Exception & _ex );" << std::endl;
 			write() << std::endl;
 			write() << "private:" << std::endl;
-			write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;" << std::endl;
+			write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;" << std::endl;
 
-			write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;" << std::endl;
+			write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;" << std::endl;
 		}
 
 		write() << "};" << std::endl;
@@ -1093,11 +1093,11 @@ namespace Axe
 				const Method & mt = *it_method;
 
 				writeLine();
-				write() << "void s_" << servant_name << "_callMethod_" << mt.name << "( " << servant_name << " * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )" << std::endl;
+				write() << "void s_" << servant_name << "_callMethod_" << mt.name << "( " << servant_name << " * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 				write() << "{" << std::endl;
 				write() << "	" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session, _servant );" << std::endl;
 				write() << std::endl;
-				write() << "	Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();" << std::endl;
+				//write() << "	Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();" << std::endl;
 
 				unsigned int bellhop_args = 0;
 
@@ -1110,12 +1110,12 @@ namespace Axe
 					const Argument & ar = *it_arg;
 
 					write() << "	";
-					writeSelectType( "ar", ar.type.name, bellhop_args );
+					writeSelectType( "_archive", ar.type.name, bellhop_args );
 					++bellhop_args;
 				}
 
 				write() << std::endl;
-				write() << "	_servant->" << mt.name << "( bellhop";
+				write() << "	_servant->" << mt.name << "_async( bellhop";
 
 				bellhop_args = 0;
 
@@ -1137,7 +1137,7 @@ namespace Axe
 			std::string typedef_servant_method = "T" + servant_name + "_callMethod";
 
 			writeLine();
-			write() << "typedef void (*" << typedef_servant_method << ")( " << servant_name << " * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );" << std::endl;
+			write() << "typedef void (*" << typedef_servant_method << ")( " << servant_name << " * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );" << std::endl;
 			writeLine();
 			write() << "static " << typedef_servant_method << " s_" << servant_name << "_callMethods[] =" << std::endl;
 			write() << "{" << std::endl;
@@ -1156,7 +1156,7 @@ namespace Axe
 			write() << "};" << std::endl;
 
 			writeLine();
-			write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
+			write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 			write() << "{" << std::endl;
 
 			//		stream_read * stream = _session->get_streamIn();
@@ -1164,7 +1164,7 @@ namespace Axe
 
 			if( cl.methods.empty() == false )
 			{
-				write() << "	(*s_" << servant_name << "_callMethods[ _methodId ])( this, _requestId, _session );" << std::endl;
+				write() << "	(*s_" << servant_name << "_callMethods[ _methodId ])( this, _requestId, _archive, _session );" << std::endl;
 			}
 
 			write() << "}" << std::endl;
@@ -1244,7 +1244,7 @@ namespace Axe
 			}
 
 			writeLine();
-			write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )" << std::endl;
+			write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	Axe::ArchiveInvocation & aw = _session->beginException( _requestId );" << std::endl;		
 			write() << std::endl;

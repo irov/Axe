@@ -51,12 +51,12 @@ namespace Axe
 		_ar << m_hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::callMethod( std::size_t _id, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session )
+	void Servant::callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		//Empty
 	}

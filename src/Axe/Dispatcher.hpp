@@ -19,7 +19,6 @@ namespace Axe
 	public:
 		boost::asio::ip::tcp::socket & getSocket();
 
-		ArchiveDispatcher & getArchiveDispatcher();
 		ArchiveInvocation & getArchiveInvocation();
 
 	protected:

@@ -108,7 +108,7 @@ namespace Axe
 		}
 		catch( const Exception & _ex )
 		{
-			servant->responseException( _methodId, _requestId, _archive, _session, _ex );
+			servant->responseException( _methodId, _requestId, _session, _ex );
 		}
 		catch( const std::exception & _ex )
 		{

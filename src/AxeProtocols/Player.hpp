@@ -121,10 +121,10 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void addAdapter( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) = 0;
-		virtual void getAdapterEndpoint( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) = 0;
-		virtual void addUnique( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) = 0;
-		virtual void getUnique( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
+		virtual void addAdapter_async( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) = 0;
+		virtual void getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) = 0;
+		virtual void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) = 0;
+		virtual void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
 	
 	protected:
 		TMapAdapterIds m_adapterIds;
@@ -132,8 +132,8 @@ namespace Axe
 	
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
@@ -379,14 +379,14 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void get( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
+		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
 	
 	protected:
 	
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_EvictorManager> Servant_EvictorManagerPtr;
@@ -474,14 +474,14 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void test( const Bellhop_Player_testPtr & _cb, const PlayerInfo & info ) = 0;
+		virtual void test_async( const Bellhop_Player_testPtr & _cb, const PlayerInfo & info ) = 0;
 	
 	protected:
 	
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
@@ -560,14 +560,14 @@ namespace Axe
 		: public Servant_Unique
 	{
 	public:
-		virtual void checkPermissions( const Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
+		virtual void checkPermissions_async( const Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
 	
 	protected:
 	
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
@@ -646,14 +646,14 @@ namespace Axe
 		: public Servant_Unique
 	{
 	public:
-		virtual void create( const Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) = 0;
+		virtual void create_async( const Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) = 0;
 	
 	protected:
 	
 	
 	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;

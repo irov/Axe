@@ -87,49 +87,45 @@ namespace Axe
 		_value->write( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_addAdapter( Servant_GridManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_addAdapter( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_addAdapterPtr bellhop = new Bellhop_GridManager_addAdapter( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::string arg0; ar >> arg0;
-		std::string arg1; ar >> arg1;
+		std::string arg0; _archive >> arg0;
+		std::string arg1; _archive >> arg1;
 	
-		_servant->addAdapter( bellhop, arg0, arg1 );
+		_servant->addAdapter_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_getAdapterEndpoint( Servant_GridManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_getAdapterEndpoint( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_getAdapterEndpointPtr bellhop = new Bellhop_GridManager_getAdapterEndpoint( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::size_t arg0; ar >> arg0;
+		std::size_t arg0; _archive >> arg0;
 	
-		_servant->getAdapterEndpoint( bellhop, arg0 );
+		_servant->getAdapterEndpoint_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_addUnique( Servant_GridManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_addUnique( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_addUniquePtr bellhop = new Bellhop_GridManager_addUnique( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::string arg0; ar >> arg0;
-		Proxy_UniquePtr arg1 = Axe::makeProxy<Proxy_UniquePtr>( ar );
+		std::string arg0; _archive >> arg0;
+		Proxy_UniquePtr arg1 = Axe::makeProxy<Proxy_UniquePtr>( _archive );
 	
-		_servant->addUnique( bellhop, arg0, arg1 );
+		_servant->addUnique_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_getUnique( Servant_GridManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_getUnique( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_getUniquePtr bellhop = new Bellhop_GridManager_getUnique( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::string arg0; ar >> arg0;
+		std::string arg0; _archive >> arg0;
 	
-		_servant->getUnique( bellhop, arg0 );
+		_servant->getUnique_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_GridManager_callMethod)( Servant_GridManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );
+	typedef void (*TServant_GridManager_callMethod)( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_GridManager_callMethod s_Servant_GridManager_callMethods[] =
 	{
@@ -140,9 +136,9 @@ namespace Axe
 		, &s_Servant_GridManager_callMethod_getUnique
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_GridManager_callMethods[ _methodId ])( this, _requestId, _session );
+		(*s_Servant_GridManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_GridManager_writeException_addAdapter( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -224,7 +220,7 @@ namespace Axe
 		, &s_Servant_GridManager_writeException_getUnique
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant_GridManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -548,17 +544,16 @@ namespace Axe
 		_ar >> servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_EvictorManager_callMethod_get( Servant_EvictorManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_EvictorManager_callMethod_get( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_EvictorManager_getPtr bellhop = new Bellhop_EvictorManager_get( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::size_t arg0; ar >> arg0;
+		std::size_t arg0; _archive >> arg0;
 	
-		_servant->get( bellhop, arg0 );
+		_servant->get_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_EvictorManager_callMethod)( Servant_EvictorManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );
+	typedef void (*TServant_EvictorManager_callMethod)( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_EvictorManager_callMethod s_Servant_EvictorManager_callMethods[] =
 	{
@@ -566,9 +561,9 @@ namespace Axe
 		, &s_Servant_EvictorManager_callMethod_get
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_EvictorManager::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_EvictorManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_EvictorManager_callMethods[ _methodId ])( this, _requestId, _session );
+		(*s_Servant_EvictorManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_EvictorManager_writeException_get( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -596,7 +591,7 @@ namespace Axe
 		, &s_Servant_EvictorManager_writeException_get
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_EvictorManager::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant_EvictorManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -703,17 +698,16 @@ namespace Axe
 		ar >> _value.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Player_callMethod_test( Servant_Player * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_Player_callMethod_test( Servant_Player * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_Player_testPtr bellhop = new Bellhop_Player_test( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		PlayerInfo arg0; ar >> arg0;
+		PlayerInfo arg0; _archive >> arg0;
 	
-		_servant->test( bellhop, arg0 );
+		_servant->test_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_Player_callMethod)( Servant_Player * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );
+	typedef void (*TServant_Player_callMethod)( Servant_Player * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_Player_callMethod s_Servant_Player_callMethods[] =
 	{
@@ -721,9 +715,9 @@ namespace Axe
 		, &s_Servant_Player_callMethod_test
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_Player_callMethods[ _methodId ])( this, _requestId, _session );
+		(*s_Servant_Player_callMethods[ _methodId ])( this, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_Player_writeException_test( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -739,7 +733,7 @@ namespace Axe
 		, &s_Servant_Player_writeException_test
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant_Player::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -824,18 +818,17 @@ namespace Axe
 		_value->write( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_PermissionsVerifier_checkPermissionsPtr bellhop = new Bellhop_PermissionsVerifier_checkPermissions( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::string arg0; ar >> arg0;
-		std::string arg1; ar >> arg1;
+		std::string arg0; _archive >> arg0;
+		std::string arg1; _archive >> arg1;
 	
-		_servant->checkPermissions( bellhop, arg0, arg1 );
+		_servant->checkPermissions_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );
+	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_PermissionsVerifier_callMethod s_Servant_PermissionsVerifier_callMethods[] =
 	{
@@ -843,9 +836,9 @@ namespace Axe
 		, &s_Servant_PermissionsVerifier_callMethod_checkPermissions
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_PermissionsVerifier_callMethods[ _methodId ])( this, _requestId, _session );
+		(*s_Servant_PermissionsVerifier_callMethods[ _methodId ])( this, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_PermissionsVerifier_writeException_checkPermissions( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -861,7 +854,7 @@ namespace Axe
 		, &s_Servant_PermissionsVerifier_writeException_checkPermissions
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant_PermissionsVerifier::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -948,17 +941,16 @@ namespace Axe
 		_value->write( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session )
+	void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_SessionManager_createPtr bellhop = new Bellhop_SessionManager_create( _requestId, _session, _servant );
 	
-		Axe::ArchiveDispatcher & ar = _session->getArchiveDispatcher();
-		std::string arg0; ar >> arg0;
+		std::string arg0; _archive >> arg0;
 	
-		_servant->create( bellhop, arg0 );
+		_servant->create_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _requestId, const Axe::SessionPtr & _session );
+	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_SessionManager_callMethod s_Servant_SessionManager_callMethods[] =
 	{
@@ -966,9 +958,9 @@ namespace Axe
 		, &s_Servant_SessionManager_callMethod_create
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_SessionManager_callMethods[ _methodId ])( this, _requestId, _session );
+		(*s_Servant_SessionManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_SessionManager_writeException_create( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -984,7 +976,7 @@ namespace Axe
 		, &s_Servant_SessionManager_writeException_create
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	void Servant_SessionManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	

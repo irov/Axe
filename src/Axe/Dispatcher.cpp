@@ -17,11 +17,6 @@ namespace Axe
 		return m_socket;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveDispatcher & Dispatcher::getArchiveDispatcher()
-	{
-		return m_streamIn;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	ArchiveInvocation & Dispatcher::getArchiveInvocation()
 	{
 		return m_streamWrite;
