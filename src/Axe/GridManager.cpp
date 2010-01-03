@@ -16,7 +16,7 @@ namespace Axe
 
 		if( it_found != m_adapterIds.end() )
 		{
-			AdapterAlreadyExistetException ex;
+			AdapterAlreadyExistException ex;
 			ex.name = _name;
 			_cb->throw_exception( ex );
 			return;
@@ -50,7 +50,7 @@ namespace Axe
 
 		if( it_found != m_uniques.end() )
 		{
-			UniqueAlreadyExistetException ex;
+			UniqueAlreadyExistException ex;
 			ex.name = _name;
 
 			_cb->throw_exception( ex );

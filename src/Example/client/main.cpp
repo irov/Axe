@@ -26,17 +26,25 @@ protected:
 class MyClient
 	:	public Axe::ClientConnectResponse
 {
+public:
+	MyClient()
+		: m_id(0)
+	{
+	}
+
 protected:
 	void connectSuccessful( const Axe::Proxy_PlayerPtr & _player ) override
 	{
 		printf("connectSuccessful\n");
+
+		m_player = _player;
 
 		Axe::PlayerInfo pi;
 
 		pi.id = 2;
 		pi.name = "test";
 
-		_player->test_async( 
+		m_player->test_async( 
 			Axe::bindResponseMethod( &MyClient::testResponse, this )
 			 , pi );
 	}
@@ -49,13 +57,25 @@ protected:
 protected:
 	void testResponse( int _id )
 	{
+		m_id += _id;
+
 		printf( "Response_Player_test %d"
-			, _id
+			, m_id
 			);
+
+		Axe::PlayerInfo pi;
+
+		pi.id = 2;
+		pi.name = "test";
+
+		m_player->test_async( 
+			Axe::bindResponseMethod( &MyClient::testResponse, this )
+			, pi );
 	}
 
 protected:
 	Axe::Proxy_PlayerPtr m_player;
+	int m_id;
 };
 
 void main()

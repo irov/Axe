@@ -32,7 +32,7 @@ namespace Axe
 		}
 
 		_servant->setServantId( _servantId );
-		_servant->setHost( this );
+		_servant->setHostId( m_hostId );
 
 		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
 
@@ -51,12 +51,52 @@ namespace Axe
 		return m_hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )
+	namespace
+	{
+		class HostServantProviderResponse
+			: public ServantProviderResponse
+		{
+		public:
+			HostServantProviderResponse( const HostPtr & _host, std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
+				: m_host(_host)
+				, m_servantId(_servantId)
+				, m_methodId(_methodId)
+				, m_requestId(_requestId)
+				, m_archive(_archive)
+				, m_session(_session)
+			{
+			}
+
+		protected:
+			void onServant( const ServantPtr & _servant ) override
+			{
+				m_host->addServant( m_servantId, _servant );
+				m_host->dispatchMethod( m_servantId, m_methodId, m_requestId, m_archive, m_session );
+			}
+
+		protected:
+			HostPtr m_host;
+			std::size_t m_servantId;
+			std::size_t m_methodId;
+			std::size_t m_requestId;
+			ArchiveDispatcher m_archive;
+			SessionPtr m_session;
+		};
+
+		typedef AxeHandle<HostServantProviderResponse> HostServantProviderResponsePtr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Host::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
 		TMapServants::iterator it_find = m_servants.find( _servantId );
 
 		if( it_find == m_servants.end() )
 		{
+			HostServantProviderResponsePtr response =
+				new HostServantProviderResponse( this, _servantId, _methodId, _requestId, _archive, _session );
+
+			m_servantProvider->get( _servantId, response );
+
 			return;
 		}
 
@@ -64,11 +104,11 @@ namespace Axe
 
 		try
 		{
-			servant->callMethod( _methodId, _requestId, _session );
+			servant->callMethod( _methodId, _requestId, _archive, _session );
 		}
 		catch( const Exception & _ex )
 		{
-			servant->responseException( _methodId, _requestId, _session, _ex );
+			servant->responseException( _methodId, _requestId, _archive, _session, _ex );
 		}
 		catch( const std::exception & _ex )
 		{
@@ -83,5 +123,10 @@ namespace Axe
 			aw << UnknownException();
 			_session->process();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionCachePtr & Host::getConnectionCahce() const
+	{
+		return m_connectionCache;
 	}
 }

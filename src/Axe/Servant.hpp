@@ -1,16 +1,16 @@
 #	pragma once
 
 #	include <AxeUtil/Shared.hpp>
-#	include <Axe/Host.hpp>
 
 namespace Axe
 {
 	class ArchiveInvocation;
+	class ArchiveDispatcher;
 
 	class Exception;
 
 	typedef AxeHandle<class Session> SessionPtr;
-	
+	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	typedef AxeHandle<class Proxy> ProxyPtr;
 	
 	class Servant
@@ -23,21 +23,21 @@ namespace Axe
 		void setServantId( std::size_t _servantId );
 		std::size_t getServantId() const;
 		
-		void setHost( const HostPtr & _host );
-		const HostPtr & getHost() const;
+		void setHostId( std::size_t _hostId );
+		std::size_t getHostId() const;
 
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
 	public:
-		virtual void callMethod( std::size_t _id, std::size_t _requestId, const SessionPtr & _session ) = 0;
-		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) = 0;
+		virtual void callMethod( std::size_t _id, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session );
+		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex );
 
 	public:
 		void write( ArchiveInvocation & _ar ) const;
 
 	protected:
 		std::size_t m_servantId;
-		HostPtr m_host;
+		std::size_t m_hostId;
 	};
 
 	typedef AxeHandle<Servant> ServantPtr;

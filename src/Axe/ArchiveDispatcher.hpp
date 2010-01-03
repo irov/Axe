@@ -10,8 +10,10 @@ namespace Axe
 		: public AxeUtil::ArchiveRead
 	{
 	public:
+		ArchiveDispatcher( ArchiveDispatcher & _archiveDispatcher );
 		ArchiveDispatcher( const ConnectionCachePtr & _connectionCache );
-
+		ArchiveDispatcher( AxeUtil::Archive & _archive, const ConnectionCachePtr & _connectionCache );
+	
 	public:
 		const ConnectionCachePtr & getConnectionCache() const;
 

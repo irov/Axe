@@ -14,6 +14,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Servant::Servant()
 		: m_servantId(-1)
+		, m_hostId(-1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,21 +28,19 @@ namespace Axe
 		return m_servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::setHost( const HostPtr & _host )
+	void Servant::setHostId( std::size_t _hostId )
 	{
-		m_host = _host;
+		m_hostId = _hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const HostPtr & Servant::getHost() const
+	std::size_t Servant::getHostId() const
 	{
-		return m_host;
+		return m_hostId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		std::size_t hostId = m_host->getHostId();
-
-		const ConnectionPtr & cn = _connectionCache->getConnection( hostId );
+		const ConnectionPtr & cn = _connectionCache->getConnection( m_hostId );
 
 		return new Proxy( m_servantId, cn );
 	}
@@ -49,8 +48,17 @@ namespace Axe
 	void Servant::write( ArchiveInvocation & _ar ) const
 	{
 		_ar << m_servantId;
-
-		std::size_t hostId = m_host->getHostId();
-		_ar << hostId;
+		_ar << m_hostId;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant::callMethod( std::size_t _id, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session )
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant::responseException( std::size_t _methodId, std::size_t _requestId, const ArchiveDispatcher & _archive, const SessionPtr & _session, const Exception & _ex )
+	{
+		//Empty
+	}
+
 }

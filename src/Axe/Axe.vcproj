@@ -155,6 +155,14 @@
 				RelativePath=".\Servant.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ServantProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ServantProvider.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Archive"

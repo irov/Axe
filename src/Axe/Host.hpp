@@ -2,6 +2,9 @@
 
 #	include <Axe/Service.hpp>
 #	include <Axe/Proxy.hpp>
+#	include <Axe/ServantProvider.hpp>
+
+#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {
@@ -24,15 +27,19 @@ namespace Axe
 		void refreshServantEndpoint( std::size_t _hostId );
 
 	public:
-		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
+		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session );
+
+	public:
+		const ConnectionCachePtr & getConnectionCahce() const;
 
 	protected:
 		ConnectionCachePtr m_connectionCache;
+		ServantProviderPtr m_servantProvider;
 
 		std::size_t m_hostId;
 
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
-		TMapServants m_servants;		
+		TMapServants m_servants;
 	};
 
 	typedef AxeHandle<Host> HostPtr;

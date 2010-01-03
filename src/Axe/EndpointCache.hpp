@@ -4,14 +4,14 @@
 
 namespace Axe
 {
-	class EndpointCallback
+	class EndpointCacheResponse
 		: virtual public AxeUtil::Shared
 	{
 	public:
 		virtual void onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint ) = 0;
 	};
 
-	typedef AxeHandle<EndpointCallback> EndpointCallbackPtr;
+	typedef AxeHandle<EndpointCacheResponse> EndpointCallbackPtr;
 
 	class EndpointCache
 		: virtual public AxeUtil::Shared
@@ -26,11 +26,19 @@ namespace Axe
 	protected:
 		void getEndpointResponse( const std::string & _endpoint, std::size_t _hostId, const EndpointCallbackPtr & _cb );
 
+
+	protected:
+		void provideEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb );
+
 	protected:
 		Proxy_GridManagerPtr m_gridManager;
 
 		typedef std::map<std::size_t, boost::asio::ip::tcp::endpoint> TMapEndpoints;
 		TMapEndpoints m_endpoints;
+
+		typedef std::list<EndpointCallbackPtr> TListEndpointResponses;
+		typedef std::map<std::size_t, TListEndpointResponses> TMapWantedEndpoints;
+		TMapWantedEndpoints m_wantedEndpoints;
 	};
 
 	typedef AxeHandle<EndpointCache> EndpointCachePtr;

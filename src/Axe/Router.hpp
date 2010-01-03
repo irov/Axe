@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include <Axe/Service.hpp>
 #	include <Axe/Servant.hpp>
 #	include <Axe/Response.hpp>
 

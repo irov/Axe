@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include <AxeUtil/Shared.hpp>
-
 #	include <Axe/Connection.hpp>
 
 namespace Axe

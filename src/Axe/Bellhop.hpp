@@ -2,7 +2,7 @@
 
 #	include <AxeUtil/Shared.hpp>
 
-#	include <Axe/AdapterSession.hpp>
+#	include <Axe/Session.hpp>
 
 namespace Axe
 {

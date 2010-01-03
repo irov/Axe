@@ -3,6 +3,16 @@
 namespace AxeUtil
 {
 	//////////////////////////////////////////////////////////////////////////
+	ArchiveRead::ArchiveRead()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ArchiveRead::ArchiveRead( Archive & _archive )
+	{
+		m_archive.swap(_archive);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
 		m_seek = m_archive.begin();
@@ -13,6 +23,13 @@ namespace AxeUtil
 		Archive::const_iterator it_begin = m_seek;
 		std::advance( m_seek, _size );
 		std::copy( it_begin, m_seek, (Archive::value_type *)_begin );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ArchiveRead::readArchive( Archive & _archive, std::size_t _size )
+	{
+		Archive::const_iterator it_begin = m_seek;
+		std::advance( m_seek, _size );
+		std::copy( it_begin, m_seek, _archive.begin() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readSize( std::size_t & _value )
@@ -75,6 +92,12 @@ namespace AxeUtil
 		std::size_t reading = std::distance( m_archive.begin(), m_seek );
 		std::size_t length = _pos - reading;
 		return length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ArchiveRead::rest() const
+	{
+		std::size_t result = std::distance( m_seek, m_archive.end() );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveRead::eof() const

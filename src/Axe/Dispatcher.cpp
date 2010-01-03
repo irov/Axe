@@ -72,7 +72,10 @@ namespace Axe
 	{
 		if( _ec )
 		{
-			printf("Dispatcher::handleWriteStream ec: %s\n", _ec.message().c_str() );
+			printf("Dispatcher::handleWriteStream ec: %s\n"
+				, _ec.message().c_str() 
+				);
+
 			return;
 		}
 		
@@ -88,7 +91,10 @@ namespace Axe
 	{
 		if( _ec )
 		{
-			printf("Dispatcher::handleReadBodySize ec: %s\n", _ec.message().c_str() );
+			printf("Dispatcher::handleReadBodySize ec: %s\n"
+				, _ec.message().c_str() 
+				);
+
 			return;
 		}
 
@@ -107,7 +113,10 @@ namespace Axe
 	{
 		if( _ec )
 		{
-			printf("Dispatcher::handleReadBody ec: %s\n", _ec.message().c_str() );
+			printf("Dispatcher::handleReadBody ec: %s\n"
+				, _ec.message().c_str() 
+				);
+
 			return;
 		}
 

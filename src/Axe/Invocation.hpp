@@ -10,7 +10,7 @@ namespace Axe
 	class Invocation
 		: public Dispatcher
 		, public Connection
-		, public EndpointCallback
+		, public EndpointCacheResponse
 	{
 	public:
 		Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );

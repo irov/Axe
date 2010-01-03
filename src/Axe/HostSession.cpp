@@ -9,7 +9,7 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	HostSession::HostSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache )
-		: Session( _service, _connectionCache )
+		: Session(_service, _connectionCache)
 		, m_host(_host)
 	{
 	}
@@ -20,10 +20,10 @@ namespace Axe
 		std::size_t methodId;
 		std::size_t requestId;
 
-		_ar.read( servantId);
-		_ar.readSize( methodId);
-		_ar.readSize( requestId);
+		_ar.read( servantId );
+		_ar.readSize( methodId );
+		_ar.readSize( requestId );
 
-		m_host->dispatchMethod( servantId, methodId, requestId, this );
+		m_host->dispatchMethod( servantId, methodId, requestId, _ar, this );
 	}
 }

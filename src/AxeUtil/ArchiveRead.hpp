@@ -7,6 +7,10 @@ namespace AxeUtil
 	class ArchiveRead
 	{
 	public:
+		ArchiveRead();
+		ArchiveRead( AxeUtil::Archive & _archive );
+
+	public:
 		void begin();
 
 	public:
@@ -23,6 +27,7 @@ namespace AxeUtil
 		}
 
 		void readBuffer( void * _begin, std::size_t _size );
+		void readArchive( Archive & _archive, std::size_t _size );
 		void readSize( std::size_t & _value );
 		void readString( std::string & _value );
 
@@ -40,6 +45,7 @@ namespace AxeUtil
 		void clear();
 		void seek( std::size_t _pos );
 		std::size_t length( std::size_t _pos ) const;
+		std::size_t rest() const;
 		bool eof() const;
 
 	protected:
