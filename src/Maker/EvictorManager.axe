@@ -7,6 +7,7 @@ namespace Axe
 
 	class EvictorManager
 	{
+		void set( size_t _servantId, Archive _ar );
 		Archive get( size_t _servantId ) throws EvictingNotFoundException;
 	};
 }

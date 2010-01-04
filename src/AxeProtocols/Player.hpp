@@ -7,7 +7,7 @@
 #	include <Axe/Response.hpp>
 #	include <Axe/Exception.hpp>
 
-#	include "SessionManager.hpp"
+#	include <AxeProtocols/SessionManager.hpp>
 
 namespace Axe
 {

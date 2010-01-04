@@ -33,12 +33,14 @@ namespace Axe
 	typedef AxeHandle<EvictingNotFoundException> EvictingNotFoundExceptionPtr;
 	
 	
+	typedef AxeHandle<class Bellhop_EvictorManager_set> Bellhop_EvictorManager_setPtr;
 	typedef AxeHandle<class Bellhop_EvictorManager_get> Bellhop_EvictorManager_getPtr;
 	
 	class Servant_EvictorManager
 		: virtual public Axe::Servant
 	{
 	public:
+		virtual void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, const AxeUtil::Archive & _ar ) = 0;
 		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
 	
 	protected:
@@ -54,6 +56,22 @@ namespace Axe
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_EvictorManagerPtr & _value );
 	
 	
+	class Bellhop_EvictorManager_set
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_EvictorManager_set( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_EvictorManagerPtr & _servant );
+	
+	public:
+		void response();
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_EvictorManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_EvictorManager_set> Bellhop_EvictorManager_setPtr;
 	class Bellhop_EvictorManager_get
 		: public Axe::Bellhop
 	{
@@ -71,6 +89,39 @@ namespace Axe
 	
 	typedef AxeHandle<Bellhop_EvictorManager_get> Bellhop_EvictorManager_getPtr;
 	
+	//////////////////////////////////////////////////////////////////////////
+	class Response_EvictorManager_set
+		: public Axe::Response
+	{
+	protected:
+		virtual void response() = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
+	};
+	
+	typedef AxeHandle<Response_EvictorManager_set> Response_EvictorManager_setPtr;
+	
+	template<>
+	class BindResponse<Response_EvictorManager_setPtr>
+		: public Response_EvictorManager_set
+	{
+		typedef boost::function<void()> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response() override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_EvictorManager_get
 		: public Axe::Response
@@ -112,6 +163,7 @@ namespace Axe
 		Proxy_EvictorManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
+		void set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, const AxeUtil::Archive & _ar );
 		void get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId );
 	};
 	
