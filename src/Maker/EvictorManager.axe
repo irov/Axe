@@ -1,0 +1,12 @@
+namespace Axe
+{
+	exception EvictingNotFoundException
+	{
+		size_t servantId;
+	};
+
+	class EvictorManager
+	{
+		Archive get( size_t _servantId ) throws EvictingNotFoundException;
+	};
+}

@@ -4,8 +4,6 @@
 
 namespace Axe
 {
-	
-
 	class SLAxeParser
 	{
 	public:

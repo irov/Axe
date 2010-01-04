@@ -117,10 +117,10 @@ public:
 };
 
 class MyCommunicatorInitializeResponse
-	: public Axe::CommunicatorInitializeResponse
+	: public Axe::CommunicatorConnectResponse
 {
 public:
-	void onInitialize( const Axe::CommunicatorPtr & _communicator ) override
+	void onConnect( const Axe::CommunicatorPtr & _communicator ) override
 	{
 		boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), 12002);
 

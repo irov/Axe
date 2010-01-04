@@ -14,10 +14,11 @@ namespace Axe
 		Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
-		const Proxy_GridManagerPtr & initialize();
+		void start();
 
 	public:
-		const Proxy_GridManagerPtr & getGridManager() const;
+		const ProxyPtr & addGridManager( const ServantPtr & _servant );
+		const ProxyPtr & getGridManager() const;
 
 	protected:
 		SessionPtr makeSession() override;
@@ -26,7 +27,7 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) override;
 
 	protected:
-		Proxy_GridManagerPtr m_gridManager;
+		ProxyPtr m_gridManagerPrx;
 	};
 
 	typedef AxeHandle<Grid> GridPtr;

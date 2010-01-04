@@ -2,11 +2,13 @@
 
 #	include <Axe/EndpointCache.hpp>
 
+#	include <AxeProtocols/Player.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	EndpointCache::EndpointCache( const Proxy_GridManagerPtr & _gridManager )
-		: m_gridManager(_gridManager)
+	EndpointCache::EndpointCache( const ProxyPtr & _gridManagerPrx )
+		: m_gridManagerPrx(_gridManagerPrx)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,7 +37,7 @@ namespace Axe
 
 		if( it_found == m_wantedEndpoints.end() )
 		{
-			m_gridManager->getAdapterEndpoint_async( 
+			uncheckedCast<Proxy_GridManagerPtr>(m_gridManagerPrx)->getAdapterEndpoint_async( 
 				bindResponse( boost::bind( &EndpointCache::getEndpointResponse, handlePtr(this), _1, _hostId, _cb )
 				, noneExceptionFilter() )
 				, _hostId

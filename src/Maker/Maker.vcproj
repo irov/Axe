@@ -171,6 +171,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\EvictorManager.axe"
+			>
+		</File>
+		<File
+			RelativePath=".\GridManager.axe"
+			>
+		</File>
+		<File
 			RelativePath=".\main.cpp"
 			>
 		</File>
@@ -179,7 +187,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Player.hpp"
+			RelativePath=".\PermissionsVerifier.axe"
+			>
+		</File>
+		<File
+			RelativePath=".\Player.axe"
+			>
+		</File>
+		<File
+			RelativePath=".\SessionManager.axe"
 			>
 		</File>
 	</Files>

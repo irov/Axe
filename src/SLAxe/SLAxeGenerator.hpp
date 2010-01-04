@@ -82,9 +82,10 @@ namespace Axe
 		typedef std::set<std::string> TSetTypes;
 		TSetTypes m_podTypes;
 		TSetTypes m_specTypes;
+		TSetTypes m_templatesTypes;
+
 		TSetTypes m_typedefTypes;
 		TSetTypes m_structTypes;
 		TSetTypes m_classTypes;
-		TSetTypes m_templatesTypes;
 	};
 }

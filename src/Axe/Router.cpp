@@ -16,10 +16,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: Service(_communicator->getService(), _endpoint, _name)
-		, m_connectionCache(_communicator->getConnectionCache())
-		//, m_endpointCache(_communicator->getEndpointCache())
-		, m_gridManager(_communicator->getGridManager())
-
+		, m_connectionCache()
+		, m_communicator(_communicator)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,20 +32,21 @@ namespace Axe
 	{
 		m_permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
 
-		m_gridManager->getUnique_async( 
-			bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 )
-				, noneExceptionFilter() )
-			, "SessionManager"
-			);
+		m_communicator->getUnique( "SessionManager", boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 ) );
+		//m_gridManager->getUnique_async( 
+		//	bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 )
+		//		, noneExceptionFilter() )
+		//	, "SessionManager"
+		//	);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::start()
 	{
-		m_gridManager->getUnique_async(
-			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
-				, noneExceptionFilter() )
-			, "PermissionsVerifier"
-			);
+		//m_gridManager->getUnique_async(
+		//	bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
+		//		, noneExceptionFilter() )
+		//	, "PermissionsVerifier"
+		//	);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::dispatchMethod( ArchiveDispatcher & _ar, std::size_t _size, const RouterSessionPtr & _session )
@@ -62,7 +61,7 @@ namespace Axe
 		_ar.readSize( requestId);
 		_ar.readSize( hostId );
 
-		const ConnectionPtr & cn = m_connectionCache->getConnection( hostId );
+		const ConnectionPtr & cn = m_communicator->getConnection( hostId );
 
 		ResponsePtr response = new RouterResponse( requestId, _session );
 
@@ -113,7 +112,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Router::makeSession()
 	{
-		RouterSessionPtr session = new RouterSession( m_service, this, m_connectionCache );
+		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+
+		RouterSessionPtr session = new RouterSession( m_service, this, connectionCache );
 
 		return session;
 	}

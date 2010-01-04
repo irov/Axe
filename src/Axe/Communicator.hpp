@@ -4,23 +4,21 @@
 #	include <Axe/EndpointCache.hpp>
 #	include <Axe/Grid.hpp>
 
-#	include <AxeProtocols/Player.hpp>
-
 namespace Axe
 {
 	typedef AxeHandle<class Adapter> AdapterPtr;
 	typedef AxeHandle<class Router> RouterPtr;
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
-	class CommunicatorInitializeResponse
+	class CommunicatorConnectResponse
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void onInitialize( const CommunicatorPtr & _communicator ) = 0;
+		virtual void onConnect( const CommunicatorPtr & _communicator ) = 0;
 		virtual void onFailed() = 0;
 	};
 
-	typedef AxeHandle<CommunicatorInitializeResponse> CommunicatorInitializeResponsePtr;
+	typedef AxeHandle<CommunicatorConnectResponse> CommunicatorConnectResponsePtr;
 
 	class AdapterCreateResponse
 		: virtual public AxeUtil::Shared
@@ -42,6 +40,16 @@ namespace Axe
 
 	typedef AxeHandle<RouterCreateResponse> RouterCreateResponsePtr;
 
+	class GridCreateResponse
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		virtual void onCreate( const GridPtr & _grid ) = 0;
+		virtual void onFailed() = 0;
+	};
+
+	typedef AxeHandle<GridCreateResponse> GridCreateResponsePtr;
+
 	class Communicator
 		: virtual public AxeUtil::Shared
 		, public ConnectionProvider
@@ -53,19 +61,15 @@ namespace Axe
 		boost::asio::io_service & getService();
 		const ConnectionCachePtr & getConnectionCache() const;
 		const EndpointCachePtr & getEndpointCache() const;
-		const Proxy_GridManagerPtr & getGridManager() const;
 
 	public:
-		void initialize( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorInitializeResponsePtr & _initializeResponse );
-		void initialize( const Proxy_GridManagerPtr & _gridManager, const CommunicatorInitializeResponsePtr & _initializeResponse );
-
-		void initializeGrid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, const CommunicatorInitializeResponsePtr & _initializeResponse );
+		void connect( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse );
 
 	public:
 		void run();
 
 	public:
-		void onInitialize( const Proxy_GridManagerPtr & _gridManager, const CommunicatorInitializeResponsePtr & _initializeResponse );
+		void setGridManager( const ProxyPtr & _gridManager );
 
 	public:
 		void createAdapter( 
@@ -87,6 +91,20 @@ namespace Axe
 			, const RouterCreateResponsePtr & _response 
 			);
 
+	public:
+		void createGrid( 
+			const boost::asio::ip::tcp::endpoint & _endpoint
+			, const std::string & _name
+			, const ServantPtr & _servant 
+			, const GridCreateResponsePtr & _response );
+
+	public:
+		void addUnique( const std::string & _name, const ProxyPtr & _proxy );
+		void getUnique( const std::string & _name, const boost::function<> & _response );
+
+	public:
+		const ConnectionPtr & getConnection( std::size_t _hostId );
+
 	protected:
 		ConnectionPtr createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache ) override;
 
@@ -102,7 +120,7 @@ namespace Axe
 	protected:
 		boost::asio::io_service m_service;
 
-		Proxy_GridManagerPtr m_gridManager;
+		ProxyPtr m_gridManagerPrx;
 
 		ConnectionCachePtr m_connectionCache;
 		EndpointCachePtr m_endpointCache;

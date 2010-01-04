@@ -15,23 +15,16 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Proxy_GridManagerPtr & Grid::initialize()
+	const ProxyPtr & Grid::addGridManager( const ServantPtr & _servant )
 	{
-		GridManagerPtr servant = new GridManager();
+		m_gridManagerPrx = this->addServant( 0, _servant );
 
-		ProxyPtr base = this->addServant( 0, servant );
-
-		m_gridManager 
-			= uncheckedCast<Proxy_GridManagerPtr>(base);
-
-		this->accept();
-
-		return m_gridManager;
+		return m_gridManagerPrx;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Proxy_GridManagerPtr & Grid::getGridManager() const
+	const ProxyPtr & Grid::getGridManager() const
 	{
-		return m_gridManager;
+		return m_gridManagerPrx;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Grid::makeSession()

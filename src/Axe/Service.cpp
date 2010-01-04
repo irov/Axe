@@ -20,6 +20,15 @@ namespace Axe
 		m_service.run();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Service::accept()
+	{
+		SessionPtr session = this->makeSession();
+
+		m_acceptor.async_accept( session->getSocket()
+			, boost::bind( &Service::acceptHandle, handlePtr(this), boost::asio::placeholders::error, session )
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const std::string & Service::getName() const
 	{
 		return m_name;
@@ -28,15 +37,6 @@ namespace Axe
 	const boost::asio::ip::tcp::endpoint & Service::getEndpoint() const
 	{
 		return m_endpoint;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Service::accept()
-	{
-		SessionPtr session = this->makeSession();
-
-		m_acceptor.async_accept( session->getSocket()
-			, boost::bind( &Service::acceptHandle, handlePtr(this), boost::asio::placeholders::error, session )
-			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Service::acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _session )

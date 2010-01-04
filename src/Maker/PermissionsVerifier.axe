@@ -1,0 +1,7 @@
+namespace Axe
+{
+	class PermissionsVerifier
+	{
+		bool checkPermissions( string _login, string _password );
+	};
+}

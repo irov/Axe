@@ -9,7 +9,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SLAxe::SLAxe()
 	{
-		m_grammar = new SLAxeGrammar();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SLAxe::generate( const char * _protocol, const char * _path, const char * _name )
@@ -35,9 +34,11 @@ namespace Axe
 		fread( buff, size, 1, file_in );
 		fclose( file_in );
 
+		SLAxeGrammar * grammar = new SLAxeGrammar();
+
 		boost::spirit::parse_info<> info = boost::spirit::parse( 
 			buff, buff + size, 
-			*m_grammar, boost::spirit::space_p 
+			*grammar, boost::spirit::space_p 
 			);
 
 		if( info.full == false )
@@ -45,7 +46,7 @@ namespace Axe
 			return false;
 		}
 
-		SLAxeParser * parser = m_grammar->getParser();
+		SLAxeParser * parser = grammar->getParser();
 
 		SLAxeGenerator generator( parser );
 
@@ -66,7 +67,6 @@ namespace Axe
 			fclose( file_out );
 		}
 
-
 		{
 			generator.generateImplement( _name );
 
@@ -81,7 +81,10 @@ namespace Axe
 			std::string stream_buff = stream.str();
 
 			fwrite( stream_buff.c_str(), stream_buff.size(), 1, file_out );
-			fclose( file_out );		}
+			fclose( file_out );		
+		}
+
+		delete grammar;
 
 		//printf("%s\n", str );
 

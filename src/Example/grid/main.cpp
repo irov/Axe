@@ -5,11 +5,11 @@
 
 #	include <stdio.h>
 
-class MyCommunicatorInitializeResponse
-	: public Axe::CommunicatorInitializeResponse
+class MyGridCreateResponse
+	: public Axe::GridCreateResponse
 {
 public:
-	void onInitialize( const Axe::CommunicatorPtr & _communicator ) override
+	void onCreate( const GridPtr & _grid ) override
 	{
 
 	}
@@ -27,6 +27,7 @@ void main()
 	Axe::CommunicatorPtr cm = new Axe::Communicator();
 	
 	cm->initializeGrid( ep, "Grid", new MyCommunicatorInitializeResponse );
+	cm->createGrid( ep, "Grid", new MyGridCreateResponse );
 
 	cm->run();
 }

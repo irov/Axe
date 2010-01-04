@@ -29,17 +29,13 @@ namespace Axe
 		Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
 
 	public:
-		void start();
-
-	public:
-		Proxy_UniquePtr addUnique( std::size_t _servantId, const std::string & _name, const Servant_UniquePtr & _unique );
+		ProxyPtr addUnique( std::size_t _servantId, const std::string & _name, const ServantPtr & _unique );
 
 	protected:
 		SessionPtr makeSession() override;
 
 	protected:
-		Proxy_GridManagerPtr m_gridManager;
-		EndpointCachePtr m_endpointCache;
+		CommunicatorPtr m_communicator;
 	};
 
 	typedef AxeHandle<Adapter> AdapterPtr;

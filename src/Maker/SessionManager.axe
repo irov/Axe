@@ -1,0 +1,12 @@
+namespace Axe
+{
+	class Session
+	{
+		void destroy();
+	};
+
+	class SessionManager
+	{
+		Session create( string _login );
+	};
+}

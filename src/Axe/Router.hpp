@@ -41,8 +41,7 @@ namespace Axe
 		void createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session );
 
 	protected:
-		ConnectionCachePtr m_connectionCache;
-		//EndpointCachePtr m_endpointCache;
+		CommunicatorPtr m_communicator;
 
 		Proxy_GridManagerPtr m_gridManager;
 

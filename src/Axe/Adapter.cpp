@@ -8,36 +8,24 @@
 
 #	include <Axe/Servant.hpp>
 
-#	include <AxeProtocols/Player.hpp>
+#	include <Axe/Communicator.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Adapter::Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId )
 		: Host(_communicator->getService(), _communicator->getConnectionCache(), _endpoint, _name, _hostId)
-		, m_endpointCache(_communicator->getEndpointCache())
-		, m_gridManager(_communicator->getGridManager())
+		, m_communicator(_communicator)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::start()
+	ProxyPtr Adapter::addUnique( std::size_t _servantId, const std::string & _name, const ServantPtr & _unique )
 	{
-		Service::accept();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_UniquePtr Adapter::addUnique( std::size_t _servantId, const std::string & _name, const Servant_UniquePtr & _unique )
-	{
-		ProxyPtr base = this->addServant( _servantId, _unique );
+		ProxyPtr basePrx = this->addServant( _servantId, _unique );
 
-		Proxy_UniquePtr proxyUnique = uncheckedCast<Proxy_UniquePtr>( base );
+		m_communicator->addUnique( _name, basePrx );
 
-		m_gridManager->addUnique_async( 
-			bindResponseEmpty()
-			, _name
-			, proxyUnique 
-			);
-
-		return proxyUnique;
+		return basePrx;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()

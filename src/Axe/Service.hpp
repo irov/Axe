@@ -14,6 +14,7 @@ namespace Axe
 
 	public:
 		void run();
+		void accept();
 
 	public:
 		const std::string & getName() const;
@@ -21,9 +22,6 @@ namespace Axe
 
 	protected:
 		virtual SessionPtr makeSession() = 0;
-
-	protected:
-		void accept();
 
 	private:
 		void acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _sn );

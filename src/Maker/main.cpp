@@ -10,11 +10,11 @@ void main()
 		const char * protocol = "Player.hpp";
 		const char * path = "../AxeProtocols/";
 
-		bool done = slaxe.generate( protocol, path, "Player" );
-
-		if( done == false )
-		{
-			printf("generate false\n");
-		}
+		
+		slaxe.generate( "EvictorManager.axe", "../AxeProtocols/", "EvictorManager" );
+		slaxe.generate( "GridManager.axe", "../AxeProtocols/", "GridManager" );
+		slaxe.generate( "PermissionsVerifier.axe", "../AxeProtocols/", "PermissionsVerifier" );
+		slaxe.generate( "SessionManager.axe", "../AxeProtocols/", "SessionManager" );
+		slaxe.generate( "Player.hpp", "../AxeProtocols/", "Player" );
 	}
 }

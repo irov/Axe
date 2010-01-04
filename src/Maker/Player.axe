@@ -1,0 +1,14 @@
+namespace Axe
+{
+	struct PlayerInfo
+	{
+		string name;
+		int id;
+	};
+
+	class Player
+		: public Session
+	{
+		int test( PlayerInfo info );
+	};
+}

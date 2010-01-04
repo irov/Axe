@@ -154,6 +154,54 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="EvictorManager"
+			>
+			<File
+				RelativePath=".\EvictorManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EvictorManager.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="GridManager"
+			>
+			<File
+				RelativePath=".\GridManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GridManager.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PermissionVerifier"
+			>
+			<File
+				RelativePath=".\PermissionsVerifier.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PermissionsVerifier.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="SessionManager"
+			>
+			<File
+				RelativePath=".\SessionManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SessionManager.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

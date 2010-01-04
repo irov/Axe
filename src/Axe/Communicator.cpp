@@ -30,42 +30,39 @@ namespace Axe
 		return m_endpointCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Proxy_GridManagerPtr & Communicator::getGridManager() const
-	{
-		return m_gridManager;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	class CommunicatorGridConnectResponse
 		: public GridConnectResponse
 	{
 	public:
 		CommunicatorGridConnectResponse( 
 			const CommunicatorPtr & _communicator
-			, const CommunicatorInitializeResponsePtr & _initializeResponse )
+			, const CommunicatorConnectResponsePtr & _initializeResponse )
 			: m_communicator(_communicator) 
-			, m_initializeResponse(_initializeResponse)
+			, m_connectResponse(_initializeResponse)
 		{
 		}
 
 	public:
 		void connectSuccessful( const Proxy_GridManagerPtr & _gridManager ) override
 		{
-			m_communicator->initialize( _gridManager, m_initializeResponse );
+			m_communicator->setGridManager( _gridManager );
+			
+			m_connectResponse->onConnect( m_communicator );
 		}
 
 		void connectFailed() override
 		{
-			m_initializeResponse->onFailed();
+			m_connectResponse->onFailed();
 		}
 
 	protected:
 		CommunicatorPtr m_communicator;
-		CommunicatorInitializeResponsePtr m_initializeResponse;
+		CommunicatorConnectResponsePtr m_connectResponse;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef AxeHandle<CommunicatorGridConnectResponse> CommunicatorGridConnectResponsePtr;
 	//////////////////////////////////////////////////////////////////////////
-	void Communicator::initialize( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorInitializeResponsePtr & _initializeResponse )
+	void Communicator::connect( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse )
 	{
 		CommunicatorGridConnectResponsePtr gridResponse 
 			= new CommunicatorGridConnectResponse( this, _initializeResponse );
@@ -76,21 +73,10 @@ namespace Axe
 		gridConnection->connect( _grid );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Communicator::initializeGrid( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, const CommunicatorInitializeResponsePtr & _initializeResponse )
+	void Communicator::setGridManager( const ProxyPtr & _gridManager )
 	{
-		m_grid = new Grid( m_service, _endpoint, _name );
-
-		const Proxy_GridManagerPtr & gridManager = m_grid->initialize();
-
-		this->initialize( gridManager, _initializeResponse );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Communicator::initialize( const Proxy_GridManagerPtr & _gridManager, const CommunicatorInitializeResponsePtr & _initializeResponse )
-	{
-		m_gridManager = _gridManager;
-		m_endpointCache = new EndpointCache( m_gridManager );
-
-		_initializeResponse->onInitialize( this );
+		m_gridManagerPrx = _gridManager;
+		m_endpointCache = new EndpointCache( m_gridManagerPrx );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::run()
@@ -128,7 +114,7 @@ namespace Axe
 
 		std::string endpoint = ss.str();
 
-		m_gridManager->addAdapter_async( 
+		uncheckedCast<Proxy_GridManagerPtr>(m_gridManagerPrx)->addAdapter_async( 
 			bindResponse( 
 				boost::bind( &Communicator::addAdapterResponse, handlePtr(this), _1, _endpoint, _name, _response )
 				, boost::bind( &Communicator::addAdapterException, handlePtr(this), _1 )
@@ -167,6 +153,49 @@ namespace Axe
 		{
 			_response->onCreate( router );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Communicator::createGrid( 
+		const boost::asio::ip::tcp::endpoint & _endpoint
+		, const std::string & _name
+		, const ServantPtr & _servant 
+		, const GridCreateResponsePtr & _response )
+	{
+		m_grid = new Grid( m_service, _endpoint, _name );
+
+		ProxyPtr basePrx = m_grid->addGridManager( _servant );
+
+		this->setGridManager( basePrx );
+
+		m_grid->accept();
+
+		_response->onCreate( m_grid );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Communicator::addUnique( const std::string & _name, const ProxyPtr & _proxy )
+	{
+		Proxy_UniquePtr uniquePrx = uncheckedCast<Proxy_UniquePtr>( _proxy );
+
+		uncheckedCast<Proxy_GridManagerPtr>(m_gridManagerPrx)->addUnique_async( 
+			bindResponseEmpty()
+			, _name
+			, uniquePrx 
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Communicator::getUnique( const std::string & _name, const boost::function<> & _response )
+	{
+		m_gridManager->getUnique_async( 
+			bindResponse( _response )
+			, _name
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionPtr & Communicator::getConnection( std::size_t _hostId )
+	{
+		const ConnectionPtr & connection = m_connectionCache->getConnection( _hostId );
+
+		return connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConnectionPtr Communicator::createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache )
