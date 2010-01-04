@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -390,14 +390,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\GridManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridManager.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\GridSession.cpp"
 				>
 			</File>
@@ -451,6 +443,10 @@
 			</File>
 			<File
 				RelativePath=".\pch.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pch_std.hpp"
 				>
 			</File>
 		</Filter>

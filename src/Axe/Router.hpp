@@ -1,12 +1,9 @@
 #	pragma once
 
 #	include <Axe/Service.hpp>
-#	include <Axe/Servant.hpp>
-#	include <Axe/Response.hpp>
 
-#	include <Axe/GridConnection.hpp>
-
-#	include <AxeProtocols/Player.hpp>
+#	include <AxeProtocols/SessionManager.hpp>
+#	include <AxeProtocols/PermissionsVerifier.hpp>
 
 namespace Axe
 {
@@ -34,16 +31,14 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
-		void getPermissionsVerifierResponse( const Proxy_UniquePtr & _unique );
-		void getSessionManagerResponse( const Proxy_UniquePtr & _unique );
+		void getPermissionsVerifierResponse( const ProxyPtr & _unique );
+		void getSessionManagerResponse( const ProxyPtr & _unique );
 
 		void checkPermissionsResponse( bool _successful, const std::string & _login, const SessionPtr & _session );
-		void createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session );
+		void createResponse( const Proxy_SessionPtr & _player, const SessionPtr & _session );
 
 	protected:
 		CommunicatorPtr m_communicator;
-
-		Proxy_GridManagerPtr m_gridManager;
 
 		Proxy_SessionManagerPtr m_sessionManager;
 		Proxy_PermissionsVerifierPtr m_permissionsVerifier;

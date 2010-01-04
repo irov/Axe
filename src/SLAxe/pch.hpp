@@ -1,14 +1,9 @@
 #	pragma once
 
-#	include <boost/spirit.hpp>
-#	include <boost/bind.hpp>
-
-#	include <string>
-#	include <sstream>
-
-#	include <list>
-#	include <vector>
-#	include <set>
+#	include <Axe/pch_std.hpp>
 
 #	include <stdio.h>
+#	include <sstream>
+
+#	include <boost/spirit.hpp>
 

@@ -1,4 +1,5 @@
 #	include "pch.hpp"
+
 #	include <Axe/Adapter.hpp>
 
 #	include <Axe/Communicator.hpp>
@@ -23,7 +24,13 @@ namespace Axe
 	{
 		ProxyPtr basePrx = this->addServant( _servantId, _unique );
 
-		m_communicator->addUnique( _name, basePrx );
+		const Proxy_GridManagerPtr & gridManager = m_communicator->getGridManager();
+
+		gridManager->addUnique_async( 
+			bindResponseEmpty()
+			, _name
+			, basePrx 
+			);
 
 		return basePrx;
 	}

@@ -1,8 +1,11 @@
-#	pragma once
+#	include "pch.hpp"
 
-#	include <Axe/pch.hpp>
 #	include <Axe/Communicator.hpp>
 #	include <Axe/Adapter.hpp>
+
+#	include <AxeProtocols/PermissionsVerifier.hpp>
+#	include <AxeProtocols/SessionManager.hpp>
+
 #	include <AxeProtocols/Player.hpp>
 
 #	include <stdio.h>
@@ -48,6 +51,11 @@ public:
 	}
 
 public:
+	void destroy_async( const Axe::Bellhop_Session_destroyPtr & _cb ) override
+	{
+
+	}
+
 	void test_async( const Axe::Bellhop_Player_testPtr & _cb, const Axe::PlayerInfo & _info ) override
 	{
 		int result = 0;
@@ -107,7 +115,7 @@ public:
 		_adapter->addUnique( 0, "PermissionsVerifier", permissionsVerifier );
 		_adapter->addUnique( 1, "SessionManager", sessionManager );
 
-		_adapter->start();
+		_adapter->accept();
 	}
 
 	void onFailed() override
@@ -140,7 +148,7 @@ void main()
 
 	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 
-	cm->initialize( grid_ep, new MyCommunicatorInitializeResponse() );
+	cm->connectGrid( grid_ep, new MyCommunicatorInitializeResponse() );
 
 	cm->run();
 }

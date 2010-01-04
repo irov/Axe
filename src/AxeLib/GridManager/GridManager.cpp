@@ -1,8 +1,8 @@
 #	include "pch.hpp"
 
-#	include <Axe/GridManager.hpp>
+#	include "GridManager.hpp"
 
-namespace Axe
+namespace AxeLib
 {
 	//////////////////////////////////////////////////////////////////////////
 	GridManager::GridManager()
@@ -44,7 +44,7 @@ namespace Axe
 		_cb->response( it_found->second );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridManager::addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique )
+	void GridManager::addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique )
 	{
 		TMapUniques::const_iterator it_found = m_uniques.find( _name );
 

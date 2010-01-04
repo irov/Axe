@@ -2,7 +2,7 @@
 
 #	include <Axe/Host.hpp>
 
-#	include <AxeProtocols/Player.hpp>
+#	include <AxeProtocols/GridManager.hpp>
 
 namespace Axe
 {
@@ -17,8 +17,8 @@ namespace Axe
 		void start();
 
 	public:
-		const ProxyPtr & addGridManager( const ServantPtr & _servant );
-		const ProxyPtr & getGridManager() const;
+		const Proxy_GridManagerPtr & addGridManager( const Servant_GridManagerPtr & _servant );
+		const Proxy_GridManagerPtr & getGridManager() const;
 
 	protected:
 		SessionPtr makeSession() override;
@@ -27,7 +27,7 @@ namespace Axe
 		ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) override;
 
 	protected:
-		ProxyPtr m_gridManagerPrx;
+		Proxy_GridManagerPtr m_gridManager;
 	};
 
 	typedef AxeHandle<Grid> GridPtr;

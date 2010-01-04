@@ -1,7 +1,9 @@
 #	pragma once
 
-#	include <Axe/pch.hpp>
+#	include "pch.hpp"
 #	include <Axe/Communicator.hpp>
+
+#	include <AxeLib/GridManager/GridManager.hpp>
 
 #	include <stdio.h>
 
@@ -9,7 +11,7 @@ class MyGridCreateResponse
 	: public Axe::GridCreateResponse
 {
 public:
-	void onCreate( const GridPtr & _grid ) override
+	void onCreate( const Axe::GridPtr & _grid ) override
 	{
 
 	}
@@ -26,8 +28,9 @@ void main()
 
 	Axe::CommunicatorPtr cm = new Axe::Communicator();
 	
-	cm->initializeGrid( ep, "Grid", new MyCommunicatorInitializeResponse );
-	cm->createGrid( ep, "Grid", new MyGridCreateResponse );
+	AxeLib::GridManagerPtr grid = new AxeLib::GridManager;
+
+	cm->createGrid( ep, "Grid", grid, new MyGridCreateResponse );
 
 	cm->run();
 }

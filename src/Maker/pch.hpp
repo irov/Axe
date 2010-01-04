@@ -1,5 +1,3 @@
 #	pragma once
 
-#	include "../SLAxe/pch.hpp"
-
-#	include <iostream>
+#	include <Axe/pch_std.hpp>

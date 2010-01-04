@@ -1,15 +1,13 @@
 #	pragma once
 
 #	include <Axe/Service.hpp>
-#	include <Axe/Proxy.hpp>
 #	include <Axe/ServantProvider.hpp>
-
-#	include <AxeProtocols/Player.hpp>
 
 namespace Axe
 {
 	typedef AxeHandle<class Session> SessionPtr;
 	typedef AxeHandle<class Servant> ServantPtr;
+	typedef AxeHandle<class ServantProvider> ServantProviderPtr;
 
 	class Host
 		: public Service

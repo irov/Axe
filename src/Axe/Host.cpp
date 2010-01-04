@@ -5,6 +5,9 @@
 #	include <Axe/AdapterSession.hpp>
 #	include <Axe/AdapterConnection.hpp>
 
+#	include <Axe/ServantProvider.hpp>
+
+#	include <Axe/Proxy.hpp>
 #	include <Axe/Servant.hpp>
 
 namespace Axe

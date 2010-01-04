@@ -1,3 +1,5 @@
+#	include "SessionManager"
+
 namespace Axe
 {
 	struct PlayerInfo

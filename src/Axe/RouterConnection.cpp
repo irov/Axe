@@ -10,7 +10,7 @@
 
 #	include <Axe/Client.hpp>
 
-#	include <AxeProtocols/Player.hpp>
+#	include <AxeProtocols/SessionManager.hpp>
 
 namespace Axe
 {
@@ -41,7 +41,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		Proxy_PlayerPtr proxy = makeProxy<Proxy_PlayerPtr>( _ar );
+		Proxy_SessionPtr proxy = makeProxy<Proxy_SessionPtr>( _ar );
 
 		m_connectResponse->connectSuccessful( proxy );
 	}

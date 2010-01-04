@@ -7,13 +7,9 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	SLAxe::SLAxe()
+	bool SLAxe::generate( const std::string & _protocol, const std::string & _path, const std::string & _name )
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SLAxe::generate( const char * _protocol, const char * _path, const char * _name )
-	{
-		FILE * file_in = fopen( _protocol, "rb" );
+		FILE * file_in = fopen( _protocol.c_str(), "rb" );
 
 		if( file_in == 0 )
 		{
@@ -51,7 +47,7 @@ namespace Axe
 		SLAxeGenerator generator( parser );
 
 		{
-			generator.generateHeader();
+			generator.generateHeader( _path, _name );
 
 			std::stringstream & stream = generator.getStream();
 

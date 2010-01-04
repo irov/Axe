@@ -2,12 +2,15 @@
 
 #	include <Axe/ConnectionCache.hpp>
 #	include <Axe/EndpointCache.hpp>
-#	include <Axe/Grid.hpp>
+
+#	include <AxeProtocols/GridManager.hpp>
 
 namespace Axe
 {
+	typedef AxeHandle<class Host> HostPtr;
 	typedef AxeHandle<class Adapter> AdapterPtr;
 	typedef AxeHandle<class Router> RouterPtr;
+	typedef AxeHandle<class Grid> GridPtr;
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
 	class CommunicatorConnectResponse
@@ -63,13 +66,14 @@ namespace Axe
 		const EndpointCachePtr & getEndpointCache() const;
 
 	public:
-		void connect( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse );
+		void connectGrid( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse );
 
 	public:
 		void run();
 
 	public:
-		void setGridManager( const ProxyPtr & _gridManager );
+		void setGridManager( const Proxy_GridManagerPtr & _gridManager );
+		const Proxy_GridManagerPtr & getGridManager() const;
 
 	public:
 		void createAdapter( 
@@ -95,12 +99,8 @@ namespace Axe
 		void createGrid( 
 			const boost::asio::ip::tcp::endpoint & _endpoint
 			, const std::string & _name
-			, const ServantPtr & _servant 
+			, const Servant_GridManagerPtr & _servant 
 			, const GridCreateResponsePtr & _response );
-
-	public:
-		void addUnique( const std::string & _name, const ProxyPtr & _proxy );
-		void getUnique( const std::string & _name, const boost::function<> & _response );
 
 	public:
 		const ConnectionPtr & getConnection( std::size_t _hostId );
@@ -120,15 +120,13 @@ namespace Axe
 	protected:
 		boost::asio::io_service m_service;
 
-		ProxyPtr m_gridManagerPrx;
+		Proxy_GridManagerPtr m_gridManager;
 
 		ConnectionCachePtr m_connectionCache;
 		EndpointCachePtr m_endpointCache;
 
-		GridPtr m_grid;
-
-		typedef std::map<std::string, AdapterPtr> TMapAdapters;
-		TMapAdapters m_adapters;
+		typedef std::map<std::string, HostPtr> TMapHosts;
+		TMapHosts m_hosts;
 
 		typedef std::map<std::string, RouterPtr> TMapRouters;
 		TMapRouters m_routers;

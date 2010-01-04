@@ -11,6 +11,13 @@ namespace Axe
 
 		typedef std::vector<Type> TVectorTypes;
 
+		struct Include
+		{
+			std::string path;
+		};
+
+		typedef std::vector<Include> TVectorIncludes;
+
 		struct Typedef
 		{
 			std::string name;

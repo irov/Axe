@@ -14,7 +14,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	const Namespace & SLAxeParser::getNamespace() const
 	{
-		return m_namespaces.back();
+		return m_namespaces.front();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Declaration::TVectorIncludes & SLAxeParser::getIncludes() const
+	{
+		return m_includes;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_class_name( char const* str, char const* end )
@@ -60,6 +65,14 @@ namespace Axe
 		nm.order.push_back( DECL_EXCEPTION );
 
 		m_exception = Exception();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::add_include_path( char const* str, char const* end )
+	{
+		Include inc;
+		inc.path.assign( str, end );
+
+		m_includes.push_back( inc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::begin_namespace( char const* str, char const* end )

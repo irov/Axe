@@ -15,13 +15,14 @@ namespace Axe
 		void typegen( const Declaration::Namespace & ns );
 
 	public:
-		void generateHeader();
+		void generateHeader( const std::string & _path, const std::string & _fileName );
 		void generateImplement( const std::string & _fileName );
 
 	public:
 		std::stringstream & getStream();
 
 	protected:
+		void generateHeaderIncludes( const Declaration::TVectorIncludes & _includes, const std::string & _path );
 		void generateHeaderNamespace( const Declaration::Namespace & _namespace );
 		void generateHeaderStruct( const Declaration::Struct & _struct );
 		void generateHeaderTypedef( const Declaration::Typedef & _typedef );

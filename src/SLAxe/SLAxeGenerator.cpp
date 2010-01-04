@@ -27,6 +27,8 @@ namespace Axe
 		m_templatesTypes.insert("vector");
 		m_templatesTypes.insert("set");
 
+		m_classTypes.insert("Servant");
+
 		const Namespace & ns = m_parser->getNamespace();
 
 		typegen( ns );
@@ -89,7 +91,7 @@ namespace Axe
 		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateHeader()
+	void SLAxeGenerator::generateHeader( const std::string & _path, const std::string & _fileName )
 	{
 		m_stream.str("");
 
@@ -103,6 +105,10 @@ namespace Axe
 		m_stream << "#	include <Axe/Response.hpp>" << std::endl;
 		m_stream << "#	include <Axe/Exception.hpp>" << std::endl;
 
+		const TVectorIncludes & includes = m_parser->getIncludes();
+
+		generateHeaderIncludes( includes, _path );
+
 		m_stream << std::endl;
 
 		m_stream << "namespace Axe" << std::endl;
@@ -115,6 +121,25 @@ namespace Axe
 		const Namespace & ns = m_parser->getNamespace();
 
 		generateHeaderNamespace( ns );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeGenerator::generateHeaderIncludes( const Declaration::TVectorIncludes & _includes, const std::string & _path )
+	{
+		if( _includes.empty() == true )
+		{
+			return;
+		}
+
+		write() << std::endl;
+
+		for( TVectorIncludes::const_iterator
+			it_include = _includes.begin(),
+			it_include_end = _includes.end();
+		it_include != it_include_end;
+		++it_include )
+		{
+			write() << "#	include <" << _path << it_include->path << ".hpp>" << std::endl;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderNamespace( const Declaration::Namespace & _namespace )
@@ -739,7 +764,7 @@ namespace Axe
 	{
 		m_stream.str("");
 
-		m_stream << "#	include <Axe/pch.hpp>" << std::endl;
+		m_stream << "#	include \"pch.hpp\"" << std::endl;
 		m_stream << std::endl;
 		m_stream << "#	include \"" << _fileName << ".hpp\"" << std::endl;
 		m_stream << std::endl;
@@ -1670,7 +1695,13 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeProxyName( const std::string & _class )
 	{
+		if( _class == "Servant" )
+		{
+			return "Proxy";
+		}
+	
 		std::string proxy_name = "Proxy_" + _class;
+
 		return proxy_name;
 	}
 	//////////////////////////////////////////////////////////////////////////

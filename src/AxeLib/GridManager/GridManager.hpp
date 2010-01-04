@@ -1,9 +1,11 @@
 #	pragma once
 
-#	include <AxeProtocols/Player.hpp>
+#	include <AxeProtocols/GridManager.hpp>
 
-namespace Axe
+namespace AxeLib
 {
+	using namespace Axe;
+
 	class GridManager
 		: public Servant_GridManager
 	{
@@ -14,11 +16,11 @@ namespace Axe
 		void addAdapter_async( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) override;
 		void getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) override;
 
-		void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Proxy_UniquePtr & _unique ) override;
+		void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique ) override;
 		void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) override;		
 
 	protected:
-		typedef std::map<std::string, Proxy_UniquePtr> TMapUniques;
+		typedef std::map<std::string, ProxyPtr> TMapUniques;
 		TMapUniques m_uniques;
 
 		typedef std::map<std::size_t, std::string> TMapEndpoints;

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/pch.hpp>
+#	include "pch.hpp"
 #	include <Axe/Communicator.hpp>
 #	include <Axe/Router.hpp>
 
@@ -44,7 +44,7 @@ void main()
 
 	boost::asio::ip::tcp::endpoint grid_ep(boost::asio::ip::address::from_string("127.0.0.1"), 12001);
 	
-	cm->initialize( grid_ep, new MyCommunicatorInitializeResponse() );
+	cm->connectGrid( grid_ep, new MyCommunicatorInitializeResponse() );
 
 	cm->run();
 }

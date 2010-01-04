@@ -2,7 +2,7 @@
 
 #	include <AxeUtil/Archive.hpp>
 
-#	include <AxeProtocols/Player.hpp>
+#	include <AxeProtocols/EvictorManager.hpp>
 
 namespace Axe
 {

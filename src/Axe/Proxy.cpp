@@ -61,4 +61,9 @@ namespace Axe
 
 		return connection;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( ArchiveInvocation & _ar, const ProxyPtr & _value )
+	{
+		_value->write(_ar);
+	}
 }

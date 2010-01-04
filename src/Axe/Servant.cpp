@@ -60,5 +60,9 @@ namespace Axe
 	{
 		//Empty
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( ArchiveInvocation & _ar, const ServantPtr & _value )
+	{
+		_value->write(_ar);
+	}
 }

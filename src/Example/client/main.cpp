@@ -1,7 +1,9 @@
 #	pragma once
 
-#	include <Axe/pch.hpp>
+#	include "pch.hpp"
 #	include <Axe/Client.hpp>
+
+#	include <AxeProtocols/SessionManager.hpp>
 #	include <AxeProtocols/Player.hpp>
 
 #	include <stdio.h>
@@ -33,11 +35,11 @@ public:
 	}
 
 protected:
-	void connectSuccessful( const Axe::Proxy_PlayerPtr & _player ) override
+	void connectSuccessful( const Axe::Proxy_SessionPtr & _session ) override
 	{
 		printf("connectSuccessful\n");
 
-		m_player = _player;
+		m_player = Axe::uncheckedCast<Axe::Proxy_PlayerPtr>(_session);
 
 		Axe::PlayerInfo pi;
 

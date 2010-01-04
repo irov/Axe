@@ -4,8 +4,6 @@
 
 #	include <Axe/EndpointCache.hpp>
 
-#	include <AxeProtocols/Player.hpp>
-
 namespace Axe
 {
 	typedef AxeHandle<class Communicator> CommunicatorPtr;

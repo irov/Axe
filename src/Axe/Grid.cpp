@@ -4,8 +4,6 @@
 #	include <Axe/GridSession.hpp>
 #	include <Axe/AdapterConnection.hpp>
 
-#	include <Axe/GridManager.hpp>
-
 namespace Axe
 {
 	const std::size_t grid_host_id = 0;
@@ -15,16 +13,18 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyPtr & Grid::addGridManager( const ServantPtr & _servant )
+	const Proxy_GridManagerPtr & Grid::addGridManager( const Servant_GridManagerPtr & _servant )
 	{
-		m_gridManagerPrx = this->addServant( 0, _servant );
+		ProxyPtr basePrx = this->addServant( 0, _servant );
 
-		return m_gridManagerPrx;
+		m_gridManager = uncheckedCast<Proxy_GridManagerPtr>(basePrx);
+
+		return m_gridManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyPtr & Grid::getGridManager() const
+	const Proxy_GridManagerPtr & Grid::getGridManager() const
 	{
-		return m_gridManagerPrx;
+		return m_gridManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Grid::makeSession()

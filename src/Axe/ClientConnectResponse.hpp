@@ -4,13 +4,13 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Proxy_Player> Proxy_PlayerPtr;
+	typedef AxeHandle<class Proxy_Session> Proxy_SessionPtr;
 
 	class ClientConnectResponse
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void connectSuccessful( const Proxy_PlayerPtr & _player ) = 0;
+		virtual void connectSuccessful( const Proxy_SessionPtr & _session ) = 0;
 		virtual void connectFailed() = 0;
 	};
 

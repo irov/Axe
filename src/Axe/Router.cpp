@@ -16,37 +16,39 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
 		: Service(_communicator->getService(), _endpoint, _name)
-		, m_connectionCache()
 		, m_communicator(_communicator)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::getSessionManagerResponse( const Proxy_UniquePtr & _unique )
+	void Router::getSessionManagerResponse( const ProxyPtr & _unique )
 	{
 		m_sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
 
 		Service::accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::getPermissionsVerifierResponse( const Proxy_UniquePtr & _unique )
+	void Router::getPermissionsVerifierResponse( const ProxyPtr & _unique )
 	{
 		m_permissionsVerifier = uncheckedCast<Proxy_PermissionsVerifierPtr>( _unique );
 
-		m_communicator->getUnique( "SessionManager", boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 ) );
-		//m_gridManager->getUnique_async( 
-		//	bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 )
-		//		, noneExceptionFilter() )
-		//	, "SessionManager"
-		//	);
+		const Proxy_GridManagerPtr & gridManager = m_communicator->getGridManager();
+
+		gridManager->getUnique_async( 
+			bindResponse( boost::bind( &Router::getSessionManagerResponse, handlePtr(this), _1 )
+				, noneExceptionFilter() )
+			, "SessionManager"
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::start()
 	{
-		//m_gridManager->getUnique_async(
-		//	bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
-		//		, noneExceptionFilter() )
-		//	, "PermissionsVerifier"
-		//	);
+		const Proxy_GridManagerPtr & gridManager = m_communicator->getGridManager();
+
+		gridManager->getUnique_async(
+			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
+				, noneExceptionFilter() )
+			, "PermissionsVerifier"
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::dispatchMethod( ArchiveDispatcher & _ar, std::size_t _size, const RouterSessionPtr & _session )
@@ -76,7 +78,7 @@ namespace Axe
 		cn->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Router::createResponse( const Proxy_PlayerPtr & _player, const SessionPtr & _session )
+	void Router::createResponse( const Proxy_SessionPtr & _player, const SessionPtr & _session )
 	{
 		ArchiveInvocation & ar = _session->beginConnect( true );
 		ar << _player;

@@ -11,6 +11,7 @@ namespace Axe
 
 	public:
 		const Declaration::Namespace & getNamespace() const;
+		const Declaration::TVectorIncludes & getIncludes() const;
 
 	public:
 		void set_class_name( char const* str, char const* end );
@@ -19,6 +20,8 @@ namespace Axe
 		void add_struct( char const* str, char const* end );
 		void set_exception_name( char const* str, char const* end );
 		void add_exception( char const* str, char const* end );
+
+		void add_include_path( char const* str, char const* end );
 
 		void begin_namespace( char const* str, char const* end );
 		void end_namespace( char const* str, char const* end );
@@ -46,6 +49,7 @@ namespace Axe
 
 
 	protected:
+		Declaration::TVectorIncludes m_includes;
 		Declaration::TVectorNamespaces m_namespaces;
 
 		std::string m_inheritance;

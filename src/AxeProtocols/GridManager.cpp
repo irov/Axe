@@ -1,4 +1,4 @@
-#	include <Axe/pch.hpp>
+#	include "pch.hpp"
 
 #	include "GridManager.hpp"
 
@@ -96,7 +96,7 @@ namespace Axe
 		Bellhop_GridManager_addUniquePtr bellhop = new Bellhop_GridManager_addUnique( _requestId, _session, _servant );
 	
 		std::string arg0; _archive >> arg0;
-		Servant arg1; _archive >> arg1;
+		ProxyPtr arg1 = Axe::makeProxy<ProxyPtr>( _archive );
 	
 		_servant->addUnique_async( bellhop, arg0, arg1 );
 	}
@@ -284,7 +284,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_GridManager_getUnique::response( __compiler__type__error _arg0 )
+	void Bellhop_GridManager_getUnique::response( const ProxyPtr & _arg0 )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
 		ar << _arg0;
@@ -432,7 +432,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_GridManager_getUniquePtr>::response( __compiler__type__error _arg0 )
+	void BindResponse<Response_GridManager_getUniquePtr>::response( const ProxyPtr & _arg0 )
 	{
 		m_response( _arg0 );
 	}
@@ -444,7 +444,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_GridManager_getUnique::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		Servant arg0; _ar >> arg0;
+		ProxyPtr arg0 = Axe::makeProxy<ProxyPtr>( _ar );
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -491,7 +491,7 @@ namespace Axe
 		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, __compiler__type__error _unique )
+	void Proxy_GridManager::addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const ProxyPtr & _unique )
 	{
 		Axe::ArchiveInvocation & ar = this->beginMessage( 3, _response );
 		ar << _name;

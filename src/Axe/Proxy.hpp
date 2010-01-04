@@ -59,4 +59,6 @@ namespace Axe
 
 		return new El( servantId, connection );
 	}
+
+	void operator << ( ArchiveInvocation & _ar, const ProxyPtr &  _value );
 }
