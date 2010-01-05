@@ -35,6 +35,17 @@ namespace Axe
 	public:
 		void write( ArchiveInvocation & _ar ) const;
 
+	public:
+		void restore();
+		void evict();
+
+	protected:
+		virtual void _restore();
+		virtual void _evict();
+
+		virtual void onRestore();
+		virtual void onEvict();
+
 	protected:
 		std::size_t m_servantId;
 		std::size_t m_hostId;

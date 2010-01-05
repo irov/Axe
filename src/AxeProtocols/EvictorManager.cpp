@@ -29,9 +29,10 @@ namespace Axe
 		Bellhop_EvictorManager_setPtr bellhop = new Bellhop_EvictorManager_set( _requestId, _session, _servant );
 	
 		std::size_t arg0; _archive >> arg0;
-		AxeUtil::Archive arg1; _archive >> arg1;
+		std::size_t arg1; _archive >> arg1;
+		AxeUtil::Archive arg2; _archive >> arg2;
 	
-		_servant->set_async( bellhop, arg0, arg1 );
+		_servant->set_async( bellhop, arg0, arg1, arg2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void s_Servant_EvictorManager_callMethod_get( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
@@ -127,10 +128,11 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_EvictorManager_get::response( const AxeUtil::Archive & _arg0 )
+	void Bellhop_EvictorManager_get::response( const AxeUtil::Archive & _arg0, std::size_t _arg1 )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
 		ar << _arg0;
+		ar << _arg1;
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -179,9 +181,9 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_EvictorManager_getPtr>::response( const AxeUtil::Archive & _arg0 )
+	void BindResponse<Response_EvictorManager_getPtr>::response( const AxeUtil::Archive & _arg0, std::size_t _arg1 )
 	{
-		m_response( _arg0 );
+		m_response( _arg0, _arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BindResponse<Response_EvictorManager_getPtr>::throw_exception( const Axe::Exception & _ex )
@@ -192,7 +194,8 @@ namespace Axe
 	void Response_EvictorManager_get::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		AxeUtil::Archive arg0; _ar >> arg0;
-		this->response( arg0 );
+		std::size_t arg1; _ar >> arg1;
+		this->response( arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_EvictorManager_get::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
@@ -221,10 +224,11 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_EvictorManager::set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, const AxeUtil::Archive & _ar )
+	void Proxy_EvictorManager::set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar )
 	{
 		Axe::ArchiveInvocation & ar = this->beginMessage( 1, _response );
 		ar << _servantId;
+		ar << _typeId;
 		ar << _ar;
 	
 		this->processMessage();

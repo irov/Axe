@@ -189,9 +189,9 @@ namespace Axe
 		return connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Communicator::createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache )
+	ConnectionPtr Communicator::createConnection( std::size_t _adapterId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_service, _adapterId, m_endpointCache, _connectionCache );
+		AdapterConnectionPtr connection = new AdapterConnection( m_service, _adapterId, m_endpointCache, m_connectionCache );
 
 		return connection;
 	}

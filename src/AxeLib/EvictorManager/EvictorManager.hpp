@@ -13,7 +13,7 @@ namespace AxeLib
 		EvictorManager( const std::string & _pathDB );
 
 	public:
-		void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, const AxeUtil::Archive & _ar ) override;
+		void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar ) override;
 		void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) override;
 
 	protected:

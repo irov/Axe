@@ -36,9 +36,9 @@ namespace Axe
 		return session;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Grid::createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache )
+	ConnectionPtr Grid::createConnection( std::size_t _hostId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_service, _hostId, 0, _connectionCache );
+		AdapterConnectionPtr connection = new AdapterConnection( m_service, _hostId, 0, m_connectionCache );
 
 		return connection;
 	}

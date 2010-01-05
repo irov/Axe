@@ -109,7 +109,7 @@ namespace Axe
 		const ConnectionPtr & getConnection( std::size_t _hostId );
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _adapterId, const ConnectionCachePtr & _connectionCache ) override;
+		ConnectionPtr createConnection( std::size_t _adapterId ) override;
 
 	protected:
 		void addAdapterResponse( std::size_t _id

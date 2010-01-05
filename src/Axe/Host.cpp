@@ -1,6 +1,7 @@
 #	include "pch.hpp"
 
 #	include <Axe/Host.hpp>
+#	include <Axe/Exception.hpp>
 
 #	include <Axe/AdapterSession.hpp>
 #	include <Axe/AdapterConnection.hpp>

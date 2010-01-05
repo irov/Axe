@@ -19,12 +19,11 @@ namespace Axe
 	{
 		string name;
 	};
-	
+		
 	typedef map<string, size_t> TMapAdapterIds;
 	typedef map<string, size_t> TMapServantTypeIds;
 	typedef map<string, Servant> TMapUniques;
 	typedef map<size_t, string> TMapEndpoints;
-
 
 	class GridManager
 	{

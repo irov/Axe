@@ -8,6 +8,7 @@ namespace Axe
 
 	//////////////////////////////////////////////////////////////////////////
 	SLAxeParser::SLAxeParser()
+		:  m_outArgument(false)
 	{
 		m_namespaces.push_back( Namespace(0) );
 	}
@@ -188,13 +189,28 @@ namespace Axe
 		m_method.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeParser::add_in_argument( char const* str, char const* end )
+	void SLAxeParser::set_argument_out( char const* str, char const* end )
+	{
+		m_outArgument = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::add_argument( char const* str, char const* end )
 	{
 		Argument arg;
-		arg.name.assign( str, end );
 		arg.type = m_type;
+		arg.name.assign(str,end);
+		arg.out = m_outArgument;
 
-		m_method.inArguments.push_back( arg );
+		if( m_outArgument == false )
+		{
+			m_method.inArguments.push_back( arg );
+		}
+		else
+		{
+			m_method.outArguments.push_back( arg );
+		}
+
+		m_outArgument = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_default_out_argument( char const* str, char const* end )
@@ -207,15 +223,7 @@ namespace Axe
 		Argument arg;
 		arg.name = "__result__";
 		arg.type = m_type;
-
-		m_method.outArguments.push_back( arg );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SLAxeParser::add_out_argument( char const* str, char const* end )
-	{
-		Argument arg;
-		arg.name.assign( str, end );
-		arg.type = m_type;
+		arg.out = true;
 
 		m_method.outArguments.push_back( arg );
 	}

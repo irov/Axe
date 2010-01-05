@@ -19,7 +19,7 @@ namespace AxeLib
 		void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique ) override;
 		void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) override;		
 
-		void getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type );
+		void getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type ) override;
 	};
 
 	typedef AxeHandle<GridManager> GridManagerPtr;

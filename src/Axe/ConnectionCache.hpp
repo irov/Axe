@@ -12,7 +12,7 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) = 0;
+		virtual ConnectionPtr createConnection( std::size_t _hostId ) = 0;
 	};
 
 	typedef AxeHandle<ConnectionProvider> ConnectionProviderPtr;

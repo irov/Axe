@@ -40,7 +40,7 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, const AxeUtil::Archive & _ar ) = 0;
+		virtual void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar ) = 0;
 		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
 	
 	protected:
@@ -79,7 +79,7 @@ namespace Axe
 		Bellhop_EvictorManager_get( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_EvictorManagerPtr & _servant );
 	
 	public:
-		void response( const AxeUtil::Archive & );
+		void response( const AxeUtil::Archive &, std::size_t _typeId );
 	
 		void throw_exception( const Axe::Exception & _ex );
 	
@@ -127,7 +127,7 @@ namespace Axe
 		: public Axe::Response
 	{
 	protected:
-		virtual void response( const AxeUtil::Archive & ) = 0;
+		virtual void response( const AxeUtil::Archive &, std::size_t _typeId ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
@@ -140,14 +140,14 @@ namespace Axe
 	class BindResponse<Response_EvictorManager_getPtr>
 		: public Response_EvictorManager_get
 	{
-		typedef boost::function<void(const AxeUtil::Archive &)> TBindResponse;
+		typedef boost::function<void(const AxeUtil::Archive &, std::size_t)> TBindResponse;
 		typedef boost::function<void(const Axe::Exception &)> TBindException;
 	
 	public:
 		BindResponse( const TBindResponse & _response, const TBindException & _exception );
 	
 	public:
-		void response( const AxeUtil::Archive & _arg0 ) override;
+		void response( const AxeUtil::Archive & _arg0, std::size_t _arg1 ) override;
 	
 		void throw_exception( const Axe::Exception & _ex ) override;
 	
@@ -163,7 +163,7 @@ namespace Axe
 		Proxy_EvictorManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
 	
 	public:
-		void set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, const AxeUtil::Archive & _ar );
+		void set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );
 		void get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId );
 	};
 	

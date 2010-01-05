@@ -32,6 +32,7 @@ namespace Axe
 		{
 			std::string name;
 			Type type;
+			bool out;
 		};
 
 		typedef std::vector<Argument> TVectorArguments;

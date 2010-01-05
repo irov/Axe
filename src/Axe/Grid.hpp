@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include <Axe/Host.hpp>
+#	include <Axe/ConnectionCache.hpp>
 
 namespace Axe
 {
@@ -25,7 +26,7 @@ namespace Axe
 		SessionPtr makeSession() override;
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _hostId, const ConnectionCachePtr & _connectionCache ) override;
+		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;

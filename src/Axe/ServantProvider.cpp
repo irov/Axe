@@ -1,9 +1,17 @@
 #	include "pch.hpp"
 
 #	include "ServantProvider.hpp"
+#	include "ServantFactory.hpp"
+
+#	include <AxeProtocols/EvictorManager.hpp>
 
 namespace Axe
 {
+	//////////////////////////////////////////////////////////////////////////
+	ServantProvider::ServantProvider( const ServantFactoryPtr & _servantFactory )
+		: m_servantFactory(_servantFactory)
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ServantProvider::get( std::size_t _servantId, const ServantProviderResponsePtr & _cb )
 	{
@@ -12,7 +20,7 @@ namespace Axe
 		if( it_found == m_wantedServant.end() )
 		{
 			m_evictorManager->get_async( 
-				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _servantId ) ) 
+				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId ) ) 
 				, _servantId
 				);
 
@@ -25,10 +33,11 @@ namespace Axe
 		it_found->second.push_back( _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantProvider::onGet( const AxeUtil::Archive & _data, std::size_t _servantId )
+	void ServantProvider::onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId )
 	{
-		ServantPtr servant;
+		ServantPtr servant = m_servantFactory->genServant( _typeId );
 
+		
 		// TODO
 
 		TMapWantedServant::iterator it_found = m_wantedServant.find( _servantId );

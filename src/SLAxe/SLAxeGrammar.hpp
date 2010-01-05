@@ -110,8 +110,7 @@ namespace Axe
 					;
 
 				method_argument
-					= type >> name[ boost::bind( &SLAxeParser::add_in_argument, parser, _1, _2 ) ] | "out" >> 
-					type >> name[ boost::bind( &SLAxeParser::add_out_argument, parser, _1, _2 ) ];
+					= *(boost::spirit::str_p("out")[ boost::bind( &SLAxeParser::set_argument_out, parser, _1, _2 ) ]) >> type >> name[ boost::bind( &SLAxeParser::add_argument, parser, _1, _2 ) ];
 
 				inheritance_type
 					= (boost::spirit::str_p("public") | boost::spirit::str_p("private") | boost::spirit::str_p("protected"))

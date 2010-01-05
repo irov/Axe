@@ -1,12 +1,14 @@
 #	pragma once
 
+#	include <AxeUtil/Shared.hpp>
 #	include <AxeUtil/Archive.hpp>
-
-#	include <AxeProtocols/EvictorManager.hpp>
 
 namespace Axe
 {
 	typedef AxeHandle<class Servant> ServantPtr;
+	typedef AxeHandle<class ServantFactory> ServantFactoryPtr;
+
+	typedef AxeHandle<class Proxy_EvictorManager> Proxy_EvictorManagerPtr;
 
 	class ServantProviderResponse
 		: virtual public AxeUtil::Shared
@@ -21,16 +23,20 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
+		ServantProvider( const ServantFactoryPtr & _servantFactory );
+
+	public:
 		void get( std::size_t _servantId, const ServantProviderResponsePtr & _cb );
 
 	protected:
-		void onGet( const AxeUtil::Archive & _data, std::size_t _servantId );
+		void onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId );
 
 	protected:
 		typedef std::list<ServantProviderResponsePtr> TListServantProviderResponse;
 		typedef std::map<std::size_t, TListServantProviderResponse> TMapWantedServant;
 		TMapWantedServant m_wantedServant;
 
+		ServantFactoryPtr m_servantFactory;
 		Proxy_EvictorManagerPtr m_evictorManager;
 	};	
 

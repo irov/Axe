@@ -5,6 +5,7 @@
 #	include <Axe/Session.hpp>
 #	include <Axe/Adapter.hpp>
 #	include <Axe/Response.hpp>
+#	include <Axe/Exception.hpp>
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>

@@ -26,7 +26,7 @@ namespace AxeLib
 		it_found = m_adapterIds.insert( std::make_pair(_name, ++m_adapterEnumerator) ).first;
 		m_endpoints.insert( std::make_pair(m_adapterEnumerator, _endpoint) );
 
-		_cb->response( m_enumeratorID );
+		_cb->response( m_adapterEnumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridManager::getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId )

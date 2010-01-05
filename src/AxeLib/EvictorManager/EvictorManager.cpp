@@ -13,12 +13,14 @@ namespace AxeLib
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EvictorManager::set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, const AxeUtil::Archive & _ar )
+	void EvictorManager::set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar )
 	{
 		std::string dbid;
 		makeDBID( dbid, _servantId );
 
 		FILE * f = fopen( dbid.c_str(), "wb" );
+
+		fwrite( &_typeId, sizeof(_typeId), 1, f );
 
 		std::size_t size;
 		fwrite( &_ar[0], _ar.size(), 1, f );
@@ -36,10 +38,13 @@ namespace AxeLib
 		std::size_t size;
 		fread( &size, sizeof(size), 1, f );
 
+		std::size_t typeId;
+		fread( &typeId, sizeof(typeId), 1, f );
+
 		AxeUtil::Archive ar(size);
 		fread( &ar[0], size, 1, f );
 
-		_cb->response( ar );
+		_cb->response( ar, typeId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EvictorManager::makeDBID( std::string & _dbid, std::size_t _servantId ) const

@@ -13,6 +13,23 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ServantFactory::registerServantGenerator( std::size_t _typeId, const ServantGeneratorPtr & _gen )
+	{
+		m_generators.insert( std::make_pair(_typeId, _gen) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServantPtr ServantFactory::genServant( std::size_t _typeId )
+	{
+		TMapServantGenerators::iterator it_found = m_generators.find( _typeId );
+
+		if( it_found == m_generators.end() )
+		{
+			return 0;
+		}
+
+		return it_found->second->create();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ServantFactory::getTypeId( const std::string & _type, const ServantFactoryGetIdResponsePtr & _cb )
 	{
 		TMapIdCache::iterator it_found = m_ids.find( _type );
@@ -29,11 +46,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void ServantFactory::provideTypeId( const std::string & _type, const ServantFactoryGetIdResponsePtr & _cb )
 	{
-		TMapWantedResponse::iterator it_found = m_wantedIds.find( _type );
+		TMapWantedIdResponse::iterator it_found = m_wantedIds.find( _type );
 
 		if( it_found == m_wantedIds.end() )
 		{
-			TListWantedResponse responses;
+			TListWantedIdResponse responses;
 		
 			m_gridManager->getServantTypeId_async( 
 				bindResponse( boost::bind( &ServantFactory::getTypeIdResponse, handlePtr(this), _1, _type ) )
@@ -46,24 +63,24 @@ namespace Axe
 		it_found->second.push_back( _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantFactory::getTypeIdResponse( std::size_t _id, const std::string & _type )
+	void ServantFactory::getTypeIdResponse( std::size_t _typeId, const std::string & _type )
 	{
-		m_ids.insert( std::make_pair( _type, _id ) );
+		m_ids.insert( std::make_pair( _type, _typeId ) );
 
-		TMapWantedResponse::iterator it_found = m_wantedIds.find( _type );
+		TMapWantedIdResponse::iterator it_found = m_wantedIds.find( _type );
 
 		if( it_found == m_wantedIds.end() )
 		{
 			throw;
 		}
 
-		for( TListWantedResponse::iterator
+		for( TListWantedIdResponse::iterator
 			it = it_found->second.begin(),
 			it_end = it_found->second.end();
 		it != it_end;
 		++it )
 		{
-			(*it)->onServantTypeId( _id );
+			(*it)->onServantTypeId( _typeId );
 		}
 	}
 }
