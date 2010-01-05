@@ -8,6 +8,8 @@
 #	include <Axe/Router.hpp>
 #	include <Axe/Grid.hpp>
 
+#	include <AxeProtocols/GridManager.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////

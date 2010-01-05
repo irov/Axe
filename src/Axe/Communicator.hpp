@@ -3,8 +3,6 @@
 #	include <Axe/ConnectionCache.hpp>
 #	include <Axe/EndpointCache.hpp>
 
-#	include <AxeProtocols/GridManager.hpp>
-
 namespace Axe
 {
 	typedef AxeHandle<class Host> HostPtr;
@@ -12,6 +10,11 @@ namespace Axe
 	typedef AxeHandle<class Router> RouterPtr;
 	typedef AxeHandle<class Grid> GridPtr;
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
+
+	typedef AxeHandle<class Servant_GridManager> Servant_GridManagerPtr;
+	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
+
+	class Exception;
 
 	class CommunicatorConnectResponse
 		: virtual public AxeUtil::Shared
@@ -126,7 +129,7 @@ namespace Axe
 		EndpointCachePtr m_endpointCache;
 
 		typedef std::map<std::string, HostPtr> TMapHosts;
-		TMapHosts m_hosts;
+		TMapHosts m_hosts; 
 
 		typedef std::map<std::string, RouterPtr> TMapRouters;
 		TMapRouters m_routers;

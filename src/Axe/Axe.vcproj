@@ -156,6 +156,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServantFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ServantFactory.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ServantProvider.cpp"
 				>
 			</File>

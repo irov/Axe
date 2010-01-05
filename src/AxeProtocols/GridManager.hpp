@@ -16,8 +16,6 @@ namespace Axe
 namespace Axe
 {
 	
-	typedef std::map<std::string, std::size_t> TMapAdapterIds;
-	
 	class AdapterAlreadyExistException
 		: virtual public Axe::Exception
 	{
@@ -86,10 +84,19 @@ namespace Axe
 	typedef AxeHandle<UniqueNotFoundException> UniqueNotFoundExceptionPtr;
 	
 	
+	typedef std::map<std::string, std::size_t> TMapAdapterIds;
+	
+	typedef std::map<std::string, std::size_t> TMapServantTypeIds;
+	
+	typedef std::map<std::string, Axe::ProxyPtr> TMapUniques;
+	
+	typedef std::map<std::size_t, std::string> TMapEndpoints;
+	
 	typedef AxeHandle<class Bellhop_GridManager_addAdapter> Bellhop_GridManager_addAdapterPtr;
 	typedef AxeHandle<class Bellhop_GridManager_getAdapterEndpoint> Bellhop_GridManager_getAdapterEndpointPtr;
 	typedef AxeHandle<class Bellhop_GridManager_addUnique> Bellhop_GridManager_addUniquePtr;
 	typedef AxeHandle<class Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
+	typedef AxeHandle<class Bellhop_GridManager_getServantTypeId> Bellhop_GridManager_getServantTypeIdPtr;
 	
 	class Servant_GridManager
 		: virtual public Axe::Servant
@@ -97,12 +104,17 @@ namespace Axe
 	public:
 		virtual void addAdapter_async( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) = 0;
 		virtual void getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) = 0;
-		virtual void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique ) = 0;
+		virtual void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const Axe::ProxyPtr & _unique ) = 0;
 		virtual void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
+		virtual void getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type ) = 0;
 	
 	protected:
 		TMapAdapterIds m_adapterIds;
-		std::size_t m_enumeratorID;
+		TMapServantTypeIds m_servantTypeIds;
+		TMapUniques m_uniques;
+		TMapEndpoints m_endpoints;
+		std::size_t m_adapterEnumerator;
+		std::size_t m_servantTypeEnumerator;
 	
 	
 	private:
@@ -170,7 +182,7 @@ namespace Axe
 		Bellhop_GridManager_getUnique( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
 	
 	public:
-		void response( const ProxyPtr & );
+		void response( const Axe::ProxyPtr & );
 	
 		void throw_exception( const Axe::Exception & _ex );
 	
@@ -179,6 +191,22 @@ namespace Axe
 	};
 	
 	typedef AxeHandle<Bellhop_GridManager_getUnique> Bellhop_GridManager_getUniquePtr;
+	class Bellhop_GridManager_getServantTypeId
+		: public Axe::Bellhop
+	{
+	public:
+		Bellhop_GridManager_getServantTypeId( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant );
+	
+	public:
+		void response( std::size_t );
+	
+		void throw_exception( const Axe::Exception & _ex );
+	
+	protected:
+		Servant_GridManagerPtr m_servant;
+	};
+	
+	typedef AxeHandle<Bellhop_GridManager_getServantTypeId> Bellhop_GridManager_getServantTypeIdPtr;
 	
 	//////////////////////////////////////////////////////////////////////////
 	class Response_GridManager_addAdapter
@@ -284,7 +312,7 @@ namespace Axe
 		: public Axe::Response
 	{
 	protected:
-		virtual void response( const ProxyPtr & ) = 0;
+		virtual void response( const Axe::ProxyPtr & ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
@@ -297,14 +325,47 @@ namespace Axe
 	class BindResponse<Response_GridManager_getUniquePtr>
 		: public Response_GridManager_getUnique
 	{
-		typedef boost::function<void(const ProxyPtr &)> TBindResponse;
+		typedef boost::function<void(const Axe::ProxyPtr &)> TBindResponse;
 		typedef boost::function<void(const Axe::Exception &)> TBindException;
 	
 	public:
 		BindResponse( const TBindResponse & _response, const TBindException & _exception );
 	
 	public:
-		void response( const ProxyPtr & _arg0 ) override;
+		void response( const Axe::ProxyPtr & _arg0 ) override;
+	
+		void throw_exception( const Axe::Exception & _ex ) override;
+	
+	protected:
+		TBindResponse m_response;
+		TBindException m_exception;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class Response_GridManager_getServantTypeId
+		: public Axe::Response
+	{
+	protected:
+		virtual void response( std::size_t ) = 0;
+	
+	public:
+		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
+		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
+	};
+	
+	typedef AxeHandle<Response_GridManager_getServantTypeId> Response_GridManager_getServantTypeIdPtr;
+	
+	template<>
+	class BindResponse<Response_GridManager_getServantTypeIdPtr>
+		: public Response_GridManager_getServantTypeId
+	{
+		typedef boost::function<void(std::size_t)> TBindResponse;
+		typedef boost::function<void(const Axe::Exception &)> TBindException;
+	
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception );
+	
+	public:
+		void response( std::size_t _arg0 ) override;
 	
 		void throw_exception( const Axe::Exception & _ex ) override;
 	
@@ -322,8 +383,9 @@ namespace Axe
 	public:
 		void addAdapter_async( const Response_GridManager_addAdapterPtr & _response, const std::string & _name, const std::string & _endpoint );
 		void getAdapterEndpoint_async( const Response_GridManager_getAdapterEndpointPtr & _response, std::size_t _hostId );
-		void addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const ProxyPtr & _unique );
+		void addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const Axe::ProxyPtr & _unique );
 		void getUnique_async( const Response_GridManager_getUniquePtr & _response, const std::string & _name );
+		void getServantTypeId_async( const Response_GridManager_getServantTypeIdPtr & _response, const std::string & _type );
 	};
 	
 	typedef AxeHandle<Proxy_GridManager> Proxy_GridManagerPtr;

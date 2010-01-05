@@ -2,10 +2,11 @@
 
 #	include <Axe/Host.hpp>
 
-#	include <AxeProtocols/GridManager.hpp>
-
 namespace Axe
 {
+	typedef AxeHandle<class Servant_GridManager> Servant_GridManagerPtr;
+	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
+
 	class Grid
 		: public Host
 		, public ConnectionProvider

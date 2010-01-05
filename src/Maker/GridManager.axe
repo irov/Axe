@@ -1,7 +1,5 @@
 namespace Axe
 {
-	typedef map<string, size_t> TMapAdapterIds;
-
 	exception AdapterAlreadyExistException
 	{
 		string name;
@@ -21,6 +19,12 @@ namespace Axe
 	{
 		string name;
 	};
+	
+	typedef map<string, size_t> TMapAdapterIds;
+	typedef map<string, size_t> TMapServantTypeIds;
+	typedef map<string, Servant> TMapUniques;
+	typedef map<size_t, string> TMapEndpoints;
+
 
 	class GridManager
 	{
@@ -29,8 +33,16 @@ namespace Axe
 
 		void addUnique( string _name, Servant _unique ) throws UniqueAlreadyExistException;
 		Servant getUnique( string _name ) throws UniqueNotFoundException;
+		
+		size_t getServantTypeId( string _type );
 
 		TMapAdapterIds m_adapterIds;
-		size_t m_enumeratorID;
+		TMapServantTypeIds m_servantTypeIds;
+		
+		TMapUniques m_uniques;
+		TMapEndpoints m_endpoints;
+		
+		size_t m_adapterEnumerator;
+		size_t m_servantTypeEnumerator;
 	};
 }

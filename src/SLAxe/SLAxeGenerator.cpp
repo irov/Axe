@@ -1697,7 +1697,7 @@ namespace Axe
 	{
 		if( _class == "Servant" )
 		{
-			return "Proxy";
+			return "Axe::Proxy";
 		}
 	
 		std::string proxy_name = "Proxy_" + _class;

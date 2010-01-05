@@ -19,12 +19,7 @@ namespace AxeLib
 		void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique ) override;
 		void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) override;		
 
-	protected:
-		typedef std::map<std::string, ProxyPtr> TMapUniques;
-		TMapUniques m_uniques;
-
-		typedef std::map<std::size_t, std::string> TMapEndpoints;
-		TMapEndpoints m_endpoints;
+		void getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type );
 	};
 
 	typedef AxeHandle<GridManager> GridManagerPtr;

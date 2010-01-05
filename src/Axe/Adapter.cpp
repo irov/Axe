@@ -11,6 +11,8 @@
 
 #	include <Axe/Communicator.hpp>
 
+#	include <AxeProtocols/GridManager.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////

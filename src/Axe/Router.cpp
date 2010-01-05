@@ -11,6 +11,8 @@
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
 
+#	include <AxeProtocols/GridManager.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,8 @@
 #	include <Axe/GridSession.hpp>
 #	include <Axe/AdapterConnection.hpp>
 
+#	include <AxeProtocols/GridManager.hpp>
+
 namespace Axe
 {
 	const std::size_t grid_host_id = 0;

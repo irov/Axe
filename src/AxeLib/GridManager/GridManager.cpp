@@ -7,7 +7,8 @@ namespace AxeLib
 	//////////////////////////////////////////////////////////////////////////
 	GridManager::GridManager()
 	{
-		m_enumeratorID = 0;
+		m_adapterEnumerator = 0;
+		m_servantTypeEnumerator = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GridManager::addAdapter_async( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint )
@@ -22,8 +23,8 @@ namespace AxeLib
 			return;
 		}
 
-		it_found = m_adapterIds.insert( std::make_pair(_name, ++m_enumeratorID) ).first;
-		m_endpoints.insert( std::make_pair(m_enumeratorID, _endpoint) );
+		it_found = m_adapterIds.insert( std::make_pair(_name, ++m_adapterEnumerator) ).first;
+		m_endpoints.insert( std::make_pair(m_adapterEnumerator, _endpoint) );
 
 		_cb->response( m_enumeratorID );
 	}
@@ -72,6 +73,18 @@ namespace AxeLib
 			ex.name = _name;
 			_cb->throw_exception( ex );
 			return;
+		}
+
+		_cb->response( it_found->second );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GridManager::getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type )
+	{
+		TMapServantTypeIds::iterator it_found = m_servantTypeIds.find( _type );
+
+		if( it_found == m_servantTypeIds.end() )
+		{
+			it_found = m_servantTypeIds.insert( std::make_pair(_type, ++m_servantTypeEnumerator) ).first;
 		}
 
 		_cb->response( it_found->second );
