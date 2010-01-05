@@ -3,6 +3,8 @@
 #	include <Axe/GridSession.hpp>
 #	include <Axe/Grid.hpp>
 
+#	include <AxeProtocols/GridManager.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////

@@ -42,16 +42,13 @@ namespace AxeUtil
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveWrite::writeBuffer( const void * _begin, const void * _end )
 	{
-		std::size_t old_size = m_archive.size();
-
 		m_archive.insert( m_archive.end()
 			, (const AxeUtil::Archive::value_type *)_begin
 			, (const AxeUtil::Archive::value_type *)_end
 			);
 
-		std::size_t new_size = m_archive.size();
-
-		*(std::size_t*)(&m_archive[m_begin]) += new_size - old_size;
+		*(std::size_t*)(&m_archive[m_begin]) 
+			+= std::distance( (const AxeUtil::Archive::value_type *)_begin, (const AxeUtil::Archive::value_type *)_end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Archive & ArchiveWrite::getArchive() const
