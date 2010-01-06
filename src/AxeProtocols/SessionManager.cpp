@@ -53,7 +53,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Session_destroy::Bellhop_Session_destroy( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_SessionPtr & _servant )
@@ -170,7 +170,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionManagerPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_SessionManager_create::Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_SessionManagerPtr & _servant )

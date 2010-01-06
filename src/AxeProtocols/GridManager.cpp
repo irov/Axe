@@ -232,7 +232,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_GridManagerPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant )

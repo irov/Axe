@@ -5,8 +5,6 @@
 #	include <Axe/Exception.hpp>
 
 #	include <Axe/ArchiveInvocation.hpp>
-
-
 #	include <Axe/ConnectionCache.hpp>
 
 namespace Axe
@@ -45,10 +43,10 @@ namespace Axe
 		return new Proxy( m_servantId, cn );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::write( ArchiveInvocation & _ar ) const
+	void Servant::writeProxy( ArchiveInvocation & _ar ) const
 	{
 		_ar << m_servantId;
-		_ar << m_hostId;
+		_ar.writeSize( m_hostId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
@@ -95,6 +93,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( ArchiveInvocation & _ar, const ServantPtr & _value )
 	{
-		_value->write(_ar);
+		_value->writeProxy(_ar);
 	}
 }

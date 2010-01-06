@@ -42,22 +42,21 @@ namespace Axe
 	{
 		_ar << m_servantId;
 
-		const ConnectionPtr & connection = this->getConnection();
-		std::size_t endpointId = connection->getHostId();
-		_ar.writeSize( endpointId );
+		std::size_t hostId = m_connection->getHostId();
+		_ar.writeSize( hostId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConnectionPtr & makeProxyInfo( ArchiveDispatcher & _ar, std::size_t & _servantId )
 	{
 		_ar.read( _servantId );
 
-		std::size_t endpointId;
-		_ar.readSize( endpointId );
+		std::size_t hostId;
+		_ar.readSize( hostId );
 
 		const ConnectionCachePtr & connectionCache = _ar.getConnectionCache();
 
 		const ConnectionPtr & connection = 
-			connectionCache->getConnection( endpointId );
+			connectionCache->getConnection( hostId );
 
 		return connection;
 	}

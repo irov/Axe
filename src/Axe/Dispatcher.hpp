@@ -43,7 +43,7 @@ namespace Axe
 
 	protected:
 		ArchiveInvocation m_streamWrite;
-		ArchiveInvocation m_streamSend;
+		AxeUtil::Archive m_archiveSend;
 
 		ArchiveDispatcher m_streamIn;
 

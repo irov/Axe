@@ -55,7 +55,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_PermissionsVerifierPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_PermissionsVerifier_checkPermissions::Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_PermissionsVerifierPtr & _servant )

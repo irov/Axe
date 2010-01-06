@@ -1348,7 +1348,7 @@ namespace Axe
 		writeLine();
 		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << servant_name << "Ptr & _value )" << std::endl;
 		write() << "{" << std::endl;
-		write() << "	_value->write( _ar );" << std::endl;
+		write() << "	_value->writeProxy( _ar );" << std::endl;
 		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////

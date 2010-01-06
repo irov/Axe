@@ -66,7 +66,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_PlayerPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Player_test::Bellhop_Player_test( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_PlayerPtr & _servant )

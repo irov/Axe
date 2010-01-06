@@ -31,6 +31,7 @@ namespace AxeUtil
 	public:
 		const Archive & getArchive() const;
 
+		void swap( Archive & _ar );
 		void clear();
 		bool empty() const;
 

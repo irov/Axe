@@ -33,7 +33,7 @@ namespace Axe
 		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex );
 
 	public:
-		void write( ArchiveInvocation & _ar ) const;
+		void writeProxy( ArchiveInvocation & _ar ) const;
 
 	public:
 		void restore();

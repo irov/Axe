@@ -9,6 +9,7 @@ namespace Axe
 		: m_socket(_service)
 		, m_connectionCache(_connectionCache)
 		, m_streamIn(_connectionCache)
+		, m_streamWrite(_connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,13 +44,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::process()
 	{
-		if( m_streamSend.empty() )
+		if( m_archiveSend.empty() )
 		{
-			std::swap( m_streamWrite, m_streamSend );
+			m_streamWrite.swap( m_archiveSend );
 
-			const AxeUtil::Archive & ar = m_streamSend.getArchive();
-
-			this->processArchive( ar );
+			this->processArchive( m_archiveSend );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,7 +73,7 @@ namespace Axe
 			return;
 		}
 		
-		m_streamSend.clear();
+		m_archiveSend.clear();
 
 		if( m_streamWrite.empty() == false )
 		{

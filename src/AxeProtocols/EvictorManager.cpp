@@ -100,7 +100,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_EvictorManagerPtr & _value )
 	{
-		_value->write( _ar );
+		_value->writeProxy( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_EvictorManager_set::Bellhop_EvictorManager_set( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_EvictorManagerPtr & _servant )

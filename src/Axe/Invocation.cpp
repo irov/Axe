@@ -12,6 +12,7 @@ namespace Axe
 		: Dispatcher(_service, _connectionCache)
 		, Connection(_hostId)
 		, m_endpointCache(_endpointCache)
+		, m_permission(_connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
