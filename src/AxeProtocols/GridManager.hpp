@@ -108,6 +108,16 @@ namespace Axe
 		virtual void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) = 0;
 		virtual void getServantTypeId_async( const Bellhop_GridManager_getServantTypeIdPtr & _cb, const std::string & _type ) = 0;
 	
+	public:
+		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	
+	protected:
+		void _restore( ArchiveDispatcher & _ar ) override;
+		void _evict( ArchiveInvocation & _aw ) override;
+	
 	protected:
 		TMapAdapterIds m_adapterIds;
 		TMapServantTypeIds m_servantTypeIds;
@@ -115,16 +125,9 @@ namespace Axe
 		TMapEndpoints m_endpoints;
 		std::size_t m_adapterEnumerator;
 		std::size_t m_servantTypeEnumerator;
-	
-	
-	private:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
 	};
 	
 	typedef AxeHandle<Servant_GridManager> Servant_GridManagerPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_GridManagerPtr & _value );
 	
 	
 	class Bellhop_GridManager_addAdapter
@@ -135,7 +138,6 @@ namespace Axe
 	
 	public:
 		void response( std::size_t );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -151,7 +153,6 @@ namespace Axe
 	
 	public:
 		void response( const std::string & );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -167,7 +168,6 @@ namespace Axe
 	
 	public:
 		void response();
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -183,7 +183,6 @@ namespace Axe
 	
 	public:
 		void response( const Axe::ProxyPtr & );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -199,7 +198,6 @@ namespace Axe
 	
 	public:
 		void response( std::size_t );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:

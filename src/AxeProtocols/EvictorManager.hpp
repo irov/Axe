@@ -43,17 +43,14 @@ namespace Axe
 		virtual void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar ) = 0;
 		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
 	
-	protected:
-	
-	
-	private:
+	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
 		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
 	
 	typedef AxeHandle<Servant_EvictorManager> Servant_EvictorManagerPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_EvictorManagerPtr & _value );
 	
 	
 	class Bellhop_EvictorManager_set
@@ -64,7 +61,6 @@ namespace Axe
 	
 	public:
 		void response();
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -80,7 +76,6 @@ namespace Axe
 	
 	public:
 		void response( const AxeUtil::Archive &, std::size_t _typeId );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:

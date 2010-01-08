@@ -24,17 +24,14 @@ namespace Axe
 	public:
 		virtual void destroy_async( const Bellhop_Session_destroyPtr & _cb ) = 0;
 	
-	protected:
-	
-	
-	private:
+	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
 		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
 	
 	typedef AxeHandle<Servant_Session> Servant_SessionPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionPtr & _value );
 	
 	
 	class Bellhop_Session_destroy
@@ -45,7 +42,6 @@ namespace Axe
 	
 	public:
 		void response();
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -110,17 +106,14 @@ namespace Axe
 	public:
 		virtual void create_async( const Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) = 0;
 	
-	protected:
-	
-	
-	private:
+	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
 		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
 	
 	typedef AxeHandle<Servant_SessionManager> Servant_SessionManagerPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionManagerPtr & _value );
 	
 	
 	class Bellhop_SessionManager_create
@@ -131,7 +124,6 @@ namespace Axe
 	
 	public:
 		void response( const Proxy_SessionPtr & );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:

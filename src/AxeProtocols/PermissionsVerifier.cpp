@@ -8,7 +8,7 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_PermissionsVerifier_checkPermissionsPtr bellhop = new Bellhop_PermissionsVerifier_checkPermissions( _requestId, _session, _servant );
 	
@@ -18,7 +18,7 @@ namespace Axe
 		_servant->checkPermissions_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_PermissionsVerifier_callMethod s_Servant_PermissionsVerifier_callMethods[] =
 	{
@@ -28,15 +28,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_PermissionsVerifier_callMethods[ _methodId ])( this, _requestId, _archive, _session );
+		(*s_Servant_PermissionsVerifier_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_PermissionsVerifier_writeException_checkPermissions( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_PermissionsVerifier_writeException_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		Axe::writeExceptionFilter( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_PermissionsVerifier_writeException)( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	typedef void (*TServant_PermissionsVerifier_writeException)( Servant_PermissionsVerifier * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_PermissionsVerifier_writeException s_Servant_PermissionsVerifier_writeExceptions[] =
 	{
@@ -48,14 +48,14 @@ namespace Axe
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
-		(*s_Servant_PermissionsVerifier_writeExceptions[ _methodId ])( aw, _ex );
+		this->writeExceptions_( _methodId, aw, _ex );
 	
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_PermissionsVerifierPtr & _value )
+	void Servant_PermissionsVerifier::writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _aw, const Axe::Exception & _ex )
 	{
-		_value->writeProxy( _ar );
+		(*s_Servant_PermissionsVerifier_writeExceptions[ _methodId ])( this, _methodId, _aw, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_PermissionsVerifier_checkPermissions::Bellhop_PermissionsVerifier_checkPermissions( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_PermissionsVerifierPtr & _servant )
@@ -74,7 +74,7 @@ namespace Axe
 	void Bellhop_PermissionsVerifier_checkPermissions::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_PermissionsVerifier_writeException_checkPermissions( ar, _ex );
+		s_Servant_PermissionsVerifier_writeException_checkPermissions( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////

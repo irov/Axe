@@ -7,14 +7,11 @@ namespace Axe
 	class SLAxeGrammar
 		: public boost::spirit::grammar<SLAxeGrammar>
 	{
-	protected:
-		SLAxeParser * m_parser;
-
 	public:
 		SLAxeGrammar();
 
 	public:
-		SLAxeParser * getParser() const;
+		SLAxeParser * parser( char * _buff, std::size_t _size );
 
 	public:
 		template<class T>
@@ -62,13 +59,13 @@ namespace Axe
 					name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>') >> 
 					name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')
 					[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
-					;
+				;
 
 				namespaces
 					= ("namespace" >> name[ boost::bind( &SLAxeParser::begin_namespace, parser, _1, _2 ) ] >> 
 					'{' >> *definition_frame >> '}')
 					[ boost::bind( &SLAxeParser::end_namespace, parser, _1, _2 ) ]
-					;
+				;
 
 				parents
 					= ':' >> parent >> *(',' >> +parent)
@@ -76,7 +73,7 @@ namespace Axe
 
 				parent
 					= !inheritance_type >> name[ boost::bind( &SLAxeParser::set_parent_name, parser, _1, _2 ) ]
-					;
+				;
 
 				struct_body
 					= '{' >> *member >> '}' >> ';'
@@ -89,7 +86,7 @@ namespace Axe
 				member
 					= ( type[ boost::bind( &SLAxeParser::set_member_type, parser, _1, _2 ) ] >> name[ boost::bind( &SLAxeParser::set_member_name, parser, _1, _2 ) ] >> ';' )
 					[ boost::bind( &SLAxeParser::add_member, parser, _1, _2 ) ]
-					;
+				;
 
 				method
 					= (	type[ boost::bind( &SLAxeParser::add_default_out_argument, parser, _1, _2 ) ] >> 
@@ -103,7 +100,7 @@ namespace Axe
 
 				throws_name
 					= name[ boost::bind( &SLAxeParser::add_exception_to_method, parser, _1, _2 ) ] 
-					;
+				;
 
 				method_argument_list
 					= method_argument >> *(',' >> +method_argument)
@@ -150,5 +147,10 @@ namespace Axe
 				inheritance_type, name;
 		};
 
+		public:
+			SLAxeParser * getParser() const;
+
+		protected:
+			SLAxeParser * m_parser;
 	};
 }

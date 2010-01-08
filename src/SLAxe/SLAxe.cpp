@@ -7,13 +7,25 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool SLAxe::generate( const std::string & _protocol, const std::string & _path, const std::string & _name )
+	SLAxe::SLAxe()
 	{
+		m_grammar = new SLAxeGrammar;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SLAxeParser * SLAxe::parse_( const std::string & _protocol )
+	{
+		TMapParsers::iterator it_found = m_parsers.find( _protocol );
+
+		if( it_found != m_parsers.end() )
+		{
+			return it_found->second;
+		}
+
 		FILE * file_in = fopen( _protocol.c_str(), "rb" );
 
 		if( file_in == 0 )
 		{
-			return false;
+			return 0;
 		}
 
 		fseek( file_in, 0L, SEEK_END );
@@ -22,7 +34,7 @@ namespace Axe
 
 		if( size == 0 )
 		{
-			return true;
+			return 0;
 		}
 
 		char * buff = new char[ size ];
@@ -30,21 +42,35 @@ namespace Axe
 		fread( buff, size, 1, file_in );
 		fclose( file_in );
 
-		SLAxeGrammar * grammar = new SLAxeGrammar();
+		SLAxeParser * parser = m_grammar->parser( buff, size );
 
-		boost::spirit::parse_info<> info = boost::spirit::parse( 
-			buff, buff + size, 
-			*grammar, boost::spirit::space_p 
-			);
-
-		if( info.full == false )
+		if( parser == 0 )
 		{
-			return false;
+			return 0;
 		}
 
-		SLAxeParser * parser = grammar->getParser();
+		m_parsers.insert( std::make_pair(_protocol, parser) );
 
-		SLAxeGenerator generator( parser );
+		const Declaration::TVectorIncludes & includes = parser->getIncludes();
+
+		for( Declaration::TVectorIncludes::const_iterator
+			it = includes.begin(),
+			it_end = includes.end();
+		it != it_end;
+		++it )
+		{
+			if( parse_( it->path + ".axe" ) == 0 )
+			{
+				return 0;
+			}
+		}
+
+		return parser;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxe::generate_( SLAxeParser * _parser, const std::string & _path, const std::string & _name )
+	{
+		SLAxeGenerator generator( _parser, m_parsers );
 
 		{
 			generator.generateHeader( _path, _name );
@@ -79,8 +105,18 @@ namespace Axe
 			fwrite( stream_buff.c_str(), stream_buff.size(), 1, file_out );
 			fclose( file_out );		
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SLAxe::make( const std::string & _protocol, const std::string & _path, const std::string & _name )
+	{
+		SLAxeParser * parser = parse_( _protocol );
 
-		delete grammar;
+		if( parser == 0 )
+		{
+			return false;
+		}
+
+		generate_( parser, _path, _name );
 
 		//printf("%s\n", str );
 

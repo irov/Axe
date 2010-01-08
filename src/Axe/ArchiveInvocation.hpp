@@ -10,17 +10,9 @@ namespace Axe
 		: public AxeUtil::ArchiveWrite
 	{
 	public:
-		ArchiveInvocation( const ConnectionCachePtr & _connectionCache )
-			: m_connectionCache(_connectionCache)
-		{
-
-		}
-
+		ArchiveInvocation( const ConnectionCachePtr & _connectionCache );
 	public:
-		const ConnectionCachePtr & getConnectionCache() const
-		{
-			return m_connectionCache;
-		}
+		const ConnectionCachePtr & getConnectionCache() const;
 
 	protected:
 		ConnectionCachePtr m_connectionCache;

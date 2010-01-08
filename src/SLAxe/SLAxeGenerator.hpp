@@ -6,10 +6,12 @@ namespace Axe
 {
 	class SLAxeParser;
 
+	typedef std::map<std::string, SLAxeParser *> TMapParsers;
+
 	class SLAxeGenerator
 	{
 	public:
-		SLAxeGenerator( SLAxeParser * _parser );
+		SLAxeGenerator( SLAxeParser * _parser, const TMapParsers & _parsers );
 
 	protected:
 		void typegen( const Declaration::Namespace & ns );
@@ -20,6 +22,14 @@ namespace Axe
 
 	public:
 		std::stringstream & getStream();
+
+	protected:
+		const Declaration::Class * findClass( const std::string & _name ) const;
+		const Declaration::Class * findClass_ns( const Declaration::Namespace & _namespace, const std::string & _name ) const;
+
+	protected:
+		typedef std::vector<const Declaration::Class *> TVectorBaseClasses;
+		void getBasesClass( const Declaration::Class & _class, TVectorBaseClasses & _out );
 
 	protected:
 		void generateHeaderIncludes( const Declaration::TVectorIncludes & _includes, const std::string & _path );
@@ -36,14 +46,14 @@ namespace Axe
 
 	protected:
 		void generateImplementNamespace( const Declaration::Namespace & _namespace );
-		void generateImplementStruct( const Declaration::Struct & _struct );
-		void generateImplementClass( const Declaration::Class & _class );
-		void generateImplementException( const Declaration::Exception & _ex );
+		void generateImplementStruct( const Declaration::Namespace & _namespace, const Declaration::Struct & _struct );
+		void generateImplementClass( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
+		void generateImplementException( const Declaration::Namespace & _namespace, const Declaration::Exception & _ex );
 		
-		void generateImplementBellhop( const Declaration::Class & _class );
-		void generateImplementServant( const Declaration::Class & _class );
-		void generateImplementResponse( const Declaration::Class & _class );
-		void generateImplementProxy( const Declaration::Class & _class );
+		void generateImplementBellhop( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
+		void generateImplementServant( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
+		void generateImplementResponse( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
+		void generateImplementProxy( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
 
 
 	protected:
@@ -65,7 +75,6 @@ namespace Axe
 		void writeReadType( const std::string & _ar, const std::string & _type, const std::string & _name );
 		void writeLine();
 
-
 	protected:
 		void increfTabs();
 		void decrefTabs();
@@ -75,6 +84,8 @@ namespace Axe
 
 	protected:
 		SLAxeParser * m_parser;
+		TMapParsers m_parsers;
+
 		std::stringstream m_stream;
 
 		unsigned int m_tabs;

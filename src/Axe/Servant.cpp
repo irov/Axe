@@ -43,12 +43,6 @@ namespace Axe
 		return new Proxy( m_servantId, cn );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::writeProxy( ArchiveInvocation & _ar ) const
-	{
-		_ar << m_servantId;
-		_ar.writeSize( m_hostId );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Servant::callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
 		//Empty
@@ -59,24 +53,24 @@ namespace Axe
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::restore()
+	void Servant::restore( ArchiveDispatcher & _ar )
 	{
-		this->_restore();
+		this->_restore(_ar);
 		this->onRestore();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::evict()
+	void Servant::evict( ArchiveInvocation & _aw )
 	{
 		this->onEvict();
-		this->_evict();
+		this->_evict(_aw);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::_restore()
+	void Servant::_restore( ArchiveDispatcher & _ar )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::_evict()
+	void Servant::_evict( ArchiveInvocation & _aw )
 	{
 		//Empty
 	}
@@ -89,10 +83,5 @@ namespace Axe
 	void Servant::onEvict()
 	{
 		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator << ( ArchiveInvocation & _ar, const ServantPtr & _value )
-	{
-		_value->writeProxy(_ar);
 	}
 }

@@ -55,6 +55,12 @@ namespace AxeUtil
 	}
 
 	template<class T>
+	inline T * nativePtr( const AxeHandle<T> & _handle )
+	{
+		return _handle.get();
+	}
+
+	template<class T>
 	inline AxeHandle<T> handlePtr( T * _t )
 	{
 		return AxeHandle<T>(_t);

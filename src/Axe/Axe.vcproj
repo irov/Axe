@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArchiveInvocation.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ArchiveInvocation.hpp"
 				>
 			</File>

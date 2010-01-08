@@ -8,7 +8,7 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Session_callMethod_destroy( Servant_Session * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_Session_callMethod_destroy( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_Session_destroyPtr bellhop = new Bellhop_Session_destroy( _requestId, _session, _servant );
 	
@@ -16,7 +16,7 @@ namespace Axe
 		_servant->destroy_async( bellhop );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_Session_callMethod)( Servant_Session * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_Session_callMethod)( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_Session_callMethod s_Servant_Session_callMethods[] =
 	{
@@ -26,15 +26,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_Session::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_Session_callMethods[ _methodId ])( this, _requestId, _archive, _session );
+		(*s_Servant_Session_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_Session_writeException_destroy( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_Session_writeException_destroy( Servant_Session * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		Axe::writeExceptionFilter( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_Session_writeException)( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	typedef void (*TServant_Session_writeException)( Servant_Session * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_Session_writeException s_Servant_Session_writeExceptions[] =
 	{
@@ -46,14 +46,14 @@ namespace Axe
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
-		(*s_Servant_Session_writeExceptions[ _methodId ])( aw, _ex );
+		this->writeExceptions_( _methodId, aw, _ex );
 	
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionPtr & _value )
+	void Servant_Session::writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _aw, const Axe::Exception & _ex )
 	{
-		_value->writeProxy( _ar );
+		(*s_Servant_Session_writeExceptions[ _methodId ])( this, _methodId, _aw, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_Session_destroy::Bellhop_Session_destroy( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_SessionPtr & _servant )
@@ -71,7 +71,7 @@ namespace Axe
 	void Bellhop_Session_destroy::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_Session_writeException_destroy( ar, _ex );
+		s_Servant_Session_writeException_destroy( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ namespace Axe
 		_value->write( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_SessionManager_createPtr bellhop = new Bellhop_SessionManager_create( _requestId, _session, _servant );
 	
@@ -133,7 +133,7 @@ namespace Axe
 		_servant->create_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_SessionManager_callMethod s_Servant_SessionManager_callMethods[] =
 	{
@@ -143,15 +143,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_SessionManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
+		(*s_Servant_SessionManager_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_SessionManager_writeException_create( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_SessionManager_writeException_create( Servant_SessionManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		Axe::writeExceptionFilter( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_SessionManager_writeException)( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	typedef void (*TServant_SessionManager_writeException)( Servant_SessionManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_SessionManager_writeException s_Servant_SessionManager_writeExceptions[] =
 	{
@@ -163,14 +163,14 @@ namespace Axe
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
-		(*s_Servant_SessionManager_writeExceptions[ _methodId ])( aw, _ex );
+		this->writeExceptions_( _methodId, aw, _ex );
 	
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_SessionManagerPtr & _value )
+	void Servant_SessionManager::writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _aw, const Axe::Exception & _ex )
 	{
-		_value->writeProxy( _ar );
+		(*s_Servant_SessionManager_writeExceptions[ _methodId ])( this, _methodId, _aw, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_SessionManager_create::Bellhop_SessionManager_create( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_SessionManagerPtr & _servant )
@@ -189,7 +189,7 @@ namespace Axe
 	void Bellhop_SessionManager_create::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_SessionManager_writeException_create( ar, _ex );
+		s_Servant_SessionManager_writeException_create( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////

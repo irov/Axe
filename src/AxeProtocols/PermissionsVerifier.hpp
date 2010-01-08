@@ -24,17 +24,14 @@ namespace Axe
 	public:
 		virtual void checkPermissions_async( const Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
 	
-	protected:
-	
-	
-	private:
+	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
 		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
 	
 	typedef AxeHandle<Servant_PermissionsVerifier> Servant_PermissionsVerifierPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_PermissionsVerifierPtr & _value );
 	
 	
 	class Bellhop_PermissionsVerifier_checkPermissions
@@ -45,7 +42,6 @@ namespace Axe
 	
 	public:
 		void response( bool );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:

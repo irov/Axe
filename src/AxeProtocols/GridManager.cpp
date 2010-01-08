@@ -72,7 +72,7 @@ namespace Axe
 		_ar >> name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_addAdapter( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_addAdapter( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_addAdapterPtr bellhop = new Bellhop_GridManager_addAdapter( _requestId, _session, _servant );
 	
@@ -82,7 +82,7 @@ namespace Axe
 		_servant->addAdapter_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_getAdapterEndpoint( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_getAdapterEndpoint( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_getAdapterEndpointPtr bellhop = new Bellhop_GridManager_getAdapterEndpoint( _requestId, _session, _servant );
 	
@@ -91,7 +91,7 @@ namespace Axe
 		_servant->getAdapterEndpoint_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_addUnique( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_addUnique( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_addUniquePtr bellhop = new Bellhop_GridManager_addUnique( _requestId, _session, _servant );
 	
@@ -101,7 +101,7 @@ namespace Axe
 		_servant->addUnique_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_getUnique( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_getUnique( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_getUniquePtr bellhop = new Bellhop_GridManager_getUnique( _requestId, _session, _servant );
 	
@@ -110,7 +110,7 @@ namespace Axe
 		_servant->getUnique_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_GridManager_callMethod_getServantTypeId( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_GridManager_callMethod_getServantTypeId( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_GridManager_getServantTypeIdPtr bellhop = new Bellhop_GridManager_getServantTypeId( _requestId, _session, _servant );
 	
@@ -119,7 +119,7 @@ namespace Axe
 		_servant->getServantTypeId_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_GridManager_callMethod)( Servant_GridManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_GridManager_callMethod)( Servant_GridManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_GridManager_callMethod s_Servant_GridManager_callMethods[] =
 	{
@@ -133,10 +133,10 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_GridManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_GridManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
+		(*s_Servant_GridManager_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_GridManager_writeException_addAdapter( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_GridManager_writeException_addAdapter( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		try
 		{
@@ -153,7 +153,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_GridManager_writeException_getAdapterEndpoint( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_GridManager_writeException_getAdapterEndpoint( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		try
 		{
@@ -170,7 +170,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_GridManager_writeException_addUnique( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_GridManager_writeException_addUnique( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		try
 		{
@@ -187,7 +187,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_GridManager_writeException_getUnique( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_GridManager_writeException_getUnique( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		try
 		{
@@ -204,12 +204,12 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_GridManager_writeException_getServantTypeId( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_GridManager_writeException_getServantTypeId( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		Axe::writeExceptionFilter( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_GridManager_writeException)( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	typedef void (*TServant_GridManager_writeException)( Servant_GridManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_GridManager_writeException s_Servant_GridManager_writeExceptions[] =
 	{
@@ -225,14 +225,34 @@ namespace Axe
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
-		(*s_Servant_GridManager_writeExceptions[ _methodId ])( aw, _ex );
+		this->writeExceptions_( _methodId, aw, _ex );
 	
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_GridManagerPtr & _value )
+	void Servant_GridManager::writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _aw, const Axe::Exception & _ex )
 	{
-		_value->writeProxy( _ar );
+		(*s_Servant_GridManager_writeExceptions[ _methodId ])( this, _methodId, _aw, _ex );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_GridManager::_restore( ArchiveDispatcher & _ar )
+	{
+		_ar >> m_adapterIds;
+		_ar >> m_servantTypeIds;
+		_ar >> m_uniques;
+		_ar >> m_endpoints;
+		_ar >> m_adapterEnumerator;
+		_ar >> m_servantTypeEnumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant_GridManager::_evict( ArchiveInvocation & _aw )
+	{
+		_aw << m_adapterIds;
+		_aw << m_servantTypeIds;
+		_aw << m_uniques;
+		_aw << m_endpoints;
+		_aw << m_adapterEnumerator;
+		_aw << m_servantTypeEnumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_GridManager_addAdapter::Bellhop_GridManager_addAdapter( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_GridManagerPtr & _servant )
@@ -251,7 +271,7 @@ namespace Axe
 	void Bellhop_GridManager_addAdapter::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_GridManager_writeException_addAdapter( ar, _ex );
+		s_Servant_GridManager_writeException_addAdapter( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -271,7 +291,7 @@ namespace Axe
 	void Bellhop_GridManager_getAdapterEndpoint::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_GridManager_writeException_getAdapterEndpoint( ar, _ex );
+		s_Servant_GridManager_writeException_getAdapterEndpoint( AxeUtil::nativePtr(m_servant), 4, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -290,7 +310,7 @@ namespace Axe
 	void Bellhop_GridManager_addUnique::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_GridManager_writeException_addUnique( ar, _ex );
+		s_Servant_GridManager_writeException_addUnique( AxeUtil::nativePtr(m_servant), 5, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -310,7 +330,7 @@ namespace Axe
 	void Bellhop_GridManager_getUnique::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_GridManager_writeException_getUnique( ar, _ex );
+		s_Servant_GridManager_writeException_getUnique( AxeUtil::nativePtr(m_servant), 6, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -330,7 +350,7 @@ namespace Axe
 	void Bellhop_GridManager_getServantTypeId::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_GridManager_writeException_getServantTypeId( ar, _ex );
+		s_Servant_GridManager_writeException_getServantTypeId( AxeUtil::nativePtr(m_servant), 7, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////

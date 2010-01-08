@@ -35,17 +35,14 @@ namespace Axe
 	public:
 		virtual void test_async( const Bellhop_Player_testPtr & _cb, const PlayerInfo & info ) = 0;
 	
-	protected:
-	
-	
-	private:
+	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
 		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+	public:
+		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
 	
 	typedef AxeHandle<Servant_Player> Servant_PlayerPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_PlayerPtr & _value );
 	
 	
 	class Bellhop_Player_test
@@ -56,7 +53,6 @@ namespace Axe
 	
 	public:
 		void response( int );
-	
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:

@@ -24,7 +24,7 @@ namespace Axe
 		_ar >> servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_EvictorManager_callMethod_set( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_EvictorManager_callMethod_set( Servant_EvictorManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_EvictorManager_setPtr bellhop = new Bellhop_EvictorManager_set( _requestId, _session, _servant );
 	
@@ -35,7 +35,7 @@ namespace Axe
 		_servant->set_async( bellhop, arg0, arg1, arg2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_EvictorManager_callMethod_get( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_EvictorManager_callMethod_get( Servant_EvictorManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_EvictorManager_getPtr bellhop = new Bellhop_EvictorManager_get( _requestId, _session, _servant );
 	
@@ -44,7 +44,7 @@ namespace Axe
 		_servant->get_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_EvictorManager_callMethod)( Servant_EvictorManager * _servant, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_EvictorManager_callMethod)( Servant_EvictorManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_EvictorManager_callMethod s_Servant_EvictorManager_callMethods[] =
 	{
@@ -55,15 +55,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Servant_EvictorManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		(*s_Servant_EvictorManager_callMethods[ _methodId ])( this, _requestId, _archive, _session );
+		(*s_Servant_EvictorManager_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_EvictorManager_writeException_set( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_EvictorManager_writeException_set( Servant_EvictorManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		Axe::writeExceptionFilter( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_Servant_EvictorManager_writeException_get( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
+	static void s_Servant_EvictorManager_writeException_get( Servant_EvictorManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
 		try
 		{
@@ -80,7 +80,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_EvictorManager_writeException)( Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
+	typedef void (*TServant_EvictorManager_writeException)( Servant_EvictorManager * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_EvictorManager_writeException s_Servant_EvictorManager_writeExceptions[] =
 	{
@@ -93,14 +93,14 @@ namespace Axe
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
-		(*s_Servant_EvictorManager_writeExceptions[ _methodId ])( aw, _ex );
+		this->writeExceptions_( _methodId, aw, _ex );
 	
 		_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Servant_EvictorManagerPtr & _value )
+	void Servant_EvictorManager::writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _aw, const Axe::Exception & _ex )
 	{
-		_value->writeProxy( _ar );
+		(*s_Servant_EvictorManager_writeExceptions[ _methodId ])( this, _methodId, _aw, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Bellhop_EvictorManager_set::Bellhop_EvictorManager_set( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_EvictorManagerPtr & _servant )
@@ -118,7 +118,7 @@ namespace Axe
 	void Bellhop_EvictorManager_set::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_EvictorManager_writeException_set( ar, _ex );
+		s_Servant_EvictorManager_writeException_set( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ namespace Axe
 	void Bellhop_EvictorManager_get::throw_exception( const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
-		s_Servant_EvictorManager_writeException_get( ar, _ex );
+		s_Servant_EvictorManager_writeException_get( AxeUtil::nativePtr(m_servant), 4, ar, _ex );
 		m_session->process();
 	}
 	//////////////////////////////////////////////////////////////////////////

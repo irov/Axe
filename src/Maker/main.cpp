@@ -6,9 +6,9 @@ void main()
 {
 	Axe::SLAxe slaxe;
 
-	slaxe.generate( "EvictorManager.axe", "../AxeProtocols/", "EvictorManager" );
-	slaxe.generate( "GridManager.axe", "../AxeProtocols/", "GridManager" );
-	slaxe.generate( "PermissionsVerifier.axe", "../AxeProtocols/", "PermissionsVerifier" );
-	slaxe.generate( "SessionManager.axe", "../AxeProtocols/", "SessionManager" );
-	slaxe.generate( "Player.axe", "../AxeProtocols/", "Player" );
+	slaxe.make( "EvictorManager.axe", "../AxeProtocols/", "EvictorManager" );
+	slaxe.make( "GridManager.axe", "../AxeProtocols/", "GridManager" );
+	slaxe.make( "PermissionsVerifier.axe", "../AxeProtocols/", "PermissionsVerifier" );
+	slaxe.make( "SessionManager.axe", "../AxeProtocols/", "SessionManager" );
+	slaxe.make( "Player.axe", "../AxeProtocols/", "Player" );
 }
