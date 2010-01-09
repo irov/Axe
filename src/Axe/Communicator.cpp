@@ -33,6 +33,11 @@ namespace Axe
 		return m_endpointCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ServantProviderPtr & Communicator::getServantProvider() const
+	{
+		return m_servantProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	class CommunicatorGridConnectResponse
 		: public GridConnectResponse
 	{
@@ -169,7 +174,7 @@ namespace Axe
 		, const Servant_GridManagerPtr & _servant 
 		, const GridCreateResponsePtr & _response )
 	{
-		GridPtr grid = new Grid( m_service, _endpoint, _name );
+		GridPtr grid = new Grid( this, _endpoint, _name );
 
 		const Proxy_GridManagerPtr & gridManager = grid->addGridManager( _servant );
 

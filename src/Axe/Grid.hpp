@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include <Axe/Host.hpp>
-#	include <Axe/ConnectionCache.hpp>
 
 namespace Axe
 {
@@ -10,10 +9,9 @@ namespace Axe
 
 	class Grid
 		: public Host
-		, public ConnectionProvider
 	{	
 	public:
-		Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Grid( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
 
 	public:
 		void start();
@@ -24,9 +22,6 @@ namespace Axe
 
 	protected:
 		SessionPtr makeSession() override;
-
-	protected:
-		ConnectionPtr createConnection( std::size_t _hostId ) override;
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;

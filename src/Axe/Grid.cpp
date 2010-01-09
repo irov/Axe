@@ -2,6 +2,9 @@
 
 #	include <Axe/Grid.hpp>
 #	include <Axe/GridSession.hpp>
+
+#	include <Axe/Communicator.hpp>
+
 #	include <Axe/AdapterConnection.hpp>
 
 #	include <AxeProtocols/GridManager.hpp>
@@ -10,8 +13,8 @@ namespace Axe
 {
 	const std::size_t grid_host_id = 0;
 	//////////////////////////////////////////////////////////////////////////
-	Grid::Grid( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Host(_service, new ConnectionCache(this), _endpoint, _name, grid_host_id)
+	Grid::Grid( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
+		: Host(_communicator, _endpoint, _name, grid_host_id)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,15 +34,10 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Grid::makeSession()
 	{
-		GridSessionPtr session = new GridSession( m_service, this, m_connectionCache );
+		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+
+		GridSessionPtr session = new GridSession( m_service, this, connectionCache );
 
 		return session;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Grid::createConnection( std::size_t _hostId )
-	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_service, _hostId, 0, m_connectionCache );
-
-		return connection;
 	}
 }

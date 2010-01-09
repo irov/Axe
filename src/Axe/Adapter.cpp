@@ -17,8 +17,7 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Adapter::Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId )
-		: Host(_communicator->getService(), _communicator->getConnectionCache(), _endpoint, _name, _hostId)
-		, m_communicator(_communicator)
+		: Host(_communicator, _endpoint, _name, _hostId)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,7 +38,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	SessionPtr Adapter::makeSession()
 	{
-		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this, m_connectionCache );
+		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+
+		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this, connectionCache );
 
 		return session;
 	}

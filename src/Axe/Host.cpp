@@ -1,6 +1,8 @@
 #	include "pch.hpp"
 
 #	include <Axe/Host.hpp>
+
+#	include <Axe/Communicator.hpp>
 #	include <Axe/Exception.hpp>
 
 #	include <Axe/AdapterSession.hpp>
@@ -14,11 +16,11 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Host::Host( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId )
-		: Service(_service, _endpoint, _name)
-		, m_connectionCache(_connectionCache)
+	Host::Host( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId )
+		: Service(_communicator->getService(), _endpoint, _name)
+		, m_communicator(_communicator)
 		, m_hostId(_hostId)
-	{		
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Host::addServant( std::size_t _servantId, const ServantPtr & _servant )
@@ -38,11 +40,20 @@ namespace Axe
 		_servant->setServantId( _servantId );
 		_servant->setHostId( m_hostId );
 
-		const ConnectionPtr & cn = m_connectionCache->getConnection( m_hostId );
+		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+
+		const ConnectionPtr & cn = connectionCache->getConnection( m_hostId );
 
 		ProxyPtr proxy = new Proxy( _servantId, cn );
 
 		return proxy;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Host::hasServant( std::size_t _servantId ) const
+	{
+		TMapServants::const_iterator it_found = m_servants.find( _servantId );
+
+		return it_found != m_servants.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Host::setHostId( std::size_t _hostId )
@@ -74,7 +85,11 @@ namespace Axe
 		protected:
 			void onServant( const ServantPtr & _servant ) override
 			{
-				m_host->addServant( m_servantId, _servant );
+				if( m_host->hasServant(m_servantId) )
+				{
+					m_host->addServant( m_servantId, _servant );
+				}
+				
 				m_host->dispatchMethod( m_servantId, m_methodId, m_requestId, m_archive, m_session );
 			}
 
@@ -99,7 +114,9 @@ namespace Axe
 			HostServantProviderResponsePtr response =
 				new HostServantProviderResponse( this, _servantId, _methodId, _requestId, _archive, _session );
 
-			m_servantProvider->get( _servantId, response );
+
+			const ServantProviderPtr & servantProvider = m_communicator->getServantProvider();
+			servantProvider->get( _servantId, response );
 
 			return;
 		}
@@ -127,10 +144,5 @@ namespace Axe
 			aw << UnknownException();
 			_session->process();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConnectionCachePtr & Host::getConnectionCahce() const
-	{
-		return m_connectionCache;
 	}
 }

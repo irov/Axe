@@ -31,9 +31,6 @@ namespace Axe
 
 	protected:
 		SessionPtr makeSession() override;
-
-	protected:
-		CommunicatorPtr m_communicator;
 	};
 
 	typedef AxeHandle<Adapter> AdapterPtr;

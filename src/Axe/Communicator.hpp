@@ -9,7 +9,10 @@ namespace Axe
 	typedef AxeHandle<class Adapter> AdapterPtr;
 	typedef AxeHandle<class Router> RouterPtr;
 	typedef AxeHandle<class Grid> GridPtr;
+	typedef AxeHandle<class ServantProvider> ServantProviderPtr; 
+	
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
+	
 
 	typedef AxeHandle<class Servant_GridManager> Servant_GridManagerPtr;
 	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
@@ -67,6 +70,7 @@ namespace Axe
 		boost::asio::io_service & getService();
 		const ConnectionCachePtr & getConnectionCache() const;
 		const EndpointCachePtr & getEndpointCache() const;
+		const ServantProviderPtr & getServantProvider() const;
 
 	public:
 		void connectGrid( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse );
@@ -127,6 +131,7 @@ namespace Axe
 
 		ConnectionCachePtr m_connectionCache;
 		EndpointCachePtr m_endpointCache;
+		ServantProviderPtr m_servantProvider;
 
 		typedef std::map<std::string, HostPtr> TMapHosts;
 		TMapHosts m_hosts; 

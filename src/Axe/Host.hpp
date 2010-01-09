@@ -8,8 +8,7 @@ namespace Axe
 	typedef AxeHandle<class Session> SessionPtr;
 	typedef AxeHandle<class Servant> ServantPtr;
 	typedef AxeHandle<class Proxy> ProxyPtr;
-	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
-	typedef AxeHandle<class ServantProvider> ServantProviderPtr;
+	typedef AxeHandle<class Communicator> CommunicatorPtr;
 
 	class ArchiveDispatcher;
 
@@ -17,10 +16,11 @@ namespace Axe
 		: public Service
 	{
 	public:
-		Host( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
+		Host( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _hostId );
 
 	public:
 		ProxyPtr addServant( std::size_t _servantId, const ServantPtr & _servant );
+		bool hasServant( std::size_t _servantId ) const;
 
 	public:
 		void setHostId( std::size_t _hostId );
@@ -31,12 +31,8 @@ namespace Axe
 	public:
 		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session );
 
-	public:
-		const ConnectionCachePtr & getConnectionCahce() const;
-
 	protected:
-		ConnectionCachePtr m_connectionCache;
-		ServantProviderPtr m_servantProvider;
+		CommunicatorPtr m_communicator;
 
 		std::size_t m_hostId;
 
