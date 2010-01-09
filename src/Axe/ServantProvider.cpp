@@ -13,7 +13,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantProvider::get( std::size_t _servantId, const ServantProviderResponsePtr & _cb )
+	void ServantProvider::get( std::size_t _servantId, std::size_t _hostId, const ServantProviderResponsePtr & _cb )
 	{
 		TMapWantedServant::iterator it_found = m_wantedServant.find( _servantId );
 
@@ -22,6 +22,7 @@ namespace Axe
 			m_evictorManager->get_async( 
 				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId ) ) 
 				, _servantId
+				, _hostId
 				);
 
 			TListServantProviderResponse responses;

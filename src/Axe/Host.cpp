@@ -114,10 +114,9 @@ namespace Axe
 			HostServantProviderResponsePtr response =
 				new HostServantProviderResponse( this, _servantId, _methodId, _requestId, _archive, _session );
 
-
 			const ServantProviderPtr & servantProvider = m_communicator->getServantProvider();
-			servantProvider->get( _servantId, response );
 
+			servantProvider->get( _servantId, m_hostId, response );
 			return;
 		}
 

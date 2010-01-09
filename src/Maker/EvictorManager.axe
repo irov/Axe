@@ -5,9 +5,15 @@ namespace Axe
 		size_t servantId;
 	};
 
+	exception EvictingAlreadyRestored
+	{
+		size_t servantId;
+		size_t hostId;
+	};
+
 	class EvictorManager
 	{
 		void set( size_t _servantId, size_t _typeId, Archive _ar );
-		Archive get( size_t _servantId, out size_t _typeId ) throws EvictingNotFoundException;
+		Archive get( size_t _servantId, size_t _hostId, out size_t _typeId ) throws EvictingNotFoundException, EvictingAlreadyRestored;
 	};
 }

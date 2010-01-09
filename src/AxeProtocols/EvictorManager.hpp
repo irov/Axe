@@ -33,6 +33,24 @@ namespace Axe
 	typedef AxeHandle<EvictingNotFoundException> EvictingNotFoundExceptionPtr;
 	
 	
+	class EvictingAlreadyRestored
+		: virtual public Axe::Exception
+	{
+	public:
+		void rethrow() const override;
+	
+	public:
+		std::size_t servantId;
+		std::size_t hostId;
+	
+	public:
+		void write( Axe::ArchiveInvocation & _ar ) const override;
+		void read( Axe::ArchiveDispatcher & _ar ) override;
+	};
+	
+	typedef AxeHandle<EvictingAlreadyRestored> EvictingAlreadyRestoredPtr;
+	
+	
 	typedef AxeHandle<class Bellhop_EvictorManager_set> Bellhop_EvictorManager_setPtr;
 	typedef AxeHandle<class Bellhop_EvictorManager_get> Bellhop_EvictorManager_getPtr;
 	
@@ -41,7 +59,7 @@ namespace Axe
 	{
 	public:
 		virtual void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar ) = 0;
-		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId ) = 0;
+		virtual void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId, std::size_t _hostId ) = 0;
 	
 	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
@@ -159,7 +177,7 @@ namespace Axe
 	
 	public:
 		void set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );
-		void get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId );
+		void get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId, std::size_t _hostId );
 	};
 	
 	typedef AxeHandle<Proxy_EvictorManager> Proxy_EvictorManagerPtr;

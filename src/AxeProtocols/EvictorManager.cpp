@@ -23,6 +23,24 @@ namespace Axe
 	{
 		_ar >> servantId;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void EvictingAlreadyRestored::rethrow() const
+	{
+		throw *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void EvictingAlreadyRestored::write( Axe::ArchiveInvocation & _ar ) const
+	{
+		_ar << servantId;
+		_ar << hostId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void EvictingAlreadyRestored::read( Axe::ArchiveDispatcher & _ar )
+	{
+		_ar >> servantId;
+		_ar >> hostId;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void s_Servant_EvictorManager_callMethod_set( Servant_EvictorManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
@@ -40,8 +58,9 @@ namespace Axe
 		Bellhop_EvictorManager_getPtr bellhop = new Bellhop_EvictorManager_get( _requestId, _session, _servant );
 	
 		std::size_t arg0; _archive >> arg0;
+		std::size_t arg1; _archive >> arg1;
 	
-		_servant->get_async( bellhop, arg0 );
+		_servant->get_async( bellhop, arg0, arg1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef void (*TServant_EvictorManager_callMethod)( Servant_EvictorManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
@@ -72,6 +91,11 @@ namespace Axe
 		catch( const EvictingNotFoundException & _ex )
 		{
 			_ar.writeSize( 3 );
+			_ex.write( _ar );
+		}
+		catch( const EvictingAlreadyRestored & _ex )
+		{
+			_ar.writeSize( 4 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -216,6 +240,12 @@ namespace Axe
 				ex.read( _ar );
 				this->throw_exception( ex ); 
 			}
+		case 3:
+			{
+				EvictingAlreadyRestored ex;
+				ex.read( _ar );
+				this->throw_exception( ex ); 
+			}
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -234,10 +264,11 @@ namespace Axe
 		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_EvictorManager::get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId )
+	void Proxy_EvictorManager::get_async( const Response_EvictorManager_getPtr & _response, std::size_t _servantId, std::size_t _hostId )
 	{
 		Axe::ArchiveInvocation & ar = this->beginMessage( 2, _response );
 		ar << _servantId;
+		ar << _hostId;
 	
 		this->processMessage();
 	}

@@ -26,7 +26,7 @@ namespace Axe
 		ServantProvider( const ServantFactoryPtr & _servantFactory );
 
 	public:
-		void get( std::size_t _servantId, const ServantProviderResponsePtr & _cb );
+		void get( std::size_t _servantId, std::size_t _hostId, const ServantProviderResponsePtr & _cb );
 
 	protected:
 		void onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId );
