@@ -20,7 +20,8 @@ namespace Axe
 		if( it_found == m_wantedServant.end() )
 		{
 			m_evictorManager->get_async( 
-				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId ) ) 
+				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId )
+					, boost::bind( &ServantProvider::onException, handlePtr(this), _1, _servantId ) ) 
 				, _servantId
 				, _hostId
 				);
@@ -50,6 +51,40 @@ namespace Axe
 		++it )
 		{
 			(*it)->onServant( servant );
+		}
+
+		m_wantedServant.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ServantProvider::onException( const Exception & _ex, std::size_t _servantId )
+	{
+		TMapWantedServant::iterator it_found = m_wantedServant.find( _servantId );
+
+		try
+		{
+			_ex.rethrow();
+		}
+		catch( const Axe::EvictingAlreadyRestored & _restored )
+		{
+			for( TListServantProviderResponse::iterator
+				it = it_found->second.begin(),
+				it_end = it_found->second.end();
+			it != it_end;
+			++it )
+			{
+				(*it)->onServantReplace( _restored.hostId );
+			}
+		}
+		catch( const Axe::EvictingNotFoundException & _notfound )
+		{
+			for( TListServantProviderResponse::iterator
+				it = it_found->second.begin(),
+				it_end = it_found->second.end();
+			it != it_end;
+			++it )
+			{
+				(*it)->onServantNotFound( _notfound.servantId );
+			}
 		}
 
 		m_wantedServant.erase( it_found );

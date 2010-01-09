@@ -30,11 +30,20 @@ namespace AxeLib
 		{
 			std::size_t typeId;
 			AxeUtil::Archive ar;
-			this->restore( _servantId, typeId, ar );
+			
+			if( this->restore( _servantId, typeId, ar ) == true )
+			{
+				m_servants.insert( std::make_pair(_servantId, _hostId) );
 
-			m_servants.insert( std::make_pair(_servantId, _hostId) );
+				_cb->response( ar, typeId );
+			}
+			else
+			{
+				Axe::EvictingNotFoundException ex;
+				ex.servantId = _servantId;
 
-			_cb->response( ar, typeId );			
+				_cb->throw_exception( ex );
+			}
 		}
 		else
 		{
@@ -67,12 +76,17 @@ namespace AxeLib
 		fwrite( &_ar[0], _ar.size(), 1, f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EvictorManager::restore( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar )
+	bool EvictorManager::restore( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar )
 	{
 		std::string dbid;
 		makeDBID( dbid, _servantId );
 
 		FILE * f = fopen( dbid.c_str(), "rb" );
+
+		if( f == 0 )
+		{
+			return false;
+		}
 
 		std::size_t size;
 		fread( &size, sizeof(size), 1, f );
@@ -81,5 +95,7 @@ namespace AxeLib
 
 		_ar.resize( size );
 		fread( &_ar[0], size, 1, f );
+
+		return true;
 	}
 }

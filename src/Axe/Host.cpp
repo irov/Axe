@@ -91,6 +91,16 @@ namespace Axe
 				m_host->dispatchMethod( m_servantId, m_methodId, m_requestId, m_archive, m_session );
 			}
 
+			void onServantReplace( std::size_t _hostId )
+			{
+				m_host->replaceMethod( m_servantId, m_methodId, m_requestId, m_archive, m_session, _hostId );
+			}
+
+			void onServantNotFound( std::size_t _servantId )
+			{
+				m_host->exceptionMethod( m_servantId, m_methodId, m_requestId, m_session );
+			}
+
 		protected:
 			HostPtr m_host;
 			std::size_t m_servantId;
@@ -141,5 +151,15 @@ namespace Axe
 			aw << UnknownException();
 			_session->process();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Host::replaceMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session, std::size_t _hostId )
+	{
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Host::exceptionMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )
+	{
+
 	}
 }

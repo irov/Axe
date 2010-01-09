@@ -21,7 +21,7 @@ namespace AxeLib
 
 	protected:
 		void evict( std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );
-		void restore( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar );
+		bool restore( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar );
 
 	protected:
 		std::string m_pathDB;
