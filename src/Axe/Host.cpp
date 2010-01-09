@@ -42,9 +42,7 @@ namespace Axe
 
 		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
 
-		const ConnectionPtr & cn = connectionCache->getConnection( m_hostId );
-
-		ProxyPtr proxy = new Proxy( _servantId, cn );
+		ProxyPtr proxy = _servant->getProxy( connectionCache );
 
 		return proxy;
 	}

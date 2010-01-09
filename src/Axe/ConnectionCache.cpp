@@ -2,6 +2,7 @@
 
 #	include <Axe/Connection.hpp>
 #	include <Axe/ConnectionCache.hpp>
+#	include <Axe/ProxyHostProvider.hpp>
 
 namespace Axe
 {
@@ -25,6 +26,22 @@ namespace Axe
 			ConnectionPtr connection = m_provider->createConnection( _hostId );
 
 			it_found = m_connections.insert( std::make_pair(_hostId, connection) ).first;
+		}
+
+		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ProxyHostProviderPtr & ConnectionCache::getProxyHostProvider( std::size_t _servantId, std::size_t _hostId )
+	{
+		TMapProxyHostProviders::iterator it_found = m_proxyHostProviders.find( _servantId );
+
+		if( it_found == m_proxyHostProviders.end() )
+		{
+			const ConnectionPtr & connection = this->getConnection( _hostId );
+
+			ProxyHostProviderPtr proxyHostProvider = new ProxyHostProvider( connection );
+
+			it_found = m_proxyHostProviders.insert( std::make_pair(_servantId, proxyHostProvider) ).first;
 		}
 
 		return it_found->second;

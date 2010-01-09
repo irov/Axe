@@ -289,6 +289,14 @@
 				RelativePath=".\EndpointCache.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ProxyHostProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ProxyHostProvider.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Host"

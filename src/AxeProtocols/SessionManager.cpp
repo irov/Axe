@@ -4,6 +4,7 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
+#	include <Axe/ProxyHostProvider.hpp>
 
 namespace Axe
 {
@@ -107,8 +108,8 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Proxy_Session::Proxy_Session( std::size_t _id, const Axe::ConnectionPtr & _connection )
-		: Axe::Proxy(_id, _connection)
+	Proxy_Session::Proxy_Session( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
+		: Axe::Proxy(_id, _hostProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -226,8 +227,8 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Proxy_SessionManager::Proxy_SessionManager( std::size_t _id, const Axe::ConnectionPtr & _connection )
-		: Axe::Proxy(_id, _connection)
+	Proxy_SessionManager::Proxy_SessionManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
+		: Axe::Proxy(_id, _hostProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

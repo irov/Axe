@@ -376,7 +376,7 @@ namespace Axe
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_GridManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_GridManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void addAdapter_async( const Response_GridManager_addAdapterPtr & _response, const std::string & _name, const std::string & _endpoint );

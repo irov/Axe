@@ -6,6 +6,7 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ConnectionCache.hpp>
+#	include <Axe/ProxyHostProvider.hpp>
 
 namespace Axe
 {
@@ -38,9 +39,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		const ConnectionPtr & cn = _connectionCache->getConnection( m_hostId );
+		const ProxyHostProviderPtr & provider = _connectionCache->getProxyHostProvider( m_servantId, m_hostId );
 
-		return new Proxy( m_servantId, cn );
+		return new Proxy( m_servantId, provider );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )

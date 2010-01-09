@@ -88,7 +88,7 @@ namespace Axe
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_Session( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_Session( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void destroy_async( const Response_Session_destroyPtr & _response );
@@ -170,7 +170,7 @@ namespace Axe
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_SessionManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_SessionManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void create_async( const Response_SessionManager_createPtr & _response, const std::string & _login );

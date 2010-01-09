@@ -173,7 +173,7 @@ namespace Axe
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_EvictorManager( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_EvictorManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void set_async( const Response_EvictorManager_setPtr & _response, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );

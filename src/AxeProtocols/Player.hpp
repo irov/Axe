@@ -99,7 +99,7 @@ namespace Axe
 		:	public Proxy_Session
 	{
 	public:
-		Proxy_Player( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_Player( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void test_async( const Response_Player_testPtr & _response, const PlayerInfo & info );

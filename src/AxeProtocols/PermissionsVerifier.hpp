@@ -88,7 +88,7 @@ namespace Axe
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ConnectionPtr & _connection );
+		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
 	
 	public:
 		void checkPermissions_async( const Response_PermissionsVerifier_checkPermissionsPtr & _response, const std::string & _login, const std::string & _password );

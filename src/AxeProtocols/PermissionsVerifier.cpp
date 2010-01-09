@@ -4,6 +4,7 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
+#	include <Axe/ProxyHostProvider.hpp>
 
 namespace Axe
 {
@@ -111,8 +112,8 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Proxy_PermissionsVerifier::Proxy_PermissionsVerifier( std::size_t _id, const Axe::ConnectionPtr & _connection )
-		: Axe::Proxy(_id, _connection)
+	Proxy_PermissionsVerifier::Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
+		: Axe::Proxy(_id, _hostProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
