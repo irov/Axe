@@ -203,6 +203,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="PathFinderManager"
+			>
+			<File
+				RelativePath=".\PathFinderManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PathFinderManager.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\pch.hpp"
 			>

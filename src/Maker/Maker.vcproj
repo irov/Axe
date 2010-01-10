@@ -184,6 +184,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MathDef.axe"
+			>
+		</File>
+		<File
+			RelativePath=".\PathFinderManager.axe"
+			>
+		</File>
+		<File
 			RelativePath=".\pch.hpp"
 			>
 		</File>

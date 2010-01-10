@@ -55,11 +55,20 @@ namespace Axe
 				;
 
 				typedefs
-					= (	"typedef" >> 
-					name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] >> boost::spirit::ch_p('<') >> type_list >> boost::spirit::ch_p('>') >> 
-					name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')
+					= (	"typedef" 
+					>> name[ boost::bind( &SLAxeParser::set_typedef_type, parser, _1, _2 ) ] 
+					>> !typedefs_template_type_list 
+					>> name[ boost::bind( &SLAxeParser::set_typedef_name, parser, _1, _2 ) ] >> ';')
 					[ boost::bind( &SLAxeParser::add_typedef, parser, _1, _2 ) ]
 				;
+
+				typedefs_template_type_list
+					=
+					boost::spirit::ch_p('<') 
+					>> type[ boost::bind( &SLAxeParser::add_type_to_template_list, parser, _1, _2 ) ] 
+					>> *(',' >> +type[ boost::bind( &SLAxeParser::add_type_to_template_list, parser, _1, _2 ) ])
+					>> boost::spirit::ch_p('>')
+					;
 
 				namespaces
 					= ("namespace" >> name[ boost::bind( &SLAxeParser::begin_namespace, parser, _1, _2 ) ] >> 
@@ -114,10 +123,6 @@ namespace Axe
 					[ boost::bind( &SLAxeParser::set_inheritance_type, parser, _1, _2 ) ]
 				;
 
-				type_list
-					= type[ boost::bind( &SLAxeParser::add_type_to_template_list, parser, _1, _2 ) ] >> 
-					*(',' >> +type[ boost::bind( &SLAxeParser::add_type_to_template_list, parser, _1, _2 ) ])
-					;
 
 				complex_type
 					= template_type | type
@@ -143,7 +148,7 @@ namespace Axe
 				parents, parent, struct_body, class_body, include_helper, include_body,
 				member, method, method_argument_list, method_argument, throws_body, throws_name,
 
-				type_list, complex_type, type, template_type,
+				typedefs_template_type_list, complex_type, type, template_type,
 				inheritance_type, name;
 		};
 
