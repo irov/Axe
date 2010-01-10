@@ -51,6 +51,19 @@ namespace AxeUtil
 			+= std::distance( (const AxeUtil::Archive::value_type *)_begin, (const AxeUtil::Archive::value_type *)_end );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Archive::iterator ArchiveWrite::selectArchive( std::size_t _size )
+	{
+		std::size_t begin = m_archive.size();
+		m_archive.resize( begin + _size );
+
+		*(std::size_t*)(&m_archive[m_begin]) 
+			+= _size;
+
+		Archive::iterator it = m_archive.begin();
+		std::advance( it, begin );
+		return it;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const Archive & ArchiveWrite::getArchive() const
 	{
 		return m_archive;

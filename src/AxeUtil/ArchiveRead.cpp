@@ -32,6 +32,13 @@ namespace AxeUtil
 		std::copy( it_begin, m_seek, _archive.begin() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ArchiveRead::readArchive( Archive::iterator _it, std::size_t _size )
+	{
+		Archive::const_iterator it_begin = m_seek;
+		std::advance( m_seek, _size );
+		std::copy( it_begin, m_seek, _it );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readSize( std::size_t & _value )
 	{
 		unsigned char low_size;

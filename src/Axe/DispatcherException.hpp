@@ -25,4 +25,20 @@ namespace Axe
 		std::size_t servantId;
 		std::size_t hostId;
 	};
+
+	class DispatcherObjectNotFoundException
+		: public DispatcherException
+	{
+	public:
+		void rethrow() const override;
+		std::size_t getId() const override;
+
+	public:
+		void write( ArchiveInvocation & _ar ) const override;
+		void read( ArchiveDispatcher & _ar ) override;
+
+	public:
+		std::size_t servantId;
+		std::size_t hostId;
+	};
 }

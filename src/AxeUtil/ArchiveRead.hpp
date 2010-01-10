@@ -28,6 +28,7 @@ namespace AxeUtil
 
 		void readBuffer( void * _begin, std::size_t _size );
 		void readArchive( Archive & _archive, std::size_t _size );
+		void readArchive( Archive::iterator _it, std::size_t _size );
 		void readSize( std::size_t & _value );
 		void readString( std::string & _value );
 

@@ -31,7 +31,7 @@ namespace Axe
 	public:
 		void dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session );
 		void replaceMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session, std::size_t _hostId );
-		void exceptionMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session );
+		void exceptionMethod( std::size_t _servantId, std::size_t _requestId, const SessionPtr & _session );
 
 	protected:
 		CommunicatorPtr m_communicator;

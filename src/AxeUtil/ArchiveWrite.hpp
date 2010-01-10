@@ -28,9 +28,11 @@ namespace AxeUtil
 		void writeString( const std::string & _value );
 		void writeArchive( const AxeUtil::Archive::value_type * _buffer, std::size_t _size );
 
+		Archive::iterator selectArchive( std::size_t _size );
+
 	public:
 		const Archive & getArchive() const;
-
+	
 		void swap( Archive & _ar );
 		void clear();
 		bool empty() const;

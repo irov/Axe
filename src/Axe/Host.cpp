@@ -101,7 +101,7 @@ namespace Axe
 
 			void onServantNotFound( std::size_t _servantId )
 			{
-				m_host->exceptionMethod( m_servantId, m_methodId, m_requestId, m_session );
+				m_host->exceptionMethod( _servantId, m_requestId, m_session );
 			}
 
 		protected:
@@ -156,22 +156,43 @@ namespace Axe
 		class ResponseReplaceMethod
 			: public Response
 		{
+		public:
+			ResponseReplaceMethod( std::size_t _requestId, const SessionPtr & _session )
+				: m_requestId(_requestId)
+				, m_session(_session)
+			{
+			}
+
 		protected:
 			void responseCall( ArchiveDispatcher & _ar, std::size_t _size ) override
 			{
+				ArchiveInvocation & aw = m_session->beginResponse( m_requestId );
 
+				AxeUtil::Archive::iterator it_select = aw.selectArchive( _size );
+				_ar.readArchive( it_select, _size );
+
+				m_session->process();
 			}
 
 			void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) override
 			{
+				ArchiveInvocation & aw = m_session->beginException( m_requestId );
 
+				AxeUtil::Archive::iterator it_select = aw.selectArchive( _size );
+				_ar.readArchive( it_select, _size );
+
+				m_session->process();
 			}
 
 		protected:
 			void throw_exception( const Exception & _ex ) override
 			{
-
+				//Empty
 			}
+
+		protected:
+			std::size_t m_requestId;
+			SessionPtr m_session;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -182,7 +203,7 @@ namespace Axe
 
 			const ConnectionPtr & connection = connectionCache->getConnection( _hostId );
 
-			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new ResponseReplaceMethod );
+			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new ResponseReplaceMethod( _requestId, _session ) );
 
 			ar << _archive;
 
@@ -196,14 +217,24 @@ namespace Axe
 			ex.servantId = _servantId;
 			ex.hostId = _hostId;
 			
+			ar.writeSize( ex.getId() );
 			ex.write( ar );
 
 			_session->process();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Host::exceptionMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )
+	void Host::exceptionMethod( std::size_t _servantId, std::size_t _requestId, const SessionPtr & _session )
 	{
+		ArchiveInvocation & ar = _session->beginException( _requestId );
 
+		DispatcherObjectNotFoundException ex;
+		ex.servantId = _servantId;
+		ex.hostId = m_hostId;
+
+		ar.writeSize( ex.getId() );
+		ex.write( ar );
+
+		_session->process();
 	}
 }
