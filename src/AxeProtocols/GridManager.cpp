@@ -145,7 +145,7 @@ namespace Axe
 		}
 		catch( const AdapterAlreadyExistException & _ex )
 		{
-			_ar.writeSize( 3 );
+			_ar.writeSize( 100 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -162,7 +162,7 @@ namespace Axe
 		}
 		catch( const HostNotFoundException & _ex )
 		{
-			_ar.writeSize( 3 );
+			_ar.writeSize( 100 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -179,7 +179,7 @@ namespace Axe
 		}
 		catch( const UniqueAlreadyExistException & _ex )
 		{
-			_ar.writeSize( 3 );
+			_ar.writeSize( 100 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -196,7 +196,7 @@ namespace Axe
 		}
 		catch( const UniqueNotFoundException & _ex )
 		{
-			_ar.writeSize( 3 );
+			_ar.writeSize( 100 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -389,7 +389,7 @@ namespace Axe
 	
 		switch( exceptionId )
 		{
-		case 2:
+		case 100:
 			{
 				AdapterAlreadyExistException ex;
 				ex.read( _ar );
@@ -432,7 +432,7 @@ namespace Axe
 	
 		switch( exceptionId )
 		{
-		case 2:
+		case 100:
 			{
 				HostNotFoundException ex;
 				ex.read( _ar );
@@ -474,7 +474,7 @@ namespace Axe
 	
 		switch( exceptionId )
 		{
-		case 2:
+		case 100:
 			{
 				UniqueAlreadyExistException ex;
 				ex.read( _ar );
@@ -517,7 +517,7 @@ namespace Axe
 	
 		switch( exceptionId )
 		{
-		case 2:
+		case 100:
 			{
 				UniqueNotFoundException ex;
 				ex.read( _ar );

@@ -293,7 +293,7 @@ namespace Axe
 		write() << std::endl;
 
 		write() << "class " + _ex.name << std::endl;
-		write() << "	: virtual public Axe::Exception" << std::endl;
+		write() << "	: virtual public Axe::ProtocolException" << std::endl;
 
 
 		for( TVectorParents::const_iterator
@@ -1398,7 +1398,7 @@ namespace Axe
 						write() << "	catch( const " << me.name << " & _ex )" << std::endl;
 						write() << "	{" << std::endl;
 
-						std::size_t exceptionId = std::distance( mt.exceptions.begin(), it_exception ) + 3;
+						std::size_t exceptionId = std::distance( mt.exceptions.begin(), it_exception ) + 100;
 
 						write() << "		_ar.writeSize( " << exceptionId << " );" << std::endl;
 						write() << "		_ex.write( _ar );" << std::endl;
@@ -1769,8 +1769,6 @@ namespace Axe
 				write() << "	switch( exceptionId )" << std::endl;
 				write() << "	{" << std::endl;
 
-				std::size_t exceptionEnumerator = 2;
-
 				for( TVectorMethodExceptions::const_iterator
 					it_exception = mt.exceptions.begin(),
 					it_exception_end = mt.exceptions.end();
@@ -1779,14 +1777,14 @@ namespace Axe
 				{
 					const MethodException & me = *it_exception;
 
+					std::size_t exceptionEnumerator = std::distance( mt.exceptions.begin(), it_exception ) + 100;
+
 					write() << "	case " << exceptionEnumerator << ":" << std::endl;
 					write() << "		{" << std::endl;
 					write() << "			" << me.name << " ex;" << std::endl;
 					write() << "			ex.read( _ar );" << std::endl;
 					write() << "			this->throw_exception( ex ); " << std::endl;
 					write() << "		}" << std::endl;
-
-					++exceptionEnumerator;
 				}
 
 				write() << "	};" << std::endl;

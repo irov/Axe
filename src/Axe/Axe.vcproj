@@ -474,6 +474,14 @@
 			Name="Exception"
 			>
 			<File
+				RelativePath=".\DispatcherException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DispatcherException.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception.cpp"
 				>
 			</File>

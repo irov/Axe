@@ -17,7 +17,7 @@ namespace Axe
 {
 	
 	class AdapterAlreadyExistException
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;
@@ -34,7 +34,7 @@ namespace Axe
 	
 	
 	class HostNotFoundException
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;
@@ -51,7 +51,7 @@ namespace Axe
 	
 	
 	class UniqueAlreadyExistException
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;
@@ -68,7 +68,7 @@ namespace Axe
 	
 	
 	class UniqueNotFoundException
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;

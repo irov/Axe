@@ -17,7 +17,7 @@ namespace Axe
 {
 	
 	class EvictingNotFoundException
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;
@@ -34,7 +34,7 @@ namespace Axe
 	
 	
 	class EvictingAlreadyRestored
-		: virtual public Axe::Exception
+		: virtual public Axe::ProtocolException
 	{
 	public:
 		void rethrow() const override;

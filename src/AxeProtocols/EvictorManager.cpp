@@ -91,12 +91,12 @@ namespace Axe
 		}
 		catch( const EvictingNotFoundException & _ex )
 		{
-			_ar.writeSize( 3 );
+			_ar.writeSize( 100 );
 			_ex.write( _ar );
 		}
 		catch( const EvictingAlreadyRestored & _ex )
 		{
-			_ar.writeSize( 4 );
+			_ar.writeSize( 101 );
 			_ex.write( _ar );
 		}
 		catch( ... )
@@ -235,13 +235,13 @@ namespace Axe
 	
 		switch( exceptionId )
 		{
-		case 2:
+		case 100:
 			{
 				EvictingNotFoundException ex;
 				ex.read( _ar );
 				this->throw_exception( ex ); 
 			}
-		case 3:
+		case 101:
 			{
 				EvictingAlreadyRestored ex;
 				ex.read( _ar );

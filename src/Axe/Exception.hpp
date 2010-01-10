@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <exception>
+#	include <string>
 
 namespace Axe
 {
@@ -8,14 +8,14 @@ namespace Axe
 	class ArchiveDispatcher;
 
 	class Exception
-		: public std::exception
 	{
 	public:
 		virtual void rethrow() const = 0;
+		virtual std::size_t getId() const = 0;
 
 	public:
 		virtual void write( ArchiveInvocation & _ar ) const = 0;
-		virtual void read( ArchiveDispatcher & _ar ) = 0;
+		virtual void read( ArchiveDispatcher & _ar ) = 0;		
 	};
 
 	class LocalException
@@ -27,10 +27,11 @@ namespace Axe
 
 	public:
 		void rethrow() const override;
+		std::size_t getId() const override;
 
 	public:
-		void write( ArchiveInvocation & _aw ) const;
-		void read( ArchiveDispatcher & _ar );
+		void write( ArchiveInvocation & _aw ) const override;
+		void read( ArchiveDispatcher & _ar ) override;
 
 	protected:
 		std::string m_message;
@@ -44,6 +45,7 @@ namespace Axe
 
 	public:
 		void rethrow() const override;
+		std::size_t getId() const override;
 	};
 
 	class UnknownException
@@ -51,10 +53,11 @@ namespace Axe
 	{
 	public:
 		void rethrow() const override;
+		std::size_t getId() const override;
 
 	public:
-		void write( ArchiveInvocation & _ar ) const;
-		void read( ArchiveDispatcher & _ar );
+		void write( ArchiveInvocation & _ar ) const override;
+		void read( ArchiveDispatcher & _ar ) override;
 	};
 
 	class CriticalException
@@ -65,6 +68,14 @@ namespace Axe
 
 	public:
 		void rethrow() const override;
+		std::size_t getId() const override;
+	};
+
+	class ProtocolException
+		: public Exception
+	{
+	public:
+		std::size_t getId() const override;
 	};
 
 	void writeExceptionFilter( ArchiveInvocation & _ar );

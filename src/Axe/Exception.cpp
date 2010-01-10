@@ -1,5 +1,7 @@
 #	include "pch.hpp"
 
+#	include <exception>
+
 #	include <Axe/Exception.hpp>
 
 #	include <Axe/ArchiveInvocation.hpp>
@@ -22,6 +24,11 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::size_t LocalException::getId() const
+	{
+		return 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void LocalException::write( ArchiveInvocation & _aw ) const
 	{
 		_aw << m_message;
@@ -42,9 +49,19 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::size_t StdException::getId() const
+	{
+		return 2;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void UnknownException::rethrow() const
 	{
 		throw *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t UnknownException::getId() const
+	{
+		return 3;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void UnknownException::write( ArchiveInvocation & _ar ) const
@@ -65,6 +82,16 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::size_t CriticalException::getId() const
+	{
+		return 4;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ProtocolException::getId() const
+	{
+		return 100;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void writeExceptionFilter( ArchiveInvocation & _ar )
 	{
 		try
@@ -73,25 +100,23 @@ namespace Axe
 		}
 		catch( const ::Axe::Exception & _ex )
 		{
-			const char * ch_what = _ex.what();
-			std::string message = ( ch_what )?ch_what:std::string();
-			::Axe::LocalException lex( message );
-			_ar.writeSize( 1 );
-			lex.write( _ar );
+			::Axe::LocalException rex;
+			_ar.writeSize( rex.getId() );
+			rex.write( _ar );
 		}
 		catch( const std::exception & _ex )
 		{
 			const char * ch_what = _ex.what();
 			std::string message = ( ch_what )?ch_what:std::string();
-			::Axe::StdException lex( message );
-			_ar.writeSize( 2 );
-			lex.write( _ar );
+			::Axe::StdException rex( message );
+			_ar.writeSize( rex.getId() );
+			rex.write( _ar );
 		}
 		catch( ... )
 		{
-			::Axe::UnknownException uex;
-			_ar.writeSize(0);
-			uex.write( _ar );
+			::Axe::UnknownException rex;
+			_ar.writeSize( rex.getId() );
+			rex.write( _ar );
 		}
 	}
 }

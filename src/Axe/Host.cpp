@@ -12,6 +12,9 @@
 
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Servant.hpp>
+#	include <Axe/Response.hpp>
+
+#	include <Axe/DispatcherException.hpp>
 
 namespace Axe
 {
@@ -134,28 +137,69 @@ namespace Axe
 		{
 			servant->callMethod( _methodId, _requestId, _archive, _session );
 		}
-		catch( const Exception & _ex )
+		catch( const ProtocolException & _ex )
 		{
 			servant->responseException( _methodId, _requestId, _session, _ex );
-		}
-		catch( const std::exception & _ex )
-		{
-			ArchiveInvocation & aw = _session->beginException( _requestId );
-			const char * message = _ex.what();
-			aw << LocalException( message );
-			_session->process();
 		}
 		catch( ... )
 		{
 			ArchiveInvocation & aw = _session->beginException( _requestId );
-			aw << UnknownException();
+
+			writeExceptionFilter( aw );
+
 			_session->process();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class ResponseReplaceMethod
+			: public Response
+		{
+		protected:
+			void responseCall( ArchiveDispatcher & _ar, std::size_t _size ) override
+			{
+
+			}
+
+			void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) override
+			{
+
+			}
+
+		protected:
+			void throw_exception( const Exception & _ex ) override
+			{
+
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Host::replaceMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session, std::size_t _hostId )
 	{
+		{
+			const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+
+			const ConnectionPtr & connection = connectionCache->getConnection( _hostId );
+
+			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new ResponseReplaceMethod );
+
+			ar << _archive;
+
+			connection->processMessage();
+		}
+
+		{
+			ArchiveInvocation & ar = _session->beginException( _requestId );
 		
+			DispatcherServantRelocateException ex;
+			ex.servantId = _servantId;
+			ex.hostId = _hostId;
+			
+			ex.write( ar );
+
+			_session->process();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Host::exceptionMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session )
