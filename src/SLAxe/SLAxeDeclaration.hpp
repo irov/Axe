@@ -4,6 +4,8 @@ namespace Axe
 {
 	namespace Declaration
 	{
+		struct Namespace;
+
 		struct Type
 		{
 			std::string name;
@@ -24,6 +26,8 @@ namespace Axe
 			std::string type;
 
 			TVectorTypes templates;
+
+			Namespace * owner;
 		};
 
 		typedef std::vector<Typedef> TVectorTypedefs;
@@ -59,6 +63,8 @@ namespace Axe
 
 			TVectorParents parents;
 			TVectorMembers members;
+
+			Namespace * owner;
 		};
 
 		typedef std::vector<Struct> TVectorStructs;
@@ -69,6 +75,8 @@ namespace Axe
 
 			TVectorParents parents;
 			TVectorMembers members;
+
+			Namespace * owner;
 		};
 
 		typedef std::vector<Exception> TVectorExceptions;
@@ -98,6 +106,8 @@ namespace Axe
 			TVectorParents parents;
 			TVectorMembers members;
 			TVectorMethods methods;
+
+			Namespace * owner;
 		};
 
 		typedef std::vector<Class> TVectorClasses;
@@ -117,13 +127,20 @@ namespace Axe
 		struct Namespace
 		{
 			Namespace( Namespace * _parent )
-				: m_parent(_parent)
+				: parent(_parent)
 			{
 			}
 
-			Namespace * m_parent;
+			Namespace * parent;
 			std::string name;
 
+			template<class T>
+			std::vector<T> & getVector();
+
+			template<> TVectorClasses & getVector(){ return classes; }
+			template<> TVectorStructs & getVector(){ return structs; }
+			template<> TVectorExceptions & getVector(){ return exceptions; }
+			template<> TVectorTypedefs & getVector(){ return typedefs; }
 
 			TVectorClasses classes;
 			TVectorStructs structs;
@@ -132,10 +149,10 @@ namespace Axe
 
 			TVectorOrder order;
 
-			typedef std::list<Namespace> TVectorNamespaces;
-			TVectorNamespaces namespaces;
+			typedef std::list<Namespace> TListNamespaces;
+			TListNamespaces namespaces;
 		};
 
-		typedef Namespace::TVectorNamespaces TVectorNamespaces;
+		typedef Namespace::TListNamespaces TListNamespaces;
 	}
 }

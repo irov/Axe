@@ -45,7 +45,7 @@ namespace Axe
 		, &s_Servant_PermissionsVerifier_writeException_checkPermissions
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
+	void Servant_PermissionsVerifier::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	

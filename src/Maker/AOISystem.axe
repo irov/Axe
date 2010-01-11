@@ -1,0 +1,82 @@
+import Common
+
+namespace AxeLibProtocol
+{
+	struct AOIPropagateAddAvatar
+	{
+		int userId; 
+		int typeId;
+			
+		Position pos;
+		Direction dir;
+	};
+
+	struct AOIPropagateRemoveAvatar
+	{
+		int userId;
+	};
+	
+	struct AOIPropagateMoveAvatar
+	{
+		int userId;
+		MoveDesc steps;
+	};
+	
+	typedef vector<AOIPropagateAddAvatar> AOIVectorAddAvatar;
+	typedef vector<AOIPropagateMoveAvatar> AOIVectorMoveAvatar;
+	typedef vector<AOIPropagateRemoveAvatar> AOIVectorRemoveAvatar;
+		
+	struct AOIPropagateDiffAvatar
+	{
+		AOIVectorAddAvatar add;
+		AOIVectorMoveAvatar move;
+		AOIVectorRemoveAvatar remove;
+	};
+
+	struct AOIAvatarDesc
+	{	
+		int typeId;
+	
+		MoveDesc desc;
+		float radius;
+	};
+		
+	struct AOIAvatarMoveDesc
+	{
+		MoveDesc desc;
+	};
+	
+	class AOITile
+	{	
+		int insertAvatar( int _userId, AOIAvatarDesc _desc, bool _master );
+		void removeAvatar( int _avatarId );
+		void moveAvatar( AOIAvatarMoveDesc _desc );
+		
+		AOIPropagateDiffAvatar updateAvatar( int _avatarId );
+	};
+	
+	class AOITileFactory
+	{
+		AOITile createTile();
+		void destroyTile( AOITile _tileProxy );
+	};
+	
+	class AOISpace
+	{
+		int insertAvatar( Proxy _userPrx, AOIAvatarDesc _desc );
+		void removeAvatar( int _userId );
+		
+		void moveAvatar( int _userId, AOIAvatarMoveDesc _moveDesc );
+		AOIPropagateDiffAvatar updateAvatar( int _userId );
+
+		AOITile finalize();
+		
+		AOITile m_tileProxy;
+	};
+	
+	class AOISpaceFactory
+	{
+		AOISpace createSpace();
+		void destroySpace( AOISpace spaceProxy );
+	};
+}

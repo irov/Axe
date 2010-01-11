@@ -30,9 +30,9 @@ namespace Axe
 		_servant->test_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Player_subMethod_Session_callMethod( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void s_Servant_Player_subMethod_Session_callMethod( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		static_cast<Servant_Session *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );
+		static_cast<Axe::Servant_Session *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef void (*TServant_Player_callMethod)( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
@@ -50,7 +50,7 @@ namespace Axe
 	}
 	static void s_Servant_Player_subMethod_Session_writeException( Servant_Player * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
-		static_cast<Servant_Session *>( _servant )->writeExceptions_( _methodId, _ar, _ex );
+		static_cast<Axe::Servant_Session *>( _servant )->writeExceptions_( _methodId, _ar, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_Player_writeException_test( Servant_Player * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -67,7 +67,7 @@ namespace Axe
 		, &s_Servant_Player_writeException_test
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
+	void Servant_Player::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -136,7 +136,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Proxy_Player::Proxy_Player( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
 		: Axe::Proxy(_id, _hostProvider)
-		, Proxy_Session(_id, _hostProvider)
+		, Axe::Proxy_Session(_id, _hostProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

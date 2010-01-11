@@ -43,7 +43,7 @@ namespace Axe
 		, &s_Servant_Session_writeException_destroy
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Session::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
+	void Servant_Session::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -160,7 +160,7 @@ namespace Axe
 		, &s_Servant_SessionManager_writeException_create
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
+	void Servant_SessionManager::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -212,7 +212,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Response_SessionManager_create::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		Proxy_SessionPtr arg0 = Axe::makeProxy<Proxy_SessionPtr>( _ar );
+		Proxy_SessionPtr arg0; _ar >> arg0;
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////

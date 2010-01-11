@@ -28,7 +28,7 @@ namespace Axe
 		m_templatesTypes.insert("vector");
 		m_templatesTypes.insert("set");
 
-		m_classTypes.insert("Servant");
+		m_classTypes.insert("Proxy");
 
 		const Namespace & ns = m_parser->getNamespace();
 
@@ -75,9 +75,9 @@ namespace Axe
 			m_structTypes.insert(st.name);
 		};
 
-		const TVectorNamespaces & namespaces = ns.namespaces;
+		const TListNamespaces & namespaces = ns.namespaces;
 
-		for( TVectorNamespaces::const_iterator
+		for( TListNamespaces::const_iterator
 			it_namespace = namespaces.begin(),
 			it_namespace_end = namespaces.end();
 		it_namespace != it_namespace_end;
@@ -119,7 +119,7 @@ namespace Axe
 		m_stream << "}" << std::endl;
 		m_stream << std::endl;
 
-		const Namespace & ns = m_parser->getNamespace();
+		Namespace * ns = m_parser->getNamespace();
 
 		generateHeaderNamespace( ns );
 	}
@@ -143,28 +143,30 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateHeaderNamespace( const Declaration::Namespace & _namespace )
+	void SLAxeGenerator::generateHeaderNamespace( Declaration::Namespace * _namespace )
 	{
-		if( _namespace.name.empty() == false )
+		m_namespace = _namespace;
+
+		if( _namespace->name.empty() == false )
 		{
-			write() << "namespace " << _namespace.name << std::endl;
+			write() << "namespace " << _namespace->name << std::endl;
 			write() << "{" << std::endl;
 			increfTabs();
 		}
 
-		const TVectorOrder & order = _namespace.order;
+		const TVectorOrder & order = _namespace->order;
 
-		const TVectorTypedefs & typedefs = _namespace.typedefs;
-		const TVectorStructs & structs = _namespace.structs;
-		const TVectorClasses & classes = _namespace.classes;
-		const TVectorExceptions & exceptions = _namespace.exceptions;
-		const TVectorNamespaces & namespaces = _namespace.namespaces;
+		TVectorTypedefs & typedefs = _namespace->typedefs;
+		TVectorStructs & structs = _namespace->structs;
+		TVectorClasses & classes = _namespace->classes;
+		TVectorExceptions & exceptions = _namespace->exceptions;
+		TListNamespaces & namespaces = _namespace->namespaces;
 
-		TVectorTypedefs::const_iterator it_typedef = typedefs.begin();
-		TVectorStructs::const_iterator it_struct = structs.begin();
-		TVectorClasses::const_iterator it_class = classes.begin();
-		TVectorExceptions::const_iterator it_exception = exceptions.begin();
-		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
+		TVectorTypedefs::iterator it_typedef = typedefs.begin();
+		TVectorStructs::iterator it_struct = structs.begin();
+		TVectorClasses::iterator it_class = classes.begin();
+		TVectorExceptions::iterator it_exception = exceptions.begin();
+		TListNamespaces::iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
 			it_order = order.begin(),
@@ -196,13 +198,13 @@ namespace Axe
 				}break;
 			case DECL_NAMESPACE:
 				{
-					generateHeaderNamespace( *it_namespace );
+					generateHeaderNamespace( &*it_namespace );
 					++it_namespace;
 				}break;
 			}
 		}
 
-		if( _namespace.name.empty() == false )
+		if( _namespace->name.empty() == false )
 		{
 			decrefTabs();
 			write() << "}" << std::endl;
@@ -496,8 +498,8 @@ namespace Axe
 
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;" << std::endl;
-			write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;" << std::endl;
+			write() << "	void callMethod( std::size_t _methodId , std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;" << std::endl;
+			write() << "	void responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex ) override;" << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );" << std::endl;
 		}
@@ -775,32 +777,33 @@ namespace Axe
 		m_stream << "#	include <Axe/ProxyHostProvider.hpp>" << std::endl;
 		m_stream << std::endl;
 
-		const Namespace & ns = m_parser->getNamespace();
+		Namespace * ns = m_parser->getNamespace();
 
 		generateImplementNamespace( ns );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementNamespace( const Namespace & _namespace )
+	void SLAxeGenerator::generateImplementNamespace( Namespace * _namespace )
 	{
-		if( _namespace.name.empty() == false )
+		m_namespace = _namespace;
+
+		if( _namespace->name.empty() == false )
 		{
-			write() << "namespace " << _namespace.name << std::endl;
+			write() << "namespace " << _namespace->name << std::endl;
 			write() << "{" << std::endl;
 			increfTabs();
 		}
 
-		const TVectorOrder & order = _namespace.order;
+		const TVectorOrder & order = _namespace->order;
 
-		const TVectorStructs & structs = _namespace.structs;
-		const TVectorClasses & classes = _namespace.classes;
-		const TVectorExceptions & exceptions = _namespace.exceptions;
-		const TVectorNamespaces & namespaces = _namespace.namespaces;
+		TVectorStructs & structs = _namespace->structs;
+		TVectorClasses & classes = _namespace->classes;
+		TVectorExceptions & exceptions = _namespace->exceptions;
+		TListNamespaces & namespaces = _namespace->namespaces;
 
-		TVectorStructs::const_iterator it_struct = structs.begin();
-		TVectorClasses::const_iterator it_class = classes.begin();
-		TVectorExceptions::const_iterator it_exception = exceptions.begin();
-
-		TVectorNamespaces::const_iterator it_namespace = namespaces.begin();
+		TVectorStructs::iterator it_struct = structs.begin();
+		TVectorClasses::iterator it_class = classes.begin();
+		TVectorExceptions::iterator it_exception = exceptions.begin();
+		TListNamespaces::iterator it_namespace = namespaces.begin();
 
 		for( TVectorOrder::const_iterator
 			it_order = order.begin(),
@@ -812,35 +815,35 @@ namespace Axe
 			{
 			case DECL_STRUCT:
 				{
-					generateImplementStruct( _namespace, *it_struct );
+					generateImplementStruct( *it_struct );
 					++it_struct;
 				}break;
 			case DECL_CLASS:
 				{
-					generateImplementClass( _namespace, *it_class );
+					generateImplementClass( *it_class );
 					++it_class;
 				}break;
 			case DECL_EXCEPTION:
 				{
-					generateImplementException( _namespace, *it_exception );
+					generateImplementException( *it_exception );
 					++it_exception;
 				}break;
 			case DECL_NAMESPACE:
 				{
-					generateImplementNamespace( *it_namespace );
+					generateImplementNamespace( &*it_namespace );
 					++it_namespace;
 				}break;
 			}
 		}
 
-		if( _namespace.name.empty() == false )
+		if( _namespace->name.empty() == false )
 		{
 			decrefTabs();
 			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementStruct( const Namespace & _namespace, const Struct & _struct )
+	void SLAxeGenerator::generateImplementStruct( const Struct & _struct )
 	{
 		//write() << std::endl;
 
@@ -904,15 +907,15 @@ namespace Axe
 		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementClass( const Namespace & _namespace, const Class & _class )
+	void SLAxeGenerator::generateImplementClass(  const Class & _class )
 	{
-		generateImplementServant( _namespace, _class );
-		generateImplementBellhop( _namespace, _class );		
-		generateImplementResponse( _namespace, _class );
-		generateImplementProxy( _namespace, _class );
+		generateImplementServant( _class );
+		generateImplementBellhop( _class );		
+		generateImplementResponse( _class );
+		generateImplementProxy( _class );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementException( const Namespace & _namespace, const Declaration::Exception & _ex )
+	void SLAxeGenerator::generateImplementException( const Declaration::Exception & _ex )
 	{
 		write() << std::endl;
 		writeLine();
@@ -978,7 +981,7 @@ namespace Axe
 		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementBellhop( const Namespace & _namespace, const Class & _class )
+	void SLAxeGenerator::generateImplementBellhop( const Class & _class )
 	{
 		//bellhop_add_adapter::bellhop_add_adapter ( std::size_t _requestId, adapter_session * _session )
 		//	: bellhop(_requestId, _session){}
@@ -1086,27 +1089,8 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Declaration::Class * SLAxeGenerator::findClass( const std::string & _name ) const
-	{
-		for( TMapParsers::const_iterator
-			it = m_parsers.begin(),
-			it_end = m_parsers.end();
-		it != it_end;
-		++it )
-		{
-			const Declaration::Namespace & ns = it->second->getNamespace();
-			const Declaration::Class * cs = findClass_ns( ns, _name );
-
-			if( cs )
-			{
-				return cs;
-			}
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Declaration::Class * SLAxeGenerator::findClass_ns( const Namespace & _namespace, const std::string & _name ) const
+	template<class T>
+	const T * s_findTypename( Namespace * _namespace, const std::string & _name )
 	{
 		class FClassName
 		{
@@ -1117,7 +1101,7 @@ namespace Axe
 			}
 
 		public:
-			bool operator()( const Class & _class )
+			bool operator()( const T & _class )
 			{
 				return m_name == _class.name;
 			}
@@ -1126,25 +1110,67 @@ namespace Axe
 			std::string m_name;
 		};
 
-		TVectorClasses::const_iterator it_class_found = 
-			std::find_if( _namespace.classes.begin(), _namespace.classes.end(), FClassName(_name) );
+		std::vector<T> & v = _namespace->getVector<T>();
 
-		if( it_class_found != _namespace.classes.end() )
+		std::vector<T>::iterator it_found = 
+			std::find_if( v.begin(), v.end(), FClassName(_name) );
+
+		if( it_found != v.end() )
 		{
-			return &*it_class_found;
+			return &*it_found;
 		}
 
-		for( Namespace::TVectorNamespaces::const_iterator
-			it = _namespace.namespaces.begin(),
-			it_end = _namespace.namespaces.end();
+		for( Namespace::TListNamespaces::iterator
+			it = _namespace->namespaces.begin(),
+			it_end = _namespace->namespaces.end();
 		it != it_end;
 		++it )
 		{
-			const Declaration::Class * cs = findClass_ns( (*it), _name );
+			const T * t = s_findTypename<T>( &(*it), _name );
+
+			if( t )
+			{
+				return t;
+			}
+		}
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Declaration::Class * SLAxeGenerator::findClass( const std::string & _name ) const
+	{
+		for( TMapParsers::const_iterator
+			it = m_parsers.begin(),
+			it_end = m_parsers.end();
+		it != it_end;
+		++it )
+		{
+			Declaration::Namespace * ns = it->second->getNamespace();
+			const Declaration::Class * cs = s_findTypename<Class>( ns, _name );
 
 			if( cs )
 			{
 				return cs;
+			}
+		}
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Declaration::Struct * SLAxeGenerator::findStruct( const std::string & _name ) const
+	{
+		for( TMapParsers::const_iterator
+			it = m_parsers.begin(),
+			it_end = m_parsers.end();
+		it != it_end;
+		++it )
+		{
+			Declaration::Namespace * ns = it->second->getNamespace();
+			const Declaration::Struct * st = s_findTypename<Struct>( ns, _name );
+
+			if( st )
+			{
+				return st;
 			}
 		}
 
@@ -1170,7 +1196,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementServant( const Namespace & _namespace, const Class & _class )
+	void SLAxeGenerator::generateImplementServant( const Class & _class )
 	{
 		//	const int enum_method_add_adapter = 0;
 
@@ -1292,7 +1318,7 @@ namespace Axe
 				if( cl.methods.empty() == false )
 				{
 					writeLine();
-					write() << "void s_" << servant_name << "_subMethod_" << cl.name << "_callMethod( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
+					write() << "void s_" << servant_name << "_subMethod_" << cl.name << "_callMethod( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 					write() << "{" << std::endl;
 					write() << "	static_cast<" << writeServantName(cl.name) << " *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );" << std::endl;
 					write() << "}" << std::endl;
@@ -1459,7 +1485,7 @@ namespace Axe
 			write() << "};" << std::endl;
 
 			writeLine();
-			write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )" << std::endl;
+			write() << "void " << servant_name << "::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
 			write() << "	Axe::ArchiveInvocation & aw = _session->beginException( _requestId );" << std::endl;		
 			write() << std::endl;
@@ -1574,7 +1600,7 @@ namespace Axe
 		//write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementResponse( const Namespace & _namespace, const Class & _class )
+	void SLAxeGenerator::generateImplementResponse( const Class & _class )
 	{
 		//void response_add_adapter ::response_call( stream_read * _stream )
 		//{
@@ -1794,7 +1820,7 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementProxy( const Namespace & _namespace, const Class & _class )
+	void SLAxeGenerator::generateImplementProxy( const Class & _class )
 	{
 		//	proxy::proxy( std::size_t _id, connection * _cn )
 		//		: proxy_base( _id, _cn){}
@@ -1911,6 +1937,20 @@ namespace Axe
 		write() << "typedef AxeHandle<" << _type << "> " << _type << "Ptr;" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::string SLAxeGenerator::writeStructName( const std::string & _struct )
+	{
+		std::string struct_name = _struct;
+
+		const Declaration::Struct * st = findStruct( _struct );
+
+		if( st->owner != m_namespace )
+		{
+			struct_name = st->owner->name +"::" + struct_name;
+		}
+
+		return struct_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeBellhopName( const std::string & _class, const std::string & _method )
 	{
 		std::string bellhop_name = "Bellhop_" + _class + "_" + _method;
@@ -1920,6 +1960,14 @@ namespace Axe
 	std::string SLAxeGenerator::writeServantName( const std::string & _class )
 	{
 		std::string servant_name = "Servant_" + _class;
+
+		const Declaration::Class * cl = findClass( _class );
+
+		if( cl->owner != m_namespace )
+		{
+			servant_name = cl->owner->name +"::" + servant_name;
+		}
+		
 		return servant_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1931,12 +1979,19 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeProxyName( const std::string & _class )
 	{
-		if( _class == "Servant" )
+		if( _class == "Proxy" )
 		{
 			return "Axe::Proxy";
 		}
 	
 		std::string proxy_name = "Proxy_" + _class;
+
+		const Declaration::Class * cl = findClass( _class );
+
+		if( cl->owner != m_namespace )
+		{
+			proxy_name = cl->owner->name +"::" + proxy_name;
+		}
 
 		return proxy_name;
 	}
@@ -1973,26 +2028,27 @@ namespace Axe
 		if( it_typedef_found != m_typedefTypes.end() )
 		{
 			std::string ret_type = "const ";
+
 			ret_type += _type;
 			ret_type += " &";
 
 			return ret_type;
 		}
 
-		TSetTypes::iterator it_struct_found = m_structTypes.find( _type );
+		const Declaration::Struct * st = findStruct( _type );
 
-		if( it_struct_found != m_structTypes.end() )
+		if( st )
 		{
 			std::string ret_type = "const ";
-			ret_type += _type;
+			ret_type += writeStructName(_type);
 			ret_type += " &";
 
 			return ret_type;
 		}
 
-		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
+		const Declaration::Class * cl = findClass( _type );
 
-		if( it_class_found != m_classTypes.end() )
+		if( cl )
 		{
 			std::string ret_type = "const ";
 			ret_type += writeProxyName(_type);
@@ -2024,9 +2080,18 @@ namespace Axe
 			}
 		}
 
-		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
+		const Declaration::Struct * st = findStruct( _type );
 
-		if( it_class_found != m_classTypes.end() )
+		if( st )
+		{
+			std::string ret_type = writeStructName(_type);
+
+			return ret_type;
+		}
+
+		const Declaration::Class * cl = findClass( _type );
+
+		if( cl )
 		{
 			std::string ret_type = writeProxyName(_type);
 			ret_type += "Ptr";
@@ -2049,9 +2114,9 @@ namespace Axe
 			return ret_type;
 		}
 
-		TSetTypes::iterator it_class_found = m_classTypes.find( _type );
+		const Declaration::Class * cl = findClass( _type );
 
-		if( it_class_found != m_classTypes.end() )
+		if( cl )
 		{
 			std::string ret_type = writeProxyName(_type);
 			ret_type += "Ptr";
@@ -2101,7 +2166,10 @@ namespace Axe
 	}
 	void SLAxeGenerator::decrefTabs()
 	{
-		--m_tabs;
+		if( --m_tabs == -1 )
+		{
+			printf("Bad");
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::stringstream & SLAxeGenerator::write()

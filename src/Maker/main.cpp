@@ -6,8 +6,9 @@ void main()
 {
 	Axe::SLAxe slaxe;
 
-	slaxe.make( "MathDef.axe", "../AxeProtocols/", "MathDef" );
-	slaxe.make( "PathFinderManager.axe", "../AxeProtocols/", "PathFinderManager" );
+	slaxe.make( "Common.axe", "../AxeProtocols/", "Common" );
+	slaxe.make( "PathFinderSystem.axe", "../AxeProtocols/", "PathFinderSystem" );
+	slaxe.make( "AOISystem.axe", "../AxeProtocols/", "AOISystem" );
 
 	slaxe.make( "EvictorManager.axe", "../AxeProtocols/", "EvictorManager" );
 	slaxe.make( "GridManager.axe", "../AxeProtocols/", "GridManager" );

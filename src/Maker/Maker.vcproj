@@ -172,6 +172,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\AOISystem.axe"
+			>
+		</File>
+		<File
+			RelativePath=".\Common.axe"
+			>
+		</File>
+		<File
 			RelativePath=".\EvictorManager.axe"
 			>
 		</File>
@@ -184,11 +192,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\MathDef.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\PathFinderManager.axe"
+			RelativePath=".\PathFinderSystem.axe"
 			>
 		</File>
 		<File

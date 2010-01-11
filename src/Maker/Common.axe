@@ -1,0 +1,30 @@
+namespace AxeProtocol
+{
+	struct Direction
+	{
+		float x;
+		float y;
+		float z;
+	};
+	
+	struct Position
+	{
+		float x;
+		float y;
+		float z;
+	};
+	
+	struct Pivot
+	{
+		Position pos;
+		Direction dir;
+	};
+	
+	struct MoveDesc 
+	{
+		Position pos;
+		Direction dir;
+		
+		double timeStamp;
+	};	
+}

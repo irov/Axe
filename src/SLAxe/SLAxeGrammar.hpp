@@ -27,19 +27,12 @@ namespace Axe
 					;
 
 				definition_frame
-					= sinclude | sexception | sclass | sstruct | typedefs | namespaces
+					= simport | sexception | sclass | sstruct | typedefs | namespaces
 					;
 
-				sinclude
-					= '#' >> include_helper
-					;
-
-				include_helper 
-					= "include" >> include_body
-					;
-
-				include_body
-					= '"' >> name[ boost::bind( &SLAxeParser::add_include_path, parser, _1, _2 ) ] >> '"' 
+				simport
+					= "import"
+					>> name[ boost::bind( &SLAxeParser::add_include_path, parser, _1, _2 ) ]
 					;
 
 				sstruct
@@ -144,7 +137,7 @@ namespace Axe
 
 		protected:
 			boost::spirit::rule<T> root, definition_frame, 
-				sinclude, sstruct, sclass, sexception, typedefs, namespaces,
+				simport, sstruct, sclass, sexception, typedefs, namespaces,
 				parents, parent, struct_body, class_body, include_helper, include_body,
 				member, method, method_argument_list, method_argument, throws_body, throws_name,
 

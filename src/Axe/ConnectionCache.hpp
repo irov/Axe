@@ -2,6 +2,8 @@
 
 #	include <AxeUtil/Shared.hpp>
 
+#	include <map>
+
 namespace Axe
 {
 	typedef AxeHandle<class Connection> ConnectionPtr;

@@ -176,6 +176,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="ForeachPoolMap"
+			>
+			<File
+				RelativePath=".\ForeachPoolMap.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

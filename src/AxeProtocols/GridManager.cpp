@@ -222,7 +222,7 @@ namespace Axe
 		, &s_Servant_GridManager_writeException_getServantTypeId
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_GridManager::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
+	void Servant_GridManager::responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex )
 	{
 		Axe::ArchiveInvocation & aw = _session->beginException( _requestId );
 	
@@ -321,7 +321,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Bellhop_GridManager_getUnique::response( const Axe::ProxyPtr & _arg0 )
+	void Bellhop_GridManager_getUnique::response( __compiler__type__error _arg0 )
 	{
 		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
 		ar << _arg0;
@@ -489,7 +489,7 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_GridManager_getUniquePtr>::response( const Axe::ProxyPtr & _arg0 )
+	void BindResponse<Response_GridManager_getUniquePtr>::response( __compiler__type__error _arg0 )
 	{
 		m_response( _arg0 );
 	}
@@ -581,7 +581,7 @@ namespace Axe
 		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Proxy_GridManager::addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, const Axe::ProxyPtr & _unique )
+	void Proxy_GridManager::addUnique_async( const Response_GridManager_addUniquePtr & _response, const std::string & _name, __compiler__type__error _unique )
 	{
 		Axe::ArchiveInvocation & ar = this->beginMessage( 3, _response );
 		ar << _name;

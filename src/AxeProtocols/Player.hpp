@@ -30,14 +30,14 @@ namespace Axe
 	typedef AxeHandle<class Bellhop_Player_test> Bellhop_Player_testPtr;
 	
 	class Servant_Player
-		: public Servant_Session
+		: public Axe::Servant_Session
 	{
 	public:
 		virtual void test_async( const Bellhop_Player_testPtr & _cb, const PlayerInfo & info ) = 0;
 	
 	public:
-		void callMethod( std::size_t _methodId , std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
-		void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex ) override;
+		void callMethod( std::size_t _methodId , std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
+		void responseException( std::size_t _methodId, std::size_t _requestId, const Axe::SessionPtr & _session, const Axe::Exception & _ex ) override;
 	public:
 		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	};
@@ -96,7 +96,7 @@ namespace Axe
 	};
 	
 	class Proxy_Player
-		:	public Proxy_Session
+		:	public Axe::Proxy_Session
 	{
 	public:
 		Proxy_Player( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );

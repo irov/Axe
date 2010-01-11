@@ -10,7 +10,7 @@ namespace Axe
 		SLAxeParser();
 
 	public:
-		const Declaration::Namespace & getNamespace() const;
+		Declaration::Namespace * getNamespace() ;
 		const Declaration::TVectorIncludes & getIncludes() const;
 
 	public:
@@ -51,7 +51,9 @@ namespace Axe
 
 	protected:
 		Declaration::TVectorIncludes m_includes;
-		Declaration::TVectorNamespaces m_namespaces;
+
+		typedef std::list<Declaration::Namespace *> TListNamespaceStack;
+		TListNamespaceStack m_namespaces;
 
 		std::string m_inheritance;
 

@@ -20,20 +20,11 @@ namespace Axe
 		void generateHeader( const std::string & _path, const std::string & _fileName );
 		void generateImplement( const std::string & _fileName );
 
-	public:
-		std::stringstream & getStream();
-
-	protected:
-		const Declaration::Class * findClass( const std::string & _name ) const;
-		const Declaration::Class * findClass_ns( const Declaration::Namespace & _namespace, const std::string & _name ) const;
-
-	protected:
-		typedef std::vector<const Declaration::Class *> TVectorBaseClasses;
-		void getBasesClass( const Declaration::Class & _class, TVectorBaseClasses & _out );
-
 	protected:
 		void generateHeaderIncludes( const Declaration::TVectorIncludes & _includes, const std::string & _path );
-		void generateHeaderNamespace( const Declaration::Namespace & _namespace );
+
+	protected:
+		void generateHeaderNamespace( Declaration::Namespace * _namespace );
 		void generateHeaderStruct( const Declaration::Struct & _struct );
 		void generateHeaderTypedef( const Declaration::Typedef & _typedef );
 		void generateHeaderException( const Declaration::Exception & _class );
@@ -45,19 +36,32 @@ namespace Axe
 		void generateHeaderProxy( const Declaration::Class & _class );
 
 	protected:
-		void generateImplementNamespace( const Declaration::Namespace & _namespace );
-		void generateImplementStruct( const Declaration::Namespace & _namespace, const Declaration::Struct & _struct );
-		void generateImplementClass( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
-		void generateImplementException( const Declaration::Namespace & _namespace, const Declaration::Exception & _ex );
+		void generateImplementNamespace( Declaration::Namespace * _namespace );
+		void generateImplementStruct( const Declaration::Struct & _struct );
+		void generateImplementClass( const Declaration::Class & _class );
+		void generateImplementException( const Declaration::Exception & _ex );
 		
-		void generateImplementBellhop( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
-		void generateImplementServant( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
-		void generateImplementResponse( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
-		void generateImplementProxy( const Declaration::Namespace & _namespace, const Declaration::Class & _class );
+		void generateImplementBellhop( const Declaration::Class & _class );
+		void generateImplementServant( const Declaration::Class & _class );
+		void generateImplementResponse( const Declaration::Class & _class );
+		void generateImplementProxy( const Declaration::Class & _class );
 
+	public:
+		std::stringstream & getStream();
+
+	protected:
+		const Declaration::Class * findClass( const std::string & _name ) const;
+		const Declaration::Struct * findStruct( const std::string & _name ) const;
+
+	protected:
+		typedef std::vector<const Declaration::Class *> TVectorBaseClasses;
+		void getBasesClass( const Declaration::Class & _class, TVectorBaseClasses & _out );
 
 	protected:
 		void writeTypedefHandle( const std::string & _type );
+
+	protected:
+		std::string writeStructName( const std::string & _struct );
 
 	protected:
 		std::string writeBellhopName( const std::string & _class, const std::string & _method );
@@ -83,6 +87,7 @@ namespace Axe
 		std::stringstream & write();
 
 	protected:
+		Declaration::Namespace * m_namespace;
 		SLAxeParser * m_parser;
 		TMapParsers m_parsers;
 

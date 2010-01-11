@@ -10,10 +10,10 @@ namespace Axe
 	SLAxeParser::SLAxeParser()
 		:  m_outArgument(false)
 	{
-		m_namespaces.push_back( Namespace(0) );
+		m_namespaces.push_back( new Namespace(0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Namespace & SLAxeParser::getNamespace() const
+	Namespace * SLAxeParser::getNamespace()
 	{
 		return m_namespaces.front();
 	}
@@ -30,10 +30,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_class( char const* str, char const* end )
 	{	
-		Namespace & nm = m_namespaces.back();
+		Namespace * nm = m_namespaces.back();
 
-		nm.classes.push_back( m_class );
-		nm.order.push_back( DECL_CLASS );
+		m_class.owner = nm;
+
+		nm->classes.push_back( m_class );
+		nm->order.push_back( DECL_CLASS );
 
 		m_class = Class();
 	}
@@ -45,10 +47,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_struct( char const* str, char const* end )
 	{	
-		Namespace & nm = m_namespaces.back();
+		Namespace * nm = m_namespaces.back();
 
-		nm.structs.push_back( m_struct );
-		nm.order.push_back( DECL_STRUCT );
+		m_struct.owner = nm;
+
+		nm->structs.push_back( m_struct );
+		nm->order.push_back( DECL_STRUCT );
 
 		m_struct = Struct();
 	}
@@ -60,10 +64,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_exception( char const* str, char const* end )
 	{
-		Namespace & nm = m_namespaces.back();
+		Namespace * nm = m_namespaces.back();
 
-		nm.exceptions.push_back( m_exception );
-		nm.order.push_back( DECL_EXCEPTION );
+		m_exception.owner = nm;
+
+		nm->exceptions.push_back( m_exception );
+		nm->order.push_back( DECL_EXCEPTION );
 
 		m_exception = Exception();
 	}
@@ -78,20 +84,22 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::begin_namespace( char const* str, char const* end )
 	{
-		Namespace & back_nm = m_namespaces.back();
-		m_namespaces.push_back( Namespace(&back_nm) );
+		Namespace * ns = m_namespaces.back();
+		ns->namespaces.push_back( Namespace(ns) );
+		ns->order.push_back( DECL_NAMESPACE );
 
-		Namespace & nm = m_namespaces.back();
+		m_namespaces.push_back( &ns->namespaces.back() );
 
-		nm.name.assign( str, end );
+		Namespace * nm = m_namespaces.back();
+		nm->name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::end_namespace( char const* str, char const* end )
 	{
-		Namespace & nm_parent = *(--(--m_namespaces.end()));
+		//Namespace * nm_parent = *(--(--m_namespaces.end()));
 
-		nm_parent.namespaces.push_back( m_namespaces.back() );
-		nm_parent.order.push_back( DECL_NAMESPACE );
+		//nm_parent.namespaces.push_back( m_namespaces.back() );
+		//nm_parent.order.push_back( DECL_NAMESPACE );
 
 		m_namespaces.pop_back();
 	}
@@ -154,10 +162,12 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_typedef( char const* str, char const* end )
 	{
-		Namespace & nm = m_namespaces.back();
+		Namespace * nm = m_namespaces.back();
 
-		nm.typedefs.push_back( m_typedef );
-		nm.order.push_back( DECL_TYPEDEF );
+		m_typedef.owner = nm;
+
+		nm->typedefs.push_back( m_typedef );
+		nm->order.push_back( DECL_TYPEDEF );
 		
 		m_typedef = Typedef();
 	}
