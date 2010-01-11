@@ -1,0 +1,43 @@
+#	include "MathDef"
+
+namespace Axe
+{
+	struct PathFinderAvatarDesc
+	{
+		Position pos;
+		float speed;
+		float radius;
+	};
+	
+	typedef int AvatarId;
+
+	struct PathFinderCluster
+	{
+		int type;
+	};
+
+	typedef vector<PathFinderCluster> TVectorPathFinderClusters;
+
+	struct PathFinderSpaceDesc
+	{
+		int width;
+		int height;
+		
+		TVectorPathFinderClusters m_clusters;
+	};
+
+	class PathFinderSpace
+	{
+		AvatarId addAvatar( PathFinderAvatarDesc _desc );
+	
+		void moveTo( AvatarId _id, Position _pos ); 	
+	
+	
+		PathFinderSpaceDesc m_desc;
+	};
+	
+	class PathFinderManager
+	{
+		PathFinderSpace createSpace( PathFinderSpaceDesc _desc );
+	};
+}
