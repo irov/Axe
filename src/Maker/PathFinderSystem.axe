@@ -1,6 +1,6 @@
 import Common
 
-namespace Axe
+namespace AxeLibProtocol
 {
 	struct PathFinderAvatarDesc
 	{
@@ -29,7 +29,6 @@ namespace Axe
 	class PathFinderSpace
 	{
 		AvatarId addAvatar( PathFinderAvatarDesc _desc );
-	
 		void moveTo( AvatarId _id, Position _pos ); 	
 	
 	

@@ -2,10 +2,14 @@ import Common
 
 namespace AxeLibProtocol
 {
+	typedef int AvatarId;
+	typedef int UserId;
+	typedef int TypeId;
+
 	struct AOIPropagateAddAvatar
 	{
-		int userId; 
-		int typeId;
+		UserId userId; 
+		AvatarId typeId;
 			
 		Position pos;
 		Direction dir;
@@ -13,12 +17,12 @@ namespace AxeLibProtocol
 
 	struct AOIPropagateRemoveAvatar
 	{
-		int userId;
+		UserId userId;
 	};
 	
 	struct AOIPropagateMoveAvatar
 	{
-		int userId;
+		UserId userId;
 		MoveDesc steps;
 	};
 	
@@ -35,7 +39,7 @@ namespace AxeLibProtocol
 
 	struct AOIAvatarDesc
 	{	
-		int typeId;
+		TypeId typeId;
 	
 		MoveDesc desc;
 		float radius;
@@ -48,11 +52,11 @@ namespace AxeLibProtocol
 	
 	class AOITile
 	{	
-		int insertAvatar( int _userId, AOIAvatarDesc _desc, bool _master );
-		void removeAvatar( int _avatarId );
+		AvatarId insertAvatar( UserId _userId, AOIAvatarDesc _desc, bool _master );
+		void removeAvatar( AvatarId _avatarId );
 		void moveAvatar( AOIAvatarMoveDesc _desc );
 		
-		AOIPropagateDiffAvatar updateAvatar( int _avatarId );
+		AOIPropagateDiffAvatar updateAvatar( AvatarId _avatarId );
 	};
 	
 	class AOITileFactory
@@ -63,11 +67,11 @@ namespace AxeLibProtocol
 	
 	class AOISpace
 	{
-		int insertAvatar( Proxy _userPrx, AOIAvatarDesc _desc );
-		void removeAvatar( int _userId );
+		UserId insertAvatar( Proxy _userPrx, AOIAvatarDesc _desc );
+		void removeAvatar( UserId _userId );
 		
-		void moveAvatar( int _userId, AOIAvatarMoveDesc _moveDesc );
-		AOIPropagateDiffAvatar updateAvatar( int _userId );
+		void moveAvatar( UserId _userId, AOIAvatarMoveDesc _moveDesc );
+		AOIPropagateDiffAvatar updateAvatar( UserId _userId );
 
 		AOITile finalize();
 		
