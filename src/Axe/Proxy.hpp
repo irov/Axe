@@ -45,7 +45,7 @@ namespace Axe
 		return new element_type( servantId, provider );
 	}
 
-	const ProxyHostProviderPtr & getProxyHostProvider( ArchiveDispatcher & ar, std::size_t & servantId );
+	const ProxyHostProviderPtr & makeProxyHostProvider( ArchiveDispatcher & ar, std::size_t & servantId );
 
 	template<class T>
 	T makeProxy( ArchiveDispatcher & _ar )
@@ -53,12 +53,13 @@ namespace Axe
 		std::size_t servantId;
 
 		const ProxyHostProviderPtr & provider = 
-			getProxyHostProvider( _ar, servantId );
+			makeProxyHostProvider( _ar, servantId );
 
 		typedef typename T::element_type El;
 
 		return new El( servantId, provider );
 	}
 
-	void operator << ( ArchiveInvocation & _ar, const ProxyPtr &  _value );
+	void operator >> ( ArchiveDispatcher & _ar, ProxyPtr & _value );
+	void operator << ( ArchiveInvocation & _ar, const ProxyPtr & _value );
 }

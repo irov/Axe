@@ -25,6 +25,8 @@ namespace Axe
 
 	protected:
 		void generateHeaderNamespace( Declaration::Namespace * _namespace );
+		
+
 		void generateHeaderStruct( const Declaration::Struct & _struct );
 		void generateHeaderTypedef( const Declaration::Typedef & _typedef );
 		void generateHeaderException( const Declaration::Exception & _class );
@@ -34,6 +36,12 @@ namespace Axe
 		void generateHeaderServant( const Declaration::Class & _class );
 		void generateHeaderResponse( const Declaration::Class & _class );
 		void generateHeaderProxy( const Declaration::Class & _class );
+
+	protected:
+		void generateHeaderNamespaceHelper( Declaration::Namespace * _namespace );
+		void generateHeaderStructHelper( const Declaration::Struct & _struct );
+		void generateHeaderClassHelper( const Declaration::Class & _class );
+		
 
 	protected:
 		void generateImplementNamespace( Declaration::Namespace * _namespace );
@@ -46,12 +54,20 @@ namespace Axe
 		void generateImplementResponse( const Declaration::Class & _class );
 		void generateImplementProxy( const Declaration::Class & _class );
 
+	protected:
+		void generateImplementNamespaceHelper( Declaration::Namespace * _namespace );
+		void generateImplementStructHelper( const Declaration::Struct & _struct );
+		void generateImplementClassHelper( const Declaration::Class & _class );
+
 	public:
 		std::stringstream & getStream();
 
 	protected:
+		const Declaration::Typedef * findTypedef( const std::string & _name ) const;
 		const Declaration::Class * findClass( const std::string & _name ) const;
 		const Declaration::Struct * findStruct( const std::string & _name ) const;
+
+		std::string writeNamespaceType( const Declaration::Namespace * _ns );
 
 	protected:
 		typedef std::vector<const Declaration::Class *> TVectorBaseClasses;
@@ -61,6 +77,7 @@ namespace Axe
 		void writeTypedefHandle( const std::string & _type );
 
 	protected:
+		std::string writeTypedefName( const std::string & _typedef );
 		std::string writeStructName( const std::string & _struct );
 
 	protected:
@@ -88,6 +105,7 @@ namespace Axe
 
 	protected:
 		Declaration::Namespace * m_namespace;
+		Declaration::Namespace * m_namespaceAxe;
 		SLAxeParser * m_parser;
 		TMapParsers m_parsers;
 
@@ -100,9 +118,5 @@ namespace Axe
 		TSetTypes m_podTypes;
 		TSetTypes m_specTypes;
 		TSetTypes m_templatesTypes;
-
-		TSetTypes m_typedefTypes;
-		TSetTypes m_structTypes;
-		TSetTypes m_classTypes;
 	};
 }

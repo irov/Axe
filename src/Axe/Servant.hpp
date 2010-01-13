@@ -49,6 +49,4 @@ namespace Axe
 	};
 
 	typedef AxeHandle<Servant> ServantPtr;
-
-	void operator << ( ArchiveInvocation & _ar, const ServantPtr & _value );
 }
