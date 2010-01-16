@@ -15,11 +15,13 @@ namespace Axe
 	{
 	public:
 		void rethrow() const override;
-		std::size_t getId() const override;
 
 	public:
 		void write( ArchiveInvocation & _ar ) const override;
 		void read( ArchiveDispatcher & _ar ) override;
+
+	public:
+		static const std::size_t exceptionId = 10;
 
 	public:
 		std::size_t servantId;
@@ -31,11 +33,13 @@ namespace Axe
 	{
 	public:
 		void rethrow() const override;
-		std::size_t getId() const override;
 
 	public:
 		void write( ArchiveInvocation & _ar ) const override;
 		void read( ArchiveDispatcher & _ar ) override;
+
+	public:
+		static const std::size_t exceptionId = 11;
 
 	public:
 		std::size_t servantId;

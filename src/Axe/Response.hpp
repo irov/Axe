@@ -12,13 +12,13 @@ namespace Axe
 	{
 	public:
 		virtual void responseCall( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
-		virtual void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
+		virtual void exceptionCall( std::size_t _exceptionId, ArchiveDispatcher & _ar, std::size_t _size );
+
+	public:
+		bool dispatch( ArchiveDispatcher & _ar, std::size_t _size );
 
 	protected:
 		virtual void throw_exception( const Exception & _ex ) = 0;
-
-	protected:
-		bool exceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar );
 	};
 
 	template<class F>

@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libboost_system-vc80-mt-gd-1_38.lib"
+				AdditionalDependencies="libboost_system-vc80-mt-gd-1_41.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

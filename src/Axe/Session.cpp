@@ -38,10 +38,8 @@ namespace Axe
 	ArchiveInvocation & Session::beginResponse( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
-
-		m_streamWrite.writePOD( true );
-
 		m_streamWrite.writeSize( _responseId );
+		m_streamWrite.writePOD( true );
 
 		return m_streamWrite;
 	}
@@ -49,10 +47,8 @@ namespace Axe
 	ArchiveInvocation & Session::beginException( std::size_t _responseId )
 	{
 		m_streamWrite.begin();
-
-		m_streamWrite.writePOD( false );
-
 		m_streamWrite.writeSize( _responseId );
+		m_streamWrite.writePOD( false );
 
 		return m_streamWrite;
 	}

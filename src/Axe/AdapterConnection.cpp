@@ -10,6 +10,8 @@
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
 
+#	include <Axe/DispatcherException.hpp>
+
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -55,9 +57,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void AdapterConnection::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		bool true_response;
-		_ar.read( true_response );
-
 		std::size_t responseId;
 		_ar.readSize( responseId );
 
@@ -65,21 +64,15 @@ namespace Axe
 
 		if( it_found == m_dispatch.end() )
 		{
-			throw CriticalException("AdapterConnection::dispatchMessage unknown responseId");
+			throw ProtocolMismatchException();
 		}
 
 		const ResponsePtr & response = it_found->second;
 
-		if( true_response )
+		if( response->dispatch( _ar, _size ) == true )
 		{
-			response->responseCall( _ar, _size );
+			m_dispatch.erase( it_found );
 		}
-		else
-		{
-			response->exceptionCall( _ar, _size );
-		}
-
-		m_dispatch.erase( it_found );
 
 		_ar.clear();
 	}

@@ -13,11 +13,6 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t DispatcherServantRelocateException::getId() const
-	{
-		return 10;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DispatcherServantRelocateException::write( ArchiveInvocation & _ar ) const
 	{
 		_ar << servantId;
@@ -33,11 +28,6 @@ namespace Axe
 	void DispatcherObjectNotFoundException::rethrow() const
 	{
 		throw *this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t DispatcherObjectNotFoundException::getId() const
-	{
-		return 11;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DispatcherObjectNotFoundException::write( ArchiveInvocation & _ar ) const

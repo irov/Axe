@@ -13,6 +13,7 @@
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Servant.hpp>
 #	include <Axe/Response.hpp>
+#	include <Axe/RouterResponse.hpp>
 
 #	include <Axe/DispatcherException.hpp>
 
@@ -137,7 +138,7 @@ namespace Axe
 		{
 			servant->callMethod( _methodId, _requestId, _archive, _session );
 		}
-		catch( const ProtocolException & _ex )
+		catch( const ProtocolCallException & _ex )
 		{
 			servant->responseException( _methodId, _requestId, _session, _ex );
 		}
@@ -151,51 +152,6 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ResponseReplaceMethod
-			: public Response
-		{
-		public:
-			ResponseReplaceMethod( std::size_t _requestId, const SessionPtr & _session )
-				: m_requestId(_requestId)
-				, m_session(_session)
-			{
-			}
-
-		protected:
-			void responseCall( ArchiveDispatcher & _ar, std::size_t _size ) override
-			{
-				ArchiveInvocation & aw = m_session->beginResponse( m_requestId );
-
-				AxeUtil::Archive::iterator it_select = aw.selectArchive( _size );
-				_ar.readArchive( it_select, _size );
-
-				m_session->process();
-			}
-
-			void exceptionCall( ArchiveDispatcher & _ar, std::size_t _size ) override
-			{
-				ArchiveInvocation & aw = m_session->beginException( m_requestId );
-
-				AxeUtil::Archive::iterator it_select = aw.selectArchive( _size );
-				_ar.readArchive( it_select, _size );
-
-				m_session->process();
-			}
-
-		protected:
-			void throw_exception( const Exception & _ex ) override
-			{
-				//Empty
-			}
-
-		protected:
-			std::size_t m_requestId;
-			SessionPtr m_session;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Host::replaceMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session, std::size_t _hostId )
 	{
 		{
@@ -203,7 +159,7 @@ namespace Axe
 
 			const ConnectionPtr & connection = connectionCache->getConnection( _hostId );
 
-			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new ResponseReplaceMethod( _requestId, _session ) );
+			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new RouterResponse( _requestId, _session ) );
 
 			ar << _archive;
 
@@ -217,7 +173,7 @@ namespace Axe
 			ex.servantId = _servantId;
 			ex.hostId = _hostId;
 			
-			ar.writeSize( ex.getId() );
+			ar.writeSize( DispatcherServantRelocateException::exceptionId );
 			ex.write( ar );
 
 			_session->process();
@@ -232,7 +188,7 @@ namespace Axe
 		ex.servantId = _servantId;
 		ex.hostId = m_hostId;
 
-		ar.writeSize( ex.getId() );
+		ar.writeSize( DispatcherObjectNotFoundException::exceptionId );
 		ex.write( ar );
 
 		_session->process();

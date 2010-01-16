@@ -33,6 +33,9 @@ namespace Axe
 
 		const ProxyHostProviderPtr & getProxyHostProvider( std::size_t _servantId, std::size_t _hostId ); 
 
+	public:
+		void relocateProxy( std::size_t _servantId, std::size_t _hostId );
+
 	protected:
 		typedef std::map<std::size_t, ConnectionPtr> TMapConnections;
 		TMapConnections m_connections;

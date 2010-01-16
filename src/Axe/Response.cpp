@@ -1,29 +1,56 @@
 #	include "pch.hpp"
 
 #	include <Axe/Response.hpp>
+
+#	include <Axe/ArchiveDispatcher.hpp>
+
 #	include <Axe/Exception.hpp>
+#	include <Axe/DispatcherException.hpp>
 
 namespace Axe
 {
-	bool Response::exceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar )
+	//////////////////////////////////////////////////////////////////////////
+	void Response::exceptionCall( std::size_t _exceptionId, ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		switch( _exceptionId )
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Response::dispatch( ArchiveDispatcher & _ar, std::size_t _size )
+	{
+		bool successful;
+		_ar.read( successful );
+
+		if( successful )
 		{
-		case 0:
-			{
-				Axe::UnknownException ex;
-				ex.read( _ar );
-				this->throw_exception( ex );
-			}break;
-		case 1:
-			{
-				Axe::LocalException ex;
-				ex.read( _ar );
-				this->throw_exception( ex );
-			}break;
-		default:
-			return false;
-		};
+			this->responseCall( _ar, _size );
+			return true;
+		}
+
+		std::size_t exceptionId;
+		_ar.readSize( exceptionId );
+
+		if( exceptionId == DispatcherServantRelocateException::exceptionId )
+		{
+			DispatcherServantRelocateException ex;
+			ex.read( _ar );
+
+			const ConnectionCachePtr & connectionCache = _ar.getConnectionCache();
+
+			connectionCache->relocateProxy( ex.servantId, ex.hostId );
+
+			return false; //wait next response
+		}
+
+		try
+		{
+			readExceptionFilter( exceptionId, _ar );
+
+			this->exceptionCall( exceptionId, _ar, _size );
+		}
+		catch( const Exception & _ex )
+		{
+			this->throw_exception( _ex );
+		}
 
 		return true;
 	}

@@ -309,7 +309,7 @@ namespace Axe
 		write() << std::endl;
 
 		write() << "class " + _ex.name << std::endl;
-		write() << "	: virtual public Axe::ProtocolException" << std::endl;
+		write() << "	: virtual public Axe::ProtocolCallException" << std::endl;
 
 
 		for( TVectorParents::const_iterator
@@ -707,7 +707,12 @@ namespace Axe
 			write() << std::endl;
 			write() << "public:" << std::endl;
 			write() << "	void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;" << std::endl;
-			write() << "	void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;" << std::endl;
+
+			if( mt.exceptions.empty() == false )
+			{
+				write() << "	void exceptionCall( std::size_t _exceptionId, Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;" << std::endl;
+			}
+
 			write() << "};" << std::endl;
 			write() << std::endl;
 			writeTypedefHandle( response_name );
@@ -1788,22 +1793,13 @@ namespace Axe
 
 			m_stream << ");" << std::endl;
 			write() << "}" << std::endl;
-			writeLine();
-			write() << "void " << response_name << "::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )" << std::endl;
-			write() << "{" << std::endl;
-			write() << "	std::size_t exceptionId;" << std::endl;
-			write() << "	_ar.readSize( exceptionId );" << std::endl;
-			write() << std::endl;
-
-			write() << "	if( this->exceptionFilter( exceptionId, _ar ) == true )" << std::endl;
-			write() << "	{" << std::endl;
-			write() << "		return;" << std::endl;
-			write() << "	}" << std::endl;
 
 			if( mt.exceptions.empty() == false )
 			{
-				write() << std::endl;
-				write() << "	switch( exceptionId )" << std::endl;
+				writeLine();
+				write() << "void " << response_name << "::exceptionCall( std::size_t _exceptionId, Axe::ArchiveDispatcher & _ar, std::size_t _size )" << std::endl;
+				write() << "{" << std::endl;
+				write() << "	switch( _exceptionId )" << std::endl;
 				write() << "	{" << std::endl;
 
 				for( TVectorMethodExceptions::const_iterator
@@ -1825,9 +1821,8 @@ namespace Axe
 				}
 
 				write() << "	};" << std::endl;
+				write() << "}" << std::endl;
 			}
-
-			write() << "}" << std::endl;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

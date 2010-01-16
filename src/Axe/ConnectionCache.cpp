@@ -33,7 +33,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	const ProxyHostProviderPtr & ConnectionCache::getProxyHostProvider( std::size_t _servantId, std::size_t _hostId )
 	{
-		TMapProxyHostProviders::iterator it_found = m_proxyHostProviders.find( _servantId );
+		TMapProxyHostProviders::const_iterator it_found = m_proxyHostProviders.find( _servantId );
 
 		if( it_found == m_proxyHostProviders.end() )
 		{
@@ -45,5 +45,19 @@ namespace Axe
 		}
 
 		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ConnectionCache::relocateProxy( std::size_t _servantId, std::size_t _hostId )
+	{
+		TMapProxyHostProviders::iterator it_found = m_proxyHostProviders.find( _servantId );
+
+		if( it_found == m_proxyHostProviders.end() )
+		{
+			return;
+		}
+
+		const ConnectionPtr & connection = this->getConnection( _hostId );
+
+		it_found->second->setConnection( connection );
 	}
 }

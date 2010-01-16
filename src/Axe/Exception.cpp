@@ -10,13 +10,14 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	LocalException::LocalException()
+	void EmptyException::write( ArchiveInvocation & _ar ) const
 	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LocalException::LocalException( const std::string & _message )
-		: m_message(_message)
+	void EmptyException::read( ArchiveDispatcher & _ar )
 	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LocalException::rethrow() const
@@ -24,24 +25,14 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t LocalException::getId() const
-	{
-		return 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void LocalException::write( ArchiveInvocation & _aw ) const
 	{
-		_aw << m_message;
+		_aw << message;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LocalException::read( ArchiveDispatcher & _ar )
 	{
-		_ar >> m_message;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	StdException::StdException( const std::string & _message )
-		: LocalException(_message)
-	{
+		_ar >> message;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void StdException::rethrow() const
@@ -49,32 +40,9 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t StdException::getId() const
-	{
-		return 2;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void UnknownException::rethrow() const
 	{
 		throw *this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t UnknownException::getId() const
-	{
-		return 3;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void UnknownException::write( ArchiveInvocation & _ar ) const
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void UnknownException::read( ArchiveDispatcher & _ar )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	CriticalException::CriticalException( const std::string & _message )
-		: LocalException(_message)
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CriticalException::rethrow() const
@@ -82,14 +50,9 @@ namespace Axe
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t CriticalException::getId() const
+	void ProtocolMismatchException::rethrow() const
 	{
-		return 4;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t ProtocolException::getId() const
-	{
-		return 100;
+		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void writeExceptionFilter( ArchiveInvocation & _ar )
@@ -100,23 +63,50 @@ namespace Axe
 		}
 		catch( const ::Axe::Exception & _ex )
 		{
-			::Axe::LocalException rex;
-			_ar.writeSize( rex.getId() );
+			LocalException rex;
+			_ar.writeSize( LocalException::exceptionId );
 			rex.write( _ar );
 		}
 		catch( const std::exception & _ex )
 		{
 			const char * ch_what = _ex.what();
-			std::string message = ( ch_what )?ch_what:std::string();
-			::Axe::StdException rex( message );
-			_ar.writeSize( rex.getId() );
+
+			StdException rex;
+			rex.message = ( ch_what )?ch_what:std::string();
+			
+			_ar.writeSize( StdException::exceptionId );
 			rex.write( _ar );
 		}
 		catch( ... )
 		{
-			::Axe::UnknownException rex;
-			_ar.writeSize( rex.getId() );
+			UnknownException rex;
+			_ar.writeSize( UnknownException::exceptionId );
 			rex.write( _ar );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool readExceptionFilter( std::size_t _exceptionId, ArchiveDispatcher & _ar )
+	{
+
+#	define AXE_CASE_EXCEPTION( D_Exception )\
+		case D_Exception::exceptionId:\
+		{\
+			D_Exception ex;\
+			ex.read( _ar );\
+			throw ex;\
+		}break
+
+		switch( _exceptionId )
+		{
+			AXE_CASE_EXCEPTION(LocalException);
+			AXE_CASE_EXCEPTION(StdException);
+			AXE_CASE_EXCEPTION(UnknownException);
+		default:
+			return false;
+		};
+
+#	undef AXE_CASE_EXCEPTION
+
+		return true;
 	}
 }
