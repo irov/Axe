@@ -5,9 +5,9 @@ namespace Axe
 		string name;
 	};
 
-	exception HostNotFoundException
+	exception AdapterNotFoundException
 	{
-		size_t hostId;
+		size_t adapterId;
 	};
 
 	exception UniqueAlreadyExistException
@@ -28,7 +28,7 @@ namespace Axe
 	class GridManager
 	{
 		size_t addAdapter( string _name, string _endpoint ) throws AdapterAlreadyExistException;
-		string getAdapterEndpoint( size_t _hostId ) throws HostNotFoundException;
+		string getAdapterEndpoint( size_t _adapterId ) throws AdapterNotFoundException;
 
 		void addUnique( string _name, Proxy _unique ) throws UniqueAlreadyExistException;
 		Proxy getUnique( string _name ) throws UniqueNotFoundException;

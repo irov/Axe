@@ -8,12 +8,14 @@ namespace Axe
 	exception EvictingAlreadyRestored
 	{
 		size_t servantId;
-		size_t hostId;
+		size_t adapterId;
 	};
 
 	class EvictorManager
 	{
+		size_t create( size_t _adapterId );
+		
 		void set( size_t _servantId, size_t _typeId, Archive _ar );
-		Archive get( size_t _servantId, size_t _hostId, out size_t _typeId ) throws EvictingNotFoundException, EvictingAlreadyRestored;
+		Archive get( size_t _servantId, size_t _adapterId, out size_t _typeId ) throws EvictingNotFoundException, EvictingAlreadyRestored;
 	};
 }

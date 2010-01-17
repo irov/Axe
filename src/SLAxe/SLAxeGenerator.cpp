@@ -769,7 +769,7 @@ namespace Axe
 
 		write() << "{" << std::endl;
 		write() << "public:" << std::endl;
-		write() << "	" << proxy_name << "( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );" << std::endl;
+		write() << "	" << proxy_name << "( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );" << std::endl;
 		write() << std::endl;
 		write() << "public:" << std::endl;
 
@@ -819,7 +819,7 @@ namespace Axe
 		m_stream << std::endl;
 		m_stream << "#	include <Axe/ArchiveInvocation.hpp>" << std::endl;
 		m_stream << "#	include <Axe/ArchiveDispatcher.hpp>" << std::endl;
-		m_stream << "#	include <Axe/ProxyHostProvider.hpp>" << std::endl;
+		m_stream << "#	include <Axe/ProxyAdapterProvider.hpp>" << std::endl;
 		m_stream << std::endl;
 
 		Namespace * ns = m_parser->getNamespace();
@@ -1862,9 +1862,9 @@ namespace Axe
 		std::string proxy_name = writeProxyName( cl.name );
 
 		writeLine();
-		write() << proxy_name << "::" << proxy_name << "( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )" << std::endl;
+		write() << proxy_name << "::" << proxy_name << "( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider )" << std::endl;
 
-		write() << "	: Axe::Proxy(_id, _hostProvider)" << std::endl;
+		write() << "	: Axe::Proxy(_id, _adapterProvider)" << std::endl;
 
 		for( TVectorParents::const_iterator 
 			it_parent = cl.parents.begin(),
@@ -1876,7 +1876,7 @@ namespace Axe
 
 			std::string parent_name = writeProxyName( pr.name );
 
-			write() << "	, " << parent_name << "(_id, _hostProvider)" << std::endl;
+			write() << "	, " << parent_name << "(_id, _adapterProvider)" << std::endl;
 		}
 
 		write() << "{" << std::endl;
