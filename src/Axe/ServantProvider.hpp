@@ -17,7 +17,7 @@ namespace Axe
 	{
 	public:
 		virtual void onServant( const ServantPtr & _servant ) = 0;
-		virtual void onServantReplace( std::size_t _hostId ) = 0;
+		virtual void onServantReplace( std::size_t _adapterId ) = 0;
 		virtual void onServantNotFound( std::size_t _servantId ) = 0;
 	};
 
@@ -27,10 +27,10 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		ServantProvider( const ServantFactoryPtr & _servantFactory );
+		ServantProvider( const ServantFactoryPtr & _servantFactory, const Proxy_EvictorManagerPtr & _evictorManager );
 
 	public:
-		void get( std::size_t _servantId, std::size_t _hostId, const ServantProviderResponsePtr & _cb );
+		void get( std::size_t _servantId, std::size_t _adapterId, const ServantProviderResponsePtr & _cb );
 
 	protected:
 		void onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId );

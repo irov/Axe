@@ -63,21 +63,21 @@ namespace Axe
 
 		std::size_t size_blob = *_size - sizeof(std::size_t);
 		
-		if( size_blob )
-		{
-			AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
-
-			boost::asio::async_read( m_socket
-				, boost::asio::buffer( blob, size_blob )
-				, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-				, boost::bind( &Session::handleReadPermission, handlePtr(this), boost::asio::placeholders::error )
-				);
-		}
-		else
+		if( size_blob == 0 )
 		{
 			boost::system::error_code ec;
 			this->handleReadPermission( ec );
+			return;
 		}
+
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+
+		boost::asio::async_read( m_socket
+			, boost::asio::buffer( blob, size_blob )
+			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
+			, boost::bind( &Session::handleReadPermission, handlePtr(this), boost::asio::placeholders::error )
+			);
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Session::handleReadPermission( const boost::system::error_code & _ec )

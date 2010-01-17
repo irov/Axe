@@ -36,7 +36,7 @@ namespace Axe
 
 			const ConnectionCachePtr & connectionCache = _ar.getConnectionCache();
 
-			connectionCache->relocateProxy( ex.servantId, ex.hostId );
+			connectionCache->relocateProxy( ex.servantId, ex.adapterId );
 
 			return false; //wait next response
 		}

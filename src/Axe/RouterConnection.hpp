@@ -16,7 +16,7 @@ namespace Axe
 		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password );
 
 	public:
-		ConnectionPtr createProxyConnection( std::size_t _hostId );
+		ConnectionPtr createProxyConnection( std::size_t _adapterId );
 
 	protected:
 		void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) override;

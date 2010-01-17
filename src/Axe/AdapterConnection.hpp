@@ -15,7 +15,7 @@ namespace Axe
 		: public Invocation
 	{
 	public:
-		AdapterConnection( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
+		AdapterConnection( boost::asio::io_service & _service, std::size_t m_adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;		

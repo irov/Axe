@@ -22,14 +22,14 @@ namespace Axe
 		EndpointCache( const Proxy_GridManagerPtr & _gridManager );
 
 	public:
-		void addEndpoint( std::size_t _hostId, const boost::asio::ip::tcp::endpoint & _endpoint );
-		void getEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb );
+		void addEndpoint( std::size_t _adapterId, const boost::asio::ip::tcp::endpoint & _endpoint );
+		void getEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb );
 
 	protected:
-		void getEndpointResponse( const std::string & _endpoint, std::size_t _hostId, const EndpointCallbackPtr & _cb );
+		void getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const EndpointCallbackPtr & _cb );
 
 	protected:
-		void provideEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb );
+		void provideEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb );
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;

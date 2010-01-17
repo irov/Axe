@@ -25,7 +25,7 @@ namespace Axe
 
 	public:
 		std::size_t servantId;
-		std::size_t hostId;
+		std::size_t adapterId;
 	};
 
 	class DispatcherObjectNotFoundException
@@ -43,6 +43,6 @@ namespace Axe
 
 	public:
 		std::size_t servantId;
-		std::size_t hostId;
+		std::size_t adapterId;
 	};
 }

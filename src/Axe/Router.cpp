@@ -8,6 +8,8 @@
 #	include <Axe/RouterSession.hpp>
 
 #	include <Axe/Connection.hpp>
+#	include <Axe/ConnectionCache.hpp>
+
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
 
@@ -58,14 +60,17 @@ namespace Axe
 		std::size_t servantId;
 		std::size_t methodId;
 		std::size_t requestId;
-		std::size_t hostId;
+		std::size_t adapterId;
 
 		_ar.read( servantId);
 		_ar.readSize( methodId);
 		_ar.readSize( requestId);
-		_ar.readSize( hostId );
+		_ar.readSize( adapterId );
 
-		const ConnectionPtr & cn = m_communicator->getConnection( hostId );
+		const ConnectionCachePtr & connectionCache 
+			= m_communicator->getConnectionCache();
+
+		const ConnectionPtr & cn = connectionCache->getConnection( adapterId );
 
 		ResponsePtr response = new RouterResponse( requestId, _session );
 

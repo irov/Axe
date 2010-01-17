@@ -15,8 +15,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
-		: Invocation(_service, _hostId, _endpointCache, _connectionCache)
+	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
+		: Invocation(_service, _adapterId, _endpointCache, _connectionCache)
 		, m_messageEnum(0)
 	{
 	}
@@ -85,7 +85,7 @@ namespace Axe
 	void AdapterConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
 	{
 		printf("Invocation::connectionFailed %d \n"
-			, m_hostId
+			, m_adapterId
 			);
 	}
 }

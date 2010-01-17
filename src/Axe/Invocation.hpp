@@ -13,7 +13,7 @@ namespace Axe
 		, public EndpointCacheResponse
 	{
 	public:
-		Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
+		Invocation( boost::asio::io_service & _service, std::size_t _adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void processMessage() override;

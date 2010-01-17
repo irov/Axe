@@ -12,18 +12,18 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::addEndpoint( std::size_t _hostId, const boost::asio::ip::tcp::endpoint & _endpoint )
+	void EndpointCache::addEndpoint( std::size_t _adapterId, const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
-		m_endpoints.insert( std::make_pair(_hostId, _endpoint) );
+		m_endpoints.insert( std::make_pair(_adapterId, _endpoint) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::getEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::getEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb )
 	{
-		TMapEndpoints::iterator it_found = m_endpoints.find( _hostId );
+		TMapEndpoints::iterator it_found = m_endpoints.find( _adapterId );
 
 		if( it_found == m_endpoints.end() )
 		{
-			this->provideEndpoint( _hostId, _cb );
+			this->provideEndpoint( _adapterId, _cb );
 		}
 		else
 		{
@@ -31,28 +31,28 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::provideEndpoint( std::size_t _hostId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::provideEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb )
 	{
-		TMapWantedEndpoints::iterator it_found = m_wantedEndpoints.find( _hostId );
+		TMapWantedEndpoints::iterator it_found = m_wantedEndpoints.find( _adapterId );
 
 		if( it_found == m_wantedEndpoints.end() )
 		{
 			m_gridManager->getAdapterEndpoint_async( 
-				bindResponse( boost::bind( &EndpointCache::getEndpointResponse, handlePtr(this), _1, _hostId, _cb )
+				bindResponse( boost::bind( &EndpointCache::getEndpointResponse, handlePtr(this), _1, _adapterId, _cb )
 				, noneExceptionFilter() )
-				, _hostId
+				, _adapterId
 				);
 
 			TListEndpointResponses responses;
 			responses.push_back( _cb );
 
-			it_found = m_wantedEndpoints.insert( std::make_pair(_hostId, responses) ).first;
+			it_found = m_wantedEndpoints.insert( std::make_pair(_adapterId, responses) ).first;
 		}
 
 		it_found->second.push_back( _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::getEndpointResponse( const std::string & _endpoint, std::size_t _hostId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const EndpointCallbackPtr & _cb )
 	{
 		std::string addr;
 		unsigned short port;
@@ -66,9 +66,9 @@ namespace Axe
 
 		boost::asio::ip::tcp::endpoint tcp_endpoint( ip_addr, port );
 
-		this->addEndpoint( _hostId, tcp_endpoint );
+		this->addEndpoint( _adapterId, tcp_endpoint );
 
-		TMapWantedEndpoints::iterator it_found = m_wantedEndpoints.find( _hostId );
+		TMapWantedEndpoints::iterator it_found = m_wantedEndpoints.find( _adapterId );
 
 		for( TListEndpointResponses::iterator
 			it = it_found->second.begin(),

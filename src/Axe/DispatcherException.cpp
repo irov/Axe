@@ -16,13 +16,13 @@ namespace Axe
 	void DispatcherServantRelocateException::write( ArchiveInvocation & _ar ) const
 	{
 		_ar << servantId;
-		_ar << hostId;
+		_ar << adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DispatcherServantRelocateException::read( ArchiveDispatcher & _ar )
 	{
 		_ar >> servantId;
-		_ar >> hostId;
+		_ar >> adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DispatcherObjectNotFoundException::rethrow() const
@@ -33,13 +33,13 @@ namespace Axe
 	void DispatcherObjectNotFoundException::write( ArchiveInvocation & _ar ) const
 	{
 		_ar << servantId;
-		_ar << hostId;
+		_ar << adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DispatcherObjectNotFoundException::read( ArchiveDispatcher & _ar )
 	{
 		_ar >> servantId;
-		_ar >> hostId;
+		_ar >> adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 

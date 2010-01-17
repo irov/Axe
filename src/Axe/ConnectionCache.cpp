@@ -2,7 +2,7 @@
 
 #	include <Axe/Connection.hpp>
 #	include <Axe/ConnectionCache.hpp>
-#	include <Axe/ProxyHostProvider.hpp>
+#	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
 {
@@ -12,51 +12,51 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConnectionCache::addConnection( std::size_t _hostId, const ConnectionPtr & _connection )
+	void ConnectionCache::addConnection( std::size_t _adapterId, const ConnectionPtr & _connection )
 	{
-		m_connections.insert( std::make_pair(_hostId, _connection) );
+		m_connections.insert( std::make_pair(_adapterId, _connection) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _hostId )
+	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _adapterId )
 	{
-		TMapConnections::const_iterator it_found = m_connections.find( _hostId );
+		TMapConnections::const_iterator it_found = m_connections.find( _adapterId );
 
 		if( it_found == m_connections.end() )
 		{
-			ConnectionPtr connection = m_provider->createConnection( _hostId );
+			ConnectionPtr connection = m_provider->createConnection( _adapterId );
 
-			it_found = m_connections.insert( std::make_pair(_hostId, connection) ).first;
+			it_found = m_connections.insert( std::make_pair(_adapterId, connection) ).first;
 		}
 
 		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyHostProviderPtr & ConnectionCache::getProxyHostProvider( std::size_t _servantId, std::size_t _hostId )
+	const ProxyAdapterProviderPtr & ConnectionCache::getProxyAdapterProvider( std::size_t _servantId, std::size_t _adapterId )
 	{
-		TMapProxyHostProviders::const_iterator it_found = m_proxyHostProviders.find( _servantId );
+		TMapProxyAdapterProviders::const_iterator it_found = m_proxyAdapterProviders.find( _servantId );
 
-		if( it_found == m_proxyHostProviders.end() )
+		if( it_found == m_proxyAdapterProviders.end() )
 		{
-			const ConnectionPtr & connection = this->getConnection( _hostId );
+			const ConnectionPtr & connection = this->getConnection( _adapterId );
 
-			ProxyHostProviderPtr proxyHostProvider = new ProxyHostProvider( connection );
+			ProxyAdapterProviderPtr provider = new ProxyAdapterProvider( connection );
 
-			it_found = m_proxyHostProviders.insert( std::make_pair(_servantId, proxyHostProvider) ).first;
+			it_found = m_proxyAdapterProviders.insert( std::make_pair(_servantId, provider) ).first;
 		}
 
 		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConnectionCache::relocateProxy( std::size_t _servantId, std::size_t _hostId )
+	void ConnectionCache::relocateProxy( std::size_t _servantId, std::size_t _adapterId )
 	{
-		TMapProxyHostProviders::iterator it_found = m_proxyHostProviders.find( _servantId );
+		TMapProxyAdapterProviders::iterator it_found = m_proxyAdapterProviders.find( _servantId );
 
-		if( it_found == m_proxyHostProviders.end() )
+		if( it_found == m_proxyAdapterProviders.end() )
 		{
 			return;
 		}
 
-		const ConnectionPtr & connection = this->getConnection( _hostId );
+		const ConnectionPtr & connection = this->getConnection( _adapterId );
 
 		it_found->second->setConnection( connection );
 	}

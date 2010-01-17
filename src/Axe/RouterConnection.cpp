@@ -32,9 +32,9 @@ namespace Axe
 		permission.writeString( _password );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr RouterConnection::createProxyConnection( std::size_t _hostId )
+	ConnectionPtr RouterConnection::createProxyConnection( std::size_t _adapterId )
 	{
-		RouterProxyConnectionPtr cn = new RouterProxyConnection( this, _hostId );
+		RouterProxyConnectionPtr cn = new RouterProxyConnection( this, _adapterId );
 
 		return cn;
 	}

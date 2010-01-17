@@ -1,17 +1,23 @@
 #	pragma once
 
-#	include <Axe/HostSession.hpp>
+#	include <Axe/Session.hpp>
 
 namespace Axe
 {
+	typedef AxeHandle<class Adapter> AdapterPtr;
+
 	class AdapterSession
-		: public HostSession
+		: public Session
 	{
 	public:
-		AdapterSession( boost::asio::io_service & _service, const HostPtr & _host, const ConnectionCachePtr & _connectionCache );
+		AdapterSession( boost::asio::io_service & _service, const AdapterPtr & _adapter, const ConnectionCachePtr & _connectionCache );
 
 	public:
+		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;
 		void permissionVerify( ArchiveDispatcher & _ar, std::size_t _size ) override;
+
+	protected:
+		AdapterPtr m_adapter;
 	};
 
 	typedef AxeHandle<AdapterSession> AdapterSessionPtr;

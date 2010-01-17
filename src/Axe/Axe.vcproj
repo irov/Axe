@@ -226,6 +226,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AdapterException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AdapterException.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AdapterSession.cpp"
 				>
 			</File>
@@ -290,31 +298,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ProxyHostProvider.cpp"
+				RelativePath=".\ProxyAdapterProvider.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ProxyHostProvider.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Host"
-			>
-			<File
-				RelativePath=".\Host.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Host.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\HostSession.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\HostSession.hpp"
+				RelativePath=".\ProxyAdapterProvider.hpp"
 				>
 			</File>
 		</Filter>
@@ -387,38 +375,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Grid"
-			>
-			<File
-				RelativePath=".\Grid.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Grid.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridConnection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridConnection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridConnectResponse.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridSession.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GridSession.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Dispatcher"
 			>
 			<File
@@ -427,6 +383,14 @@
 			</File>
 			<File
 				RelativePath=".\Dispatcher.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DispatcherException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DispatcherException.hpp"
 				>
 			</File>
 		</Filter>
@@ -473,14 +437,6 @@
 		<Filter
 			Name="Exception"
 			>
-			<File
-				RelativePath=".\DispatcherException.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DispatcherException.hpp"
-				>
-			</File>
 			<File
 				RelativePath=".\Exception.cpp"
 				>

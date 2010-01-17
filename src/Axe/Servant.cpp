@@ -1,19 +1,20 @@
 #	include "pch.hpp"
 
 #	include <Axe/Servant.hpp>
+#	include <Axe/Session.hpp>
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Exception.hpp>
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ConnectionCache.hpp>
-#	include <Axe/ProxyHostProvider.hpp>
+#	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	Servant::Servant()
 		: m_servantId(-1)
-		, m_hostId(-1)
+		, m_adapterId(-1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,24 +28,44 @@ namespace Axe
 		return m_servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::setHostId( std::size_t _hostId )
+	void Servant::setAdapterId( std::size_t _adapterId )
 	{
-		m_hostId = _hostId;
+		m_adapterId = _adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Servant::getHostId() const
+	std::size_t Servant::getAdapterId() const
 	{
-		return m_hostId;
+		return m_adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		const ProxyHostProviderPtr & provider = _connectionCache->getProxyHostProvider( m_servantId, m_hostId );
+		const ProxyAdapterProviderPtr & provider = _connectionCache->getProxyAdapterProvider( m_servantId, m_adapterId );
 
 		return new Proxy( m_servantId, provider );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::callMethod( std::size_t _id, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
+	void Servant::dispatchMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
+	{
+		try
+		{
+			this->callMethod( _methodId, _requestId, _archive, _session );
+		}
+		catch( const ProtocolCallException & _ex )
+		{
+			this->responseException( _methodId, _requestId, _session, _ex );
+		}
+		catch( ... )
+		{
+			ArchiveInvocation & aw = _session->beginException( _requestId );
+
+			writeExceptionFilter( aw );
+
+			_session->process();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Servant::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
 		//Empty
 	}

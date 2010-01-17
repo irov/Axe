@@ -8,9 +8,9 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _hostId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
+	Invocation::Invocation( boost::asio::io_service & _service, std::size_t _adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
 		: Dispatcher(_service, _connectionCache)
-		, Connection(_hostId)
+		, Connection(_adapterId)
 		, m_endpointCache(_endpointCache)
 		, m_permission(_connectionCache)
 	{
@@ -20,8 +20,8 @@ namespace Axe
 	{
 		m_permission.begin();
 
-		printf("Invocation::connect host %d - endpoint %s\n"
-			, m_hostId
+		printf("Invocation::connect adapter %d - endpoint %s\n"
+			, m_adapterId
 			, _endpoint.address().to_string().c_str()
 			);
 
@@ -34,8 +34,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Invocation::processMessage()
 	{
-		printf("Invocation::processMessage host %d\n"
-			, m_hostId
+		printf("Invocation::processMessage adapter %d\n"
+			, m_adapterId
 			);
 
 		if( m_socket.is_open() == false )
@@ -43,7 +43,7 @@ namespace Axe
 			printf("Invocation::processMessage m_socket is closed, opening\n"
 				);
 
-			m_endpointCache->getEndpoint( m_hostId, this );
+			m_endpointCache->getEndpoint( m_adapterId, this );
 		}
 		else
 		{
@@ -57,15 +57,15 @@ namespace Axe
 	{
 		if( _ec )
 		{
-			printf("Invocation::handleConnect ec: host %d ec %s\n"
-				, m_hostId
+			printf("Invocation::handleConnect ec: adapter %d ec %s\n"
+				, m_adapterId
 				, _ec.message().c_str() 
 				);
 			return;
 		}
 
-		printf("Invocation::handleConnect host %d\n"
-			, m_hostId
+		printf("Invocation::handleConnect adapter %d\n"
+			, m_adapterId
 			);
 
 		if( m_permission.empty() == false )
@@ -122,8 +122,8 @@ namespace Axe
 		bool result;
 		m_streamIn.read( result );
 
-		printf("Invocation::handleReadConnect host - %d size - %d, result - %d\n"
-			, m_hostId
+		printf("Invocation::handleReadConnect adapter - %d size - %d, result - %d\n"
+			, m_adapterId
 			, size
 			, (int)result
 			);
