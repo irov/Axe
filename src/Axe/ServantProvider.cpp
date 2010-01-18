@@ -38,7 +38,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void ServantProvider::onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId )
 	{
-		ServantPtr servant = m_servantFactory->genServant( _typeId );
+		ServantPtr servant = m_servantFactory->genServantWithId( _typeId );
 
 		
 		// TODO

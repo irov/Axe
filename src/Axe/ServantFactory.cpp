@@ -13,12 +13,45 @@ namespace Axe
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantFactory::registerServantGenerator( std::size_t _typeId, const ServantGeneratorPtr & _gen )
+	void ServantFactory::registerServantGenerator( std::size_t _typeId, const ServantFactoryGeneratorPtr & _generator )
 	{
-		m_generators.insert( std::make_pair(_typeId, _gen) );
+		m_generators.insert( std::make_pair(_typeId, _generator) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServantPtr ServantFactory::genServant( std::size_t _typeId )
+	namespace
+	{
+		class ServantFactoryGenServantGetIdResponse
+			: public ServantFactoryGetIdResponse
+		{
+		public:
+			ServantFactoryGenServantGetIdResponse( const ServantFactoryPtr & _servantFactory, const ServantFactoryCreateResponsePtr & _response )
+				: m_servantFactory(_servantFactory)
+				, m_response(_response)
+			{
+			}
+
+		public:
+			void onServantTypeId( std::size_t _id ) override
+			{
+				ServantPtr servant = m_servantFactory->genServantWithId( _id );
+
+				m_response->onServantCreate( servant );
+			}
+
+		protected:
+			ServantFactoryPtr m_servantFactory;
+			ServantFactoryCreateResponsePtr m_response;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ServantFactory::genServant( const std::string & _type, const ServantFactoryCreateResponsePtr & _response )
+	{
+		this->getTypeId( _type
+			, new ServantFactoryGenServantGetIdResponse( this, _response ) 
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServantPtr ServantFactory::genServantWithId( std::size_t _typeId )
 	{
 		TMapServantGenerators::iterator it_found = m_generators.find( _typeId );
 

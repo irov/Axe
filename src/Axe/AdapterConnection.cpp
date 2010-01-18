@@ -34,9 +34,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
 	{
-		if( m_dispatch.empty() )
+		if( _response == 0 )
 		{
-			m_messageEnum = 0;
+			return 0;
 		}
 
 		++m_messageEnum;
@@ -72,6 +72,11 @@ namespace Axe
 		if( response->dispatch( _ar, _size ) == true )
 		{
 			m_dispatch.erase( it_found );
+		}
+
+		if( m_dispatch.empty() )
+		{
+			m_messageEnum = 0;
 		}
 
 		_ar.clear();

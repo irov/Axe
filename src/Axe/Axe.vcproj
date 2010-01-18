@@ -466,6 +466,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Properties"
+			>
+			<File
+				RelativePath=".\Properties.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Properties.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

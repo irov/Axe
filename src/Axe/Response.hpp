@@ -46,13 +46,12 @@ namespace Axe
 		const E & m_exception;
 	};
 
-	template<class M, class C, class E>
-	class BindHelperMethodResponse
+	template<class F, class E>
+	class BindHelperResponseFunction
 	{
 	public:
-		BindHelperMethodResponse( const M & _method, C * _self, const E & _exception )
-			: m_method(_method)
-			, m_self(_self)
+		BindHelperResponseFunction( const F & _function, const E & _exception )
+			: m_function(_function)
 			, m_exception(_exception)
 		{
 		}
@@ -61,13 +60,59 @@ namespace Axe
 		template<class F>
 		operator F ()
 		{
-			return new BindResponse<F>( boost::bind( m_method, handlePtr(m_self), _1 ) , m_exception );
+			return new BindResponse<F>( boost::bind( m_function, _1 ), m_exception );
 		}
 
 	protected:
-		const M & m_method;
-		C * m_self;
+		F m_function;
 		const E & m_exception;
+	};
+
+	template<class M, class C, class E>
+	class BindHelperResponseMethod
+	{
+	public:
+		BindHelperResponseMethod( C * _self, M _method, const E & _exception )
+			: m_self(_self)
+			, m_method(_method)
+			, m_exception(_exception)
+		{
+		}
+
+	public:
+		template<class F>
+		operator F ()
+		{
+			return new BindResponse<F>( boost::bind( m_method, handlePtr(m_self), _1 ), m_exception );
+		}
+
+	protected:
+		C * m_self;
+		M m_method;		
+		const E & m_exception;
+	};
+
+	template<class C>
+	class BindHelperResponseChain
+	{
+	public:
+		BindHelperResponseChain( const AxeHandle<C> & _cb )
+			: m_cb(_cb)
+		{
+		}
+
+	public:
+		template<class F>
+		operator F () const
+		{
+			return new BindResponse<F>( 
+				boost::bind( &C::response, m_cb )
+				, boost::bind( &C::throw_exception, m_cb, _1 )
+				);
+		}
+
+	protected:
+		AxeHandle<C> m_cb;
 	};
 
 	typedef boost::function<void (const Exception &)> TBindNullException;
@@ -108,14 +153,32 @@ namespace Axe
 	}
 
 	template<class M, class C, class E>
-	BindHelperMethodResponse<M,C,E> bindResponseMethod( const M & _method, C * _self, const E & _exception )
+	BindHelperResponseMethod<M,C,E> bindResponseMethod(  C * _self, const M & _method, const E & _exception )
 	{
-		return BindHelperMethodResponse<M,C,E>( _method, _self, _exception );
+		return BindHelperResponseMethod<M,C,E>( _self, _method, _exception );
 	}
 
 	template<class M, class C>
-	BindHelperMethodResponse<M,C,TBindNullException> bindResponseMethod( const M & _method, C * _self )
+	BindHelperResponseMethod<M,C,TBindNullException> bindResponseMethod( C * _self, const M & _method )
 	{
-		return bindResponseMethod( _method, _self, noneExceptionFilter() );
+		return bindResponseMethod( _self, _method, noneExceptionFilter() );
+	}
+
+	template<class F, class E>
+	BindHelperResponseFunction<F,E> bindResponseFunction(  const F & _function, const E & _exception )
+	{
+		return BindHelperResponseFunction<F,E>( _function, _exception );
+	}
+
+	template<class F>
+	BindHelperResponseFunction<F,TBindNullException> bindResponseFunction( const F & _function )
+	{
+		return bindResponseFunction( _function, noneExceptionFilter() );
+	}
+
+	template<class C>
+	BindHelperResponseChain<C> bindResponseChain(  const AxeHandle<C> & _cb )
+	{
+		return BindHelperResponseChain<C>( _cb );
 	}
 }

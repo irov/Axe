@@ -8,6 +8,24 @@ namespace Axe
 
 	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
 
+	class ServantFactoryGenerator
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		virtual ServantPtr create() = 0;
+	};
+
+	typedef AxeHandle<ServantFactoryGenerator> ServantFactoryGeneratorPtr;
+
+	class ServantFactoryCreateResponse
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		virtual void onServantCreate( const ServantPtr & _servant ) = 0;
+	};
+
+	typedef AxeHandle<ServantFactoryCreateResponse> ServantFactoryCreateResponsePtr;
+
 	class ServantFactoryGetIdResponse
 		: virtual public AxeUtil::Shared
 	{
@@ -17,15 +35,6 @@ namespace Axe
 
 	typedef AxeHandle<ServantFactoryGetIdResponse> ServantFactoryGetIdResponsePtr;
 
-	class ServantGenerator
-		: virtual public AxeUtil::Shared
-	{
-	public:
-		virtual ServantPtr create() = 0;
-	};
-
-	typedef AxeHandle<ServantGenerator> ServantGeneratorPtr;
-
 	class ServantFactory
 		: virtual public AxeUtil::Shared
 	{
@@ -33,8 +42,11 @@ namespace Axe
 		ServantFactory( const Proxy_GridManagerPtr & _gridManager );
 
 	public:
-		void registerServantGenerator( std::size_t _typeId, const ServantGeneratorPtr & _gen );
-		ServantPtr genServant( std::size_t _typeId );
+		void registerServantGenerator( std::size_t _typeId, const ServantFactoryGeneratorPtr & _generator );
+		void genServant( const std::string & _type, const ServantFactoryCreateResponsePtr & _response );
+
+	public:		
+		ServantPtr genServantWithId( std::size_t _typeId );
 
 	public:
 		void getTypeId( const std::string & _type, const ServantFactoryGetIdResponsePtr & _cb );
@@ -51,7 +63,7 @@ namespace Axe
 		typedef std::map<std::string, TListWantedIdResponse> TMapWantedIdResponse;
 		TMapWantedIdResponse m_wantedIds;
 
-		typedef std::map<std::size_t, ServantGeneratorPtr> TMapServantGenerators;
+		typedef std::map<std::size_t, ServantFactoryGeneratorPtr> TMapServantGenerators;
 		TMapServantGenerators m_generators;
 
 		Proxy_GridManagerPtr m_gridManager;

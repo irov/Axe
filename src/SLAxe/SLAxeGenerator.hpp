@@ -82,7 +82,7 @@ namespace Axe
 
 	protected:
 		std::string writeBellhopName( const std::string & _class, const std::string & _method );
-		std::string writeServantName( const std::string & _class );
+		std::string writeServantName( const std::string & _class, bool _full = false );
 		std::string writeResponseName( const std::string & _class, const std::string & _method );
 		std::string writeProxyName( const std::string & _class );
 

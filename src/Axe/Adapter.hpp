@@ -29,7 +29,10 @@ namespace Axe
 		Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _adapterId );
 
 	public:
-		void addServant( const ServantPtr & _servant, const CreateServantResponsePtr & _response );
+		const CommunicatorPtr & getCommunicator() const;
+
+	public:
+		void addServant( const std::string & _type, const CreateServantResponsePtr & _response );
 		bool hasServant( std::size_t _servantId ) const;
 
 	public:
@@ -48,9 +51,6 @@ namespace Axe
 
 	public:
 		bool addServantWithId( std::size_t _servantId, const ServantPtr & _servant );
-
-	private:
-		void addServantResponse_( std::size_t _servantId, const ServantPtr & _servant, const CreateServantResponsePtr & _response );
 
 	protected:
 		CommunicatorPtr m_communicator;

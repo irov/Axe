@@ -585,6 +585,11 @@ namespace Axe
 
 		write() << "{" << std::endl;
 
+		write() << "public:" << std::endl;
+		write() << "	static const std::string & getTypeId();" << std::endl;
+		write() << std::endl;
+
+
 		if( cl.methods.empty() == false )
 		{
 			write() << "public:" << std::endl;
@@ -1348,6 +1353,14 @@ namespace Axe
 			basesMethodCount += cl.methods.size();
 		}
 
+		writeLine();
+		write() << "static std::string s_servant_type_" << servant_name << " = " << '"' << writeServantName(cl.name,true) << '"' << ';' << std::endl;
+		writeLine();
+		write() << "const std::string & " << servant_name << "::getTypeId()" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	return s_servant_type_" << servant_name << ";" << std::endl;
+		write() << "}" << std::endl;
+
 		if( cl.methods.empty() == false )
 		{
 			for( TVectorMethods::const_iterator
@@ -2089,13 +2102,13 @@ namespace Axe
 		return bellhop_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::string SLAxeGenerator::writeServantName( const std::string & _class )
+	std::string SLAxeGenerator::writeServantName( const std::string & _class, bool _full )
 	{
 		std::string name = "Servant_" + _class;
 
 		const Declaration::Class * decl = findClass( _class );
 
-		if( decl->owner != m_namespace )
+		if( decl->owner != m_namespace || _full == true )
 		{
 			std::string nt = writeNamespaceType( decl->owner );
 			name = nt + name;
@@ -2254,6 +2267,28 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	std::string SLAxeGenerator::writeTemplates( const std::string & _type )
 	{
+		TSetTypes::iterator it_spec_found = m_specTypes.find( _type );
+
+		if( it_spec_found != m_specTypes.end() )
+		{
+			if( _type == "size_t" )
+			{
+				return "std::size_t";
+			}
+			else if( _type == "string" )
+			{
+				return "std::string";
+			}
+			else if( _type == "Archive" )
+			{
+				return "AxeUtil::Archive";
+			}
+			else if( _type == "Proxy" )
+			{
+				return "Axe::ProxyPtr";
+			}
+		}
+
 		TSetTypes::iterator it_templates_found = m_templatesTypes.find( _type );
 
 		if( it_templates_found != m_templatesTypes.end() )

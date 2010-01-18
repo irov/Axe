@@ -8,6 +8,7 @@
 #	include <Axe/AdapterSession.hpp>
 #	include <Axe/AdapterConnection.hpp>
 
+#	include <Axe/ServantFactory.hpp>
 #	include <Axe/ServantProvider.hpp>
 
 #	include <Axe/Proxy.hpp>
@@ -75,6 +76,11 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const CommunicatorPtr & Adapter::getCommunicator() const
+	{
+		return m_communicator;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Adapter::addServantWithId( std::size_t _servantId, const ServantPtr & _servant )
 	{
 		bool inserted = m_servants.insert( std::make_pair( _servantId, _servant ) ).second;
@@ -90,34 +96,68 @@ namespace Axe
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::addServantResponse_( std::size_t _servantId, const ServantPtr & _servant, const CreateServantResponsePtr & _response )
+	namespace
 	{
-		if( this->addServantWithId( _servantId, _servant ) == false )
+		class AdapterServantFactoryCreateResponse
+			: public ServantFactoryCreateResponse
 		{
-			printf("Adapter::addServant adapter '%d' already exist servant '%d'\n"
-				, m_adapterId
-				, _servantId 
-				);
+		public:
+			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const CreateServantResponsePtr & _response )
+				: m_adapter(_adapter)
+				, m_response(_response)
+			{
+			}
 
-			AdapterServantAlreadyExistException ex;
-			ex.adapterId = m_adapterId;
-			ex.servantId = _servantId;
+		public:
+			void onServantCreate( const ServantPtr & _servant ) override
+			{
+				const CommunicatorPtr & communicator = m_adapter->getCommunicator();
 
-			_response->onServantCreateFailed( _servant, ex );
-		}
-		else
-		{
-			_response->onServantCreateSuccessful( _servant );
-		}
+				const Proxy_EvictorManagerPtr & evictorManager = communicator->getEvictorManager();
+
+				std::size_t adapterId = m_adapter->getAdapterId();
+
+				evictorManager->create_async( 
+					bindResponse( boost::bind( &AdapterServantFactoryCreateResponse::addServantResponse, handlePtr(this), _1, _servant ) )
+					, adapterId 
+					);
+			}
+
+			void addServantResponse( std::size_t _servantId, const ServantPtr & _servant )
+			{
+				if( m_adapter->addServantWithId( _servantId, _servant ) == false )
+				{
+					std::size_t adapterId = m_adapter->getAdapterId();
+
+					printf("Adapter::addServant adapter '%d' already exist servant '%d'\n"
+						, adapterId
+						, _servantId 
+						);
+
+					AdapterServantAlreadyExistException ex;
+					ex.adapterId = adapterId;
+					ex.servantId = _servantId;
+
+					m_response->onServantCreateFailed( _servant, ex );
+				}
+				else
+				{
+					m_response->onServantCreateSuccessful( _servant );
+				}
+			}
+
+		protected:
+			AdapterPtr m_adapter;
+			CreateServantResponsePtr m_response;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::addServant( const ServantPtr & _servant, const CreateServantResponsePtr & _response )
+	void Adapter::addServant( const std::string & _type, const CreateServantResponsePtr & _response )
 	{
-		const Proxy_EvictorManagerPtr & evictorManager = m_communicator->getEvictorManager();
+		const ServantFactoryPtr & servantFactory = m_communicator->getServantFactory();
 
-		evictorManager->create_async( 
-			bindResponse( boost::bind( &Adapter::addServantResponse_, handlePtr(this), _1, _servant, _response ) )
-			, m_adapterId 
+		servantFactory->genServant( _type
+			, new AdapterServantFactoryCreateResponse( this, _response ) 
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

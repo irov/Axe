@@ -61,7 +61,7 @@ namespace Axe
 		{
 			throw;
 		}
-		catch( const ::Axe::Exception & _ex )
+		catch( const ::Axe::Exception & )
 		{
 			LocalException rex;
 			_ar.writeSize( LocalException::exceptionId );

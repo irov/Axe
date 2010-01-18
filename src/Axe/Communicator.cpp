@@ -4,6 +4,7 @@
 
 #	include <Axe/Adapter.hpp>
 #	include <Axe/Router.hpp>
+#	include <Axe/Properties.hpp>
 
 #	include <Axe/AdapterConnection.hpp>
 
@@ -16,7 +17,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Communicator::Communicator()
+	Communicator::Communicator( const PropertiesPtr & _properties )
+		: m_properties(_properties)
 	{	
 		m_connectionCache = new ConnectionCache( this );
 	}
@@ -34,6 +36,11 @@ namespace Axe
 	const EndpointCachePtr & Communicator::getEndpointCache() const
 	{
 		return m_endpointCache;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ServantFactoryPtr & Communicator::getServantFactory() const
+	{
+		return m_servantFactory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ServantProviderPtr & Communicator::getServantProvider() const

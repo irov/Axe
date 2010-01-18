@@ -11,6 +11,7 @@ namespace Axe
 
 	typedef AxeHandle<class ServantFactory> ServantFactoryPtr;
 	typedef AxeHandle<class ServantProvider> ServantProviderPtr; 
+	typedef AxeHandle<class Properties> PropertiesPtr;
 	
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
 	
@@ -56,12 +57,13 @@ namespace Axe
 		, public ConnectionProvider
 	{
 	public:
-		Communicator();
+		Communicator( const PropertiesPtr & _properties );
 
 	public:
 		boost::asio::io_service & getService();
 		const ConnectionCachePtr & getConnectionCache() const;
 		const EndpointCachePtr & getEndpointCache() const;
+		const ServantFactoryPtr & getServantFactory() const;
 		const ServantProviderPtr & getServantProvider() const;
 
 	public:
@@ -112,6 +114,7 @@ namespace Axe
 
 	protected:
 		boost::asio::io_service m_service;
+		PropertiesPtr m_properties;
 
 		Proxy_EvictorManagerPtr m_evictorManager;
 		Proxy_GridManagerPtr m_gridManager;
