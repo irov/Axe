@@ -17,7 +17,7 @@ namespace Axe
 	{
 	public:
 		virtual void onServantCreateSuccessful( const ServantPtr & _servant ) = 0;
-		virtual void onServantCreateFailed( const ServantPtr & _servant, const Exception & _ex ) = 0;
+		virtual void onServantCreateFailed( const Exception & _ex ) = 0;
 	};
 
 	typedef AxeHandle<AdapterCreateServantResponse> AdapterCreateServantResponsePtr;

@@ -4,14 +4,13 @@
 
 namespace Axe
 {
-	class AdapterException
+	class ServantFactoryException
 		: public Exception
 	{
-
 	};
 
-	class AdapterServantAlreadyExistException
-		: public AdapterException
+	class ServantFactoryGeneratorNotFoundException
+		: public ServantFactoryException
 	{
 	public:
 		void rethrow() const override;
@@ -21,10 +20,9 @@ namespace Axe
 		void read( ArchiveDispatcher & _ar ) override;
 
 	public:
-		static const std::size_t exceptionId = EX_AdapterServantAlreadyExistException;
+		static const std::size_t exceptionId = EX_ServantFactoryGeneratorNotFoundException;
 
 	public:
-		std::size_t servantId;
-		std::size_t adapterId;
+		std::size_t typeId;
 	};
 }

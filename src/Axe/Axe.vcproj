@@ -164,6 +164,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServantFactoryException.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ServantProvider.cpp"
 				>
 			</File>
@@ -443,6 +447,10 @@
 			</File>
 			<File
 				RelativePath=".\Exception.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExceptionEnum.hpp"
 				>
 			</File>
 		</Filter>

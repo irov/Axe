@@ -21,7 +21,7 @@ namespace Axe
 		void read( ArchiveDispatcher & _ar ) override;
 
 	public:
-		static const std::size_t exceptionId = 10;
+		static const std::size_t exceptionId = EX_DispatcherServantRelocateException;
 
 	public:
 		std::size_t servantId;

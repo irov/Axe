@@ -102,14 +102,14 @@ namespace Axe
 			: public ServantFactoryCreateResponse
 		{
 		public:
-			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const AdapterCreateServantResponsePtr & _response )
+			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const AdapterCreateServantResponsePtr & _cb )
 				: m_adapter(_adapter)
-				, m_response(_response)
+				, m_cb(_cb)
 			{
 			}
 
 		public:
-			void onServantCreate( const ServantPtr & _servant ) override
+			void onServantCreateSuccessful( const ServantPtr & _servant ) override
 			{
 				const CommunicatorPtr & communicator = m_adapter->getCommunicator();
 
@@ -138,17 +138,22 @@ namespace Axe
 					ex.adapterId = adapterId;
 					ex.servantId = _servantId;
 
-					m_response->onServantCreateFailed( _servant, ex );
+					this->onServantCreateFailed( ex );
 				}
 				else
 				{
-					m_response->onServantCreateSuccessful( _servant );
+					m_cb->onServantCreateSuccessful( _servant );
 				}
+			}
+
+			void onServantCreateFailed( const Axe::Exception & _ex ) override
+			{
+				m_cb->onServantCreateFailed( _ex );
 			}
 
 		protected:
 			AdapterPtr m_adapter;
-			AdapterCreateServantResponsePtr m_response;
+			AdapterCreateServantResponsePtr m_cb;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -5,8 +5,9 @@
 namespace Axe
 {
 	typedef AxeHandle<class Servant> ServantPtr;
-
 	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
+
+	class Exception;
 
 	class ServantFactoryGenerator
 		: virtual public AxeUtil::Shared
@@ -21,7 +22,8 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void onServantCreate( const ServantPtr & _servant ) = 0;
+		virtual void onServantCreateSuccessful( const ServantPtr & _servant ) = 0;
+		virtual void onServantCreateFailed( const Axe::Exception & _ex ) = 0;
 	};
 
 	typedef AxeHandle<ServantFactoryCreateResponse> ServantFactoryCreateResponsePtr;
@@ -30,7 +32,8 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual void onServantTypeId( std::size_t _id ) = 0;
+		virtual void onServantTypeIdSuccessful( std::size_t _id ) = 0;
+		virtual void onServantTypeIdFailed( const Axe::Exception & _ex ) = 0;
 	};
 
 	typedef AxeHandle<ServantFactoryGetIdResponse> ServantFactoryGetIdResponsePtr;
@@ -54,6 +57,7 @@ namespace Axe
 	protected:
 		void provideTypeId( const std::string & _type, const ServantFactoryGetIdResponsePtr & _cb );
 		void getTypeIdResponse( std::size_t _typeId, const std::string & _type );
+		void getTypeIdException( const Axe::Exception & _ex, const std::string & _type );
 
 	protected:
 		typedef std::map<std::string, std::size_t> TMapIdCache;

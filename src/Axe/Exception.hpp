@@ -2,6 +2,8 @@
 
 #	include <string>
 
+#	include <Axe/ExceptionEnum.hpp>
+
 namespace Axe
 {
 	class ArchiveInvocation;
@@ -36,7 +38,7 @@ namespace Axe
 		void read( ArchiveDispatcher & _ar ) override;
 
 	public:
-		static const std::size_t exceptionId = 1;
+		static const std::size_t exceptionId = EX_LocalException;
 
 	public:
 		std::string message;
@@ -49,7 +51,7 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		static const std::size_t exceptionId = 2;
+		static const std::size_t exceptionId = EX_StdException;
 	};
 
 	class UnknownException
@@ -59,7 +61,7 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		static const std::size_t exceptionId = 3;
+		static const std::size_t exceptionId = EX_UnknownException;
 	};
 
 	class CriticalException
@@ -69,7 +71,7 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		static const std::size_t exceptionId = 4;
+		static const std::size_t exceptionId = EX_CriticalException;
 	};
 
 	class ProtocolMismatchException
@@ -79,7 +81,7 @@ namespace Axe
 		void rethrow() const override;
 
 	public:
-		static const std::size_t exceptionId = 5;
+		static const std::size_t exceptionId = EX_ProtocolMismatchException;
 	};
 
 	class ProtocolCallException
