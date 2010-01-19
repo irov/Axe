@@ -102,7 +102,7 @@ namespace Axe
 			: public ServantFactoryCreateResponse
 		{
 		public:
-			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const CreateServantResponsePtr & _response )
+			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const AdapterCreateServantResponsePtr & _response )
 				: m_adapter(_adapter)
 				, m_response(_response)
 			{
@@ -148,11 +148,11 @@ namespace Axe
 
 		protected:
 			AdapterPtr m_adapter;
-			CreateServantResponsePtr m_response;
+			AdapterCreateServantResponsePtr m_response;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::addServant( const std::string & _type, const CreateServantResponsePtr & _response )
+	void Adapter::addServant( const std::string & _type, const AdapterCreateServantResponsePtr & _response )
 	{
 		const ServantFactoryPtr & servantFactory = m_communicator->getServantFactory();
 
@@ -166,6 +166,26 @@ namespace Axe
 		TMapServants::const_iterator it_found = m_servants.find( _servantId );
 
 		return it_found != m_servants.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void removeServantResponse( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response )
+	{
+		_proxy->destroy_async(
+			bindResponse( boost::bind( &AdapterRemoveServantResponse::onServantRemoveSuccessful, _response ), boost::bind( &AdapterRemoveServantResponse::onServantRemoveFailed, _response, _1 ) )
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::removeServant( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response )
+	{
+		std::size_t servantId = _proxy->getServantId();
+
+		const Proxy_EvictorManagerPtr & evictor = m_communicator->getEvictorManager();
+
+		evictor->erase_async(
+			bindResponse( boost::bind( &removeServantResponse, _proxy, _response ) )
+			, servantId
+			);
+		//_proxy->destroy_async(  )
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::setAdapterId( std::size_t _adapterId )

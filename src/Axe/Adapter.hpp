@@ -12,7 +12,7 @@ namespace Axe
 	
 	class ArchiveDispatcher;
 
-	class CreateServantResponse
+	class AdapterCreateServantResponse
 		: virtual public AxeUtil::Shared
 	{
 	public:
@@ -20,7 +20,17 @@ namespace Axe
 		virtual void onServantCreateFailed( const ServantPtr & _servant, const Exception & _ex ) = 0;
 	};
 
-	typedef AxeHandle<CreateServantResponse> CreateServantResponsePtr;
+	typedef AxeHandle<AdapterCreateServantResponse> AdapterCreateServantResponsePtr;
+
+	class AdapterRemoveServantResponse
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		virtual void onServantRemoveSuccessful() = 0;
+		virtual void onServantRemoveFailed( const Exception & _ex ) = 0;
+	};
+
+	typedef AxeHandle<AdapterRemoveServantResponse> AdapterRemoveServantResponsePtr;
 
 	class Adapter
 		: public Service
@@ -32,8 +42,11 @@ namespace Axe
 		const CommunicatorPtr & getCommunicator() const;
 
 	public:
-		void addServant( const std::string & _type, const CreateServantResponsePtr & _response );
+		void addServant( const std::string & _type, const AdapterCreateServantResponsePtr & _response );
 		bool hasServant( std::size_t _servantId ) const;
+
+	public:
+		void removeServant( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response );
 
 	public:
 		void setAdapterId( std::size_t _adapterId );

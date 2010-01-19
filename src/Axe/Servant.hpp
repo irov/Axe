@@ -12,6 +12,8 @@ namespace Axe
 	typedef AxeHandle<class Session> SessionPtr;
 	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	typedef AxeHandle<class Proxy> ProxyPtr;
+
+	typedef AxeHandle<class Bellhop_Servant_destroy> Bellhop_Servant_destroyPtr;
 	
 	class Servant
 		: virtual public AxeUtil::Shared
@@ -27,6 +29,9 @@ namespace Axe
 		std::size_t getAdapterId() const;
 
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
+
+	protected:
+		virtual void destroy_async( const Bellhop_Servant_destroyPtr & _cb );
 
 	public:
 		void dispatchMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session );

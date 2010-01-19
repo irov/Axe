@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include <Axe/Connection.hpp>
+#	include <Axe/Response.hpp>
 
 namespace Axe
 {
@@ -10,6 +11,35 @@ namespace Axe
 	class ArchiveDispatcher;
 	class ArchiveInvocation;
 
+	class Response_Servant_destroy
+		: public Response
+	{
+	protected:
+		virtual void response() = 0;
+
+	public:
+		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
+	};
+
+	typedef AxeHandle<class Response_Servant_destroy> Response_Servant_destroyPtr;
+
+	template<>
+	class BindResponse<Response_Servant_destroyPtr>
+		: public BindResponseHelper<Response_Servant_destroy, void()>
+	{
+	public:
+		BindResponse( const TBindResponse & _response, const TBindException & _exception )
+			: BindResponseHelper<Response_Servant_destroy, void()>(_response, _exception )
+		{
+		}
+
+	public:
+		void response() override
+		{
+			m_response();
+		}
+	};
+
 	class Proxy
 		: virtual public AxeUtil::Shared
 	{
@@ -17,12 +47,15 @@ namespace Axe
 		Proxy( std::size_t _servantId, const ProxyAdapterProviderPtr & _adaterProvider );
 
 	public:
+		std::size_t getServantId() const;
+		const ProxyAdapterProviderPtr & getProxyAdapterProvider() const;
+
+	public:
 		ArchiveInvocation & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
 		void processMessage();
 
 	public:
-		std::size_t getServantId() const;
-		const ProxyAdapterProviderPtr & getProxyAdapterProvider() const;
+		void destroy_async( const Response_Servant_destroyPtr & _response );
 
 	public:
 		void write( ArchiveInvocation & _ar ) const;

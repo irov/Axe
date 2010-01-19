@@ -383,34 +383,33 @@ namespace Axe
 
 			write() << std::endl;
 
-			write() << "template<>" << std::endl;
-			write() << "class BindResponse<" << response_name << "Ptr>" << std::endl;
-			write() << "	: public " << response_name << std::endl;
-			write() << "{" << std::endl;
-			write() << "	typedef boost::function<void(";
+			std::string response_function = "void(";
 
+			TVectorArguments::const_iterator
+				it_arg = mt.outArguments.begin(),
+				it_arg_end = mt.outArguments.end();
+
+			if( it_arg != it_arg_end )
 			{
-				TVectorArguments::const_iterator
-					it_arg = mt.outArguments.begin(),
-					it_arg_end = mt.outArguments.end();
+				response_function += writeArgumentType( it_arg->type.name );
 
-				if( it_arg != it_arg_end )
+				for( ++it_arg; it_arg != it_arg_end; ++it_arg )
 				{
-					m_stream << writeArgumentType( it_arg->type.name );
-
-					for( ++it_arg; it_arg != it_arg_end; ++it_arg )
-					{
-						m_stream << ", " << writeArgumentType( it_arg->type.name );
-					}
+					response_function += ", " + writeArgumentType( it_arg->type.name );
 				}
 			}
 
-			m_stream << ")> TBindResponse;" << std::endl;
+			response_function += ")";
 
-			write() << "	typedef boost::function<void(const Axe::Exception &)> TBindException;" << std::endl;
+			write() << "template<>" << std::endl;
+			write() << "class BindResponse<" << response_name << "Ptr>" << std::endl;
+			write() << "	: public BindResponseHelper<" << response_name << ", " << response_function << '>' << std::endl;
+			write() << "{" << std::endl;
+			write() << "protected:" << std::endl;
+			write() << "	typedef BindResponseHelper<" << response_name << ", " << response_function << "> TBaseHelper;" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
-			write() << "	BindResponse( const TBindResponse & _response, const TBindException & _exception );" << std::endl;
+			write() << "	BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );" << std::endl;
 			write() << std::endl;
 			write() << "public:" << std::endl;
 
@@ -448,12 +447,6 @@ namespace Axe
 			}
 
 			m_stream << ") override;" << std::endl;
-
-			write() << "	void throw_exception( const Axe::Exception & _ex ) override;" << std::endl;
-			write() << std::endl;
-			write() << "protected:" << std::endl;
-			write() << "	TBindResponse m_response;" << std::endl;
-			write() << "	TBindException m_exception;" << std::endl;
 			write() << "};" << std::endl;
 		}
 
@@ -1027,9 +1020,8 @@ namespace Axe
 
 			std::string bindResponse = "BindResponse<" + response_name + "Ptr>";
 
-			write() << bindResponse << "::BindResponse( const TBindResponse & _response, const TBindException & _exception )" << std::endl;
-			write() << "	: m_response(_response)" << std::endl;
-			write() << "	, m_exception(_exception)" << std::endl;
+			write() << bindResponse << "::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )" << std::endl;
+			write() << "	: TBaseHelper(_response,_exception)" << std::endl;
 			write() << "{" << std::endl;
 			write() << "}" << std::endl;
 			//	void response( int _i, float _f ) override
@@ -1095,11 +1087,6 @@ namespace Axe
 			}
 
 			m_stream << ");" << std::endl;
-			write() << "}" << std::endl;
-			writeLine();
-			write() << "void " << bindResponse << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
-			write() << "{" << std::endl;
-			write() << "	m_exception( _ex );" << std::endl;
 			write() << "}" << std::endl;
 		}
 
@@ -1263,7 +1250,7 @@ namespace Axe
 
 			m_stream << ")" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveInvocation & ar = this->beginResponse();" << std::endl;
 
 			arg_enumerator = 0;
 
@@ -1279,17 +1266,17 @@ namespace Axe
 				++arg_enumerator;
 			}
 
-			write() << "	m_session->process();" << std::endl;
+			write() << "	this->process();" << std::endl;
 			write() << "}" << std::endl;
 			writeLine();
 			write() << "void " << bellhop_name << "::throw_exception( const Axe::Exception & _ex )" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );" << std::endl;
+			write() << "	Axe::ArchiveInvocation & ar = this->beginException();" << std::endl;
 
 			std::size_t exceptionId = basesMethodCount + std::distance( cl.methods.begin(), it_method ) + 3;
 
 			write() << "	s_" << servant_name << "_writeException_" << mt.name << "( AxeUtil::nativePtr(m_servant), " << exceptionId << ", ar, _ex );" << std::endl;
-			write() << "	m_session->process();" << std::endl;
+			write() << "	this->process();" << std::endl;
 			write() << "}" << std::endl;
 		}
 	}
@@ -1372,7 +1359,7 @@ namespace Axe
 				const Method & mt = *it_method;
 
 				writeLine();
-				write() << "void s_" << servant_name << "_callMethod_" << mt.name << "( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
+				write() << "static void s_" << servant_name << "_callMethod_" << mt.name << "( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 				write() << "{" << std::endl;
 				write() << "	" << writeBellhopName( cl.name, mt.name ) << "Ptr bellhop = new " << writeBellhopName( cl.name, mt.name ) << "( _requestId, _session, _servant );" << std::endl;
 				write() << std::endl;
@@ -1424,12 +1411,17 @@ namespace Axe
 				if( cl.methods.empty() == false )
 				{
 					writeLine();
-					write() << "void s_" << servant_name << "_subMethod_" << cl.name << "_callMethod( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
+					write() << "static void s_" << servant_name << "_subMethod_" << cl.name << "_callMethod( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 					write() << "{" << std::endl;
 					write() << "	static_cast<" << writeServantName(cl.name) << " *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );" << std::endl;
 					write() << "}" << std::endl;
 				}
 			}
+
+			write() << "static void s_" << servant_name << "_dummyMethod( " << servant_name << " * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
+			write() << "{" << std::endl;
+			write() << "	static_cast<Axe::Servant *>( _servant )->callMethod( _methodId, _requestId, _archive, _session );" << std::endl;
+			write() << "}" << std::endl;
 
 			std::string typedef_servant_method = "T" + servant_name + "_callMethod";
 
@@ -1438,7 +1430,7 @@ namespace Axe
 			writeLine();
 			write() << "static " << typedef_servant_method << " s_" << servant_name << "_callMethods[] =" << std::endl;
 			write() << "{" << std::endl;
-			write() << "	0" << std::endl;
+			write() << "	&s_" << servant_name << "_dummyMethod" << std::endl;
 
 			for( TVectorBaseClasses::iterator
 				it_bases_class = bc.begin(),
@@ -1473,12 +1465,7 @@ namespace Axe
 			writeLine();
 			write() << "void " << servant_name << "::callMethod( std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )" << std::endl;
 			write() << "{" << std::endl;
-
-			//		stream_read * stream = _session->get_streamIn();
-			//		switch( _methodId ){
-
 			write() << "	(*s_" << servant_name << "_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );" << std::endl;
-
 			write() << "}" << std::endl;
 
 			for( TVectorBaseClasses::iterator

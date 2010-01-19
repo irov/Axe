@@ -14,6 +14,7 @@ namespace Axe
 	class EvictorManager
 	{
 		size_t create( size_t _adapterId );
+		void erase( size_t _servantId );
 		
 		void set( size_t _servantId, size_t _typeId, Archive _ar );
 		Archive get( size_t _servantId, size_t _adapterId, out size_t _typeId ) throws EvictingNotFoundException, EvictingAlreadyRestored;

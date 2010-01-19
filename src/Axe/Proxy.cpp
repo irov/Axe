@@ -11,10 +11,25 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
+	void Response_Servant_destroy::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
+	{
+		this->response();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Proxy::Proxy( std::size_t _servantId, const ProxyAdapterProviderPtr & _adapterProvider )
 		: m_servantId(_servantId)
 		, m_adapterProvider(_adapterProvider)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Proxy::getServantId() const
+	{
+		return m_servantId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ProxyAdapterProviderPtr & Proxy::getProxyAdapterProvider() const
+	{
+		return m_adapterProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveInvocation & Proxy::beginMessage( std::size_t _methodId, const ResponsePtr & _response )
@@ -31,14 +46,10 @@ namespace Axe
 		connection->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Proxy::getServantId() const
+	void Proxy::destroy_async( const Response_Servant_destroyPtr & _response )
 	{
-		return m_servantId;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ProxyAdapterProviderPtr & Proxy::getProxyAdapterProvider() const
-	{
-		return m_adapterProvider;
+		Axe::ArchiveInvocation & ar = this->beginMessage( 1, _response );
+		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Proxy::write( ArchiveInvocation & _ar ) const

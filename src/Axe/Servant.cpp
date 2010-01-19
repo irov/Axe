@@ -2,6 +2,7 @@
 
 #	include <Axe/Servant.hpp>
 #	include <Axe/Session.hpp>
+#	include <Axe/Bellhop.hpp>
 #	include <Axe/Proxy.hpp>
 #	include <Axe/Exception.hpp>
 
@@ -65,9 +66,52 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	class Bellhop_Servant_destroy
+		: public Bellhop
+	{
+	public:
+		Bellhop_Servant_destroy( std::size_t _requestId, const SessionPtr & _session, const ServantPtr & _servant )
+			: Bellhop(_requestId, _session)
+			, m_servant(_servant)
+		{
+		}
+
+	public:
+		void response()
+		{
+			Axe::ArchiveInvocation & ar = this->beginResponse();
+			this->process();
+		}
+
+		void throw_exception( const Axe::Exception & _ex )
+		{
+			Axe::ArchiveInvocation & ar = this->beginException();
+			writeExceptionFilter( ar );
+			this->process();
+		}
+
+	protected:
+		ServantPtr m_servant;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Servant::destroy_async( const Bellhop_Servant_destroyPtr & _cb )
+	{
+		_cb->response();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Servant::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
-		//Empty
+		std::size_t internalMethodId = 0;
+		_archive.readSize( internalMethodId );
+
+		switch( internalMethodId )
+		{
+		case 1:
+			{
+				Bellhop_Servant_destroyPtr bellhop = new Bellhop_Servant_destroy( _requestId, _session, this );
+				this->destroy_async( bellhop );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex )
