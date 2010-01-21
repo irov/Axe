@@ -1,6 +1,4 @@
 <Solution>
-
-
 	<Adapter>Grid
 		<Endpoints>
 			<Address>127.0.0.1</Address>
