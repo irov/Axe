@@ -11,7 +11,8 @@ namespace Axe
 		, EX_CriticalException = 4
 		, EX_ProtocolMismatchException = 5
 		, EX_DispatcherServantRelocateException = 10
-		, EX_DispatcherObjectNotFoundException = 11
+		, EX_DispatcherServantNotFoundException = 11
+		, EX_DispatcherUniqueNotFoundException = 12
 		, EX_AdapterServantAlreadyExistException = 20
 		, EX_ServantFactoryGeneratorNotFoundException = 30
 	};

@@ -7,7 +7,8 @@ namespace Axe
 {
 	typedef AxeHandle<class Servant> ServantPtr;
 	typedef AxeHandle<class ServantFactory> ServantFactoryPtr;
-
+	typedef AxeHandle<class Communicator> CommunicatorPtr;
+	
 	typedef AxeHandle<class Proxy_EvictorManager> Proxy_EvictorManagerPtr;
 	
 	class Exception;
@@ -27,22 +28,23 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		ServantProvider( const ServantFactoryPtr & _servantFactory, const Proxy_EvictorManagerPtr & _evictorManager );
+		ServantProvider( const CommunicatorPtr & _communicator, std::size_t _adapterId );
 
 	public:
-		void get( std::size_t _servantId, std::size_t _adapterId, const ServantProviderResponsePtr & _cb );
+		void get( std::size_t _servantId, const ServantProviderResponsePtr & _cb );
 
 	protected:
-		void onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId );
+		void onGet( const AxeUtil::Archive & _data, const std::string & _typeId, std::size_t _servantId );
 		void onException( const Exception & _ex, std::size_t _servantId );
 
 	protected:
+		CommunicatorPtr m_communicator;
+
+		std::size_t m_adapterId;
+
 		typedef std::list<ServantProviderResponsePtr> TListServantProviderResponse;
 		typedef std::map<std::size_t, TListServantProviderResponse> TMapWantedServant;
 		TMapWantedServant m_wantedServant;
-
-		ServantFactoryPtr m_servantFactory;
-		Proxy_EvictorManagerPtr m_evictorManager;
 	};	
 
 	typedef AxeHandle<ServantProvider> ServantProviderPtr;

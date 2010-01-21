@@ -9,24 +9,39 @@ namespace AxeLib
 	class EvictorManager
 		: public Servant_EvictorManager
 	{
-	public:
-		EvictorManager( const std::string & _pathDB );
+	protected:
+		bool onRestore( const boost::property_tree::ptree & _pt ) override;
+		void onEvict() override;
 
-	public:
-		void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar ) override;
-		void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId, std::size_t _hostId ) override;
+	protected:
+		void create_async( const Bellhop_EvictorManager_createPtr & _cb, std::size_t _adapterId, const std::string & _typeId ) override;
+		void erase_async( const Bellhop_EvictorManager_erasePtr & _cb, std::size_t _servantId ) override;
+
+		void set_async( const Bellhop_EvictorManager_setPtr & _cb, std::size_t _servantId, const AxeUtil::Archive & _ar ) override;
+		void get_async( const Bellhop_EvictorManager_getPtr & _cb, std::size_t _servantId, std::size_t _adapterId ) override;
 
 	protected:
 		void makeDBID( std::string & _dbid, std::size_t _servantId ) const;
 
 	protected:
-		void evict( std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );
-		bool restore( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar );
+		void evictServant( std::size_t _servantId, std::size_t _typeId, const AxeUtil::Archive & _ar );
+		bool restoreServant( std::size_t _servantId, std::size_t & _typeId, AxeUtil::Archive & _ar );
+		void removeServant( std::size_t _servantId );
 
 	protected:
 		std::string m_pathDB;
 
-		typedef std::map<std::size_t, std::size_t> TMapServants;
+		std::size_t m_enumerator;
+
+		struct Servant
+		{
+			std::size_t adapterId;
+			std::string typeId;
+		};
+
+		typedef std::map<std::size_t, Servant> TMapServants;
 		TMapServants m_servants;
 	};
+
+	typedef AxeHandle<EvictorManager> EvictorManagerPtr;
 }

@@ -4,28 +4,39 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
-#	include <Axe/ProxyHostProvider.hpp>
+#	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Session_callMethod_destroy( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	static std::string s_servant_type_Servant_Session = "::Axe::Servant_Session";
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Servant_Session::getTypeId()
+	{
+		return s_servant_type_Servant_Session;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_Servant_Session_callMethod_destroy( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_Session_destroyPtr bellhop = new Bellhop_Session_destroy( _requestId, _session, _servant );
 	
 	
 		_servant->destroy_async( bellhop );
 	}
+	static void s_Servant_Session_dummyMethod( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	{
+		static_cast<Axe::Servant *>( _servant )->callMethod( _methodId, _requestId, _archive, _session );
+	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_Session_callMethod)( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_Session_callMethod)( Servant_Session * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_Session_callMethod s_Servant_Session_callMethods[] =
 	{
-		0
+		&s_Servant_Session_dummyMethod
 		, &s_Servant_Session_callMethod_destroy
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Session::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_Session::callMethod( std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		(*s_Servant_Session_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
@@ -65,31 +76,15 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Session_destroy::response()
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
-		m_session->process();
+		Axe::ArchiveInvocation & ar = this->beginResponse();
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Session_destroy::throw_exception( const Axe::Exception & _ex )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginException();
 		s_Servant_Session_writeException_destroy( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
-		m_session->process();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	BindResponse<Response_Session_destroyPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
-		: m_response(_response)
-		, m_exception(_exception)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_Session_destroyPtr>::response()
-	{
-		m_response();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_Session_destroyPtr>::throw_exception( const Axe::Exception & _ex )
-	{
-		m_exception( _ex );
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_Session_destroy::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
@@ -97,19 +92,8 @@ namespace Axe
 		this->response();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Session_destroy::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		std::size_t exceptionId;
-		_ar.readSize( exceptionId );
-	
-		if( this->exceptionFilter( exceptionId, _ar ) == true )
-		{
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_Session::Proxy_Session( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
-		: Axe::Proxy(_id, _hostProvider)
+	Proxy_Session::Proxy_Session( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider )
+		: Axe::Proxy(_id, _adapterProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,12 +104,14 @@ namespace Axe
 		this->processMessage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_SessionPtr & _value )
+	static std::string s_servant_type_Servant_SessionManager = "::Axe::Servant_SessionManager";
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Servant_SessionManager::getTypeId()
 	{
-		_value->write( _ar );
+		return s_servant_type_Servant_SessionManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	static void s_Servant_SessionManager_callMethod_create( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_SessionManager_createPtr bellhop = new Bellhop_SessionManager_create( _requestId, _session, _servant );
 	
@@ -133,16 +119,20 @@ namespace Axe
 	
 		_servant->create_async( bellhop, arg0 );
 	}
+	static void s_Servant_SessionManager_dummyMethod( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	{
+		static_cast<Axe::Servant *>( _servant )->callMethod( _methodId, _requestId, _archive, _session );
+	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_SessionManager_callMethod)( Servant_SessionManager * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_SessionManager_callMethod s_Servant_SessionManager_callMethods[] =
 	{
-		0
+		&s_Servant_SessionManager_dummyMethod
 		, &s_Servant_SessionManager_callMethod_create
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_SessionManager::callMethod( std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		(*s_Servant_SessionManager_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
@@ -182,53 +172,26 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_SessionManager_create::response( const Proxy_SessionPtr & _arg0 )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginResponse();
 		ar << _arg0;
-		m_session->process();
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_SessionManager_create::throw_exception( const Axe::Exception & _ex )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginException();
 		s_Servant_SessionManager_writeException_create( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
-		m_session->process();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	BindResponse<Response_SessionManager_createPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
-		: m_response(_response)
-		, m_exception(_exception)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_SessionManager_createPtr>::response( const Proxy_SessionPtr & _arg0 )
-	{
-		m_response( _arg0 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_SessionManager_createPtr>::throw_exception( const Axe::Exception & _ex )
-	{
-		m_exception( _ex );
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_SessionManager_create::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		Proxy_SessionPtr arg0; _ar >> arg0;
+		Proxy_SessionPtr arg0 = Axe::makeProxy<Proxy_SessionPtr>( _ar );
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_SessionManager_create::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		std::size_t exceptionId;
-		_ar.readSize( exceptionId );
-	
-		if( this->exceptionFilter( exceptionId, _ar ) == true )
-		{
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_SessionManager::Proxy_SessionManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
-		: Axe::Proxy(_id, _hostProvider)
+	Proxy_SessionManager::Proxy_SessionManager( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider )
+		: Axe::Proxy(_id, _adapterProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -239,8 +202,36 @@ namespace Axe
 	
 		this->processMessage();
 	}
+}
+namespace Axe
+{
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_SessionManagerPtr & _value )
+	BindResponse<::Axe::Response_Session_destroyPtr>::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )
+		: TBaseHelper(_response,_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<::Axe::Response_Session_destroyPtr>::response()
+	{
+		m_response();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_SessionPtr & _value )
+	{
+		_value->write( _ar );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BindResponse<::Axe::Response_SessionManager_createPtr>::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )
+		: TBaseHelper(_response,_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<::Axe::Response_SessionManager_createPtr>::response( const ::Axe::Proxy_SessionPtr & _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_SessionManagerPtr & _value )
 	{
 		_value->write( _ar );
 	}

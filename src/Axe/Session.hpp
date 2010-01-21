@@ -4,6 +4,8 @@
 
 namespace Axe
 {
+	class Exception;
+
 	class Session
 		: public Dispatcher
 	{
@@ -17,6 +19,10 @@ namespace Axe
 		ArchiveInvocation & beginConnect( bool _successful );
 		ArchiveInvocation & beginResponse( std::size_t _responseId );
 		ArchiveInvocation & beginException( std::size_t _responseId );
+
+	public:
+		void processException( std::size_t _requestId, std::size_t _exceptionId, const Exception & _ex );
+
 
 	protected:
 		void handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size );

@@ -1,0 +1,33 @@
+<Solution>
+
+
+	<Adapter>Grid
+		<Endpoints>
+			<Address>127.0.0.1</Address>
+			<Port>12001</Port>
+		</Endpoints>
+	</Adapter>
+		
+	<Evictor>
+		<Dll>server.dll</Dll>
+		<Entry>createEvictorManager</Entry>
+		
+		<Adapter>
+			<Endpoints>Evictor
+				<Address>127.0.0.1</Address>
+				<Port>12002</Port>
+			</Endpoints>
+		</Adapter>
+	</Evictor>
+		
+	<Node>Carbon
+		<Service>EvictorManager
+			<Dll>server.dll</Dll>
+			<Entry>createEvictorManager</Entry>
+			
+			<Properties>
+				<PathDB>db.dat</PathDB>
+			</Properties>
+		</Service>
+	</Node>
+</Solution>

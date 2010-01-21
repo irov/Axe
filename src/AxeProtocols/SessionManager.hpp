@@ -22,6 +22,9 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
+		static const std::string & getTypeId();
+	
+	public:
 		virtual void destroy_async( const Bellhop_Session_destroyPtr & _cb ) = 0;
 	
 	public:
@@ -59,36 +62,15 @@ namespace Axe
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_Session_destroy> Response_Session_destroyPtr;
-	
-	template<>
-	class BindResponse<Response_Session_destroyPtr>
-		: public Response_Session_destroy
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_Session
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_Session( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_Session( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
 		void destroy_async( const Response_Session_destroyPtr & _response );
@@ -96,13 +78,14 @@ namespace Axe
 	
 	typedef AxeHandle<Proxy_Session> Proxy_SessionPtr;
 	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_SessionPtr & _value );
-	
 	typedef AxeHandle<class Bellhop_SessionManager_create> Bellhop_SessionManager_createPtr;
 	
 	class Servant_SessionManager
 		: virtual public Axe::Servant
 	{
+	public:
+		static const std::string & getTypeId();
+	
 	public:
 		virtual void create_async( const Bellhop_SessionManager_createPtr & _cb, const std::string & _login ) = 0;
 	
@@ -141,42 +124,54 @@ namespace Axe
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_SessionManager_create> Response_SessionManager_createPtr;
-	
-	template<>
-	class BindResponse<Response_SessionManager_createPtr>
-		: public Response_SessionManager_create
-	{
-		typedef boost::function<void(const Proxy_SessionPtr &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const Proxy_SessionPtr & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_SessionManager
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_SessionManager( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_SessionManager( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
 		void create_async( const Response_SessionManager_createPtr & _response, const std::string & _login );
 	};
 	
 	typedef AxeHandle<Proxy_SessionManager> Proxy_SessionManagerPtr;
+}
+namespace Axe
+{
 	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_SessionManagerPtr & _value );
+	template<>
+	class BindResponse<::Axe::Response_Session_destroyPtr>
+		: public BindResponseHelper<::Axe::Response_Session_destroy, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::Axe::Response_Session_destroy, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_SessionPtr & _value );
+	
+	template<>
+	class BindResponse<::Axe::Response_SessionManager_createPtr>
+		: public BindResponseHelper<::Axe::Response_SessionManager_create, void(const ::Axe::Proxy_SessionPtr &)>
+	{
+	protected:
+		typedef BindResponseHelper<::Axe::Response_SessionManager_create, void(const ::Axe::Proxy_SessionPtr &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::Axe::Proxy_SessionPtr & _arg0 ) override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_SessionManagerPtr & _value );
 }

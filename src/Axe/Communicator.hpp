@@ -10,7 +10,6 @@ namespace Axe
 	typedef AxeHandle<class Router> RouterPtr;
 
 	typedef AxeHandle<class ServantFactory> ServantFactoryPtr;
-	typedef AxeHandle<class ServantProvider> ServantProviderPtr; 
 	typedef AxeHandle<class Properties> PropertiesPtr;
 	
 	typedef AxeHandle<class Communicator> CommunicatorPtr;
@@ -57,14 +56,16 @@ namespace Axe
 		, public ConnectionProvider
 	{
 	public:
-		Communicator( const PropertiesPtr & _properties );
+		Communicator( const boost::property_tree::ptree & _properties );
 
 	public:
 		boost::asio::io_service & getService();
+		const boost::property_tree::ptree & getProperties();
+
+	public:
 		const ConnectionCachePtr & getConnectionCache() const;
 		const EndpointCachePtr & getEndpointCache() const;
 		const ServantFactoryPtr & getServantFactory() const;
-		const ServantProviderPtr & getServantProvider() const;
 
 	public:
 		void connectGrid( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _response );
@@ -87,6 +88,11 @@ namespace Axe
 			, const AdapterCreateResponsePtr & _response 
 			);
 
+		AdapterPtr createUnregistredAdapter( 
+			const boost::asio::ip::tcp::endpoint & _endpoint
+			, const std::string & _name 
+			);
+
 	public:
 		void createRouter(
 			const boost::asio::ip::tcp::endpoint & _endpoint
@@ -106,15 +112,14 @@ namespace Axe
 
 		void addAdapterException_( const Axe::Exception & _ex );
 
-		void createAdapterWithId_(
+		AdapterPtr createAdapterWithId_(
 			const boost::asio::ip::tcp::endpoint & _endpoint
 			, const std::string & _name
-			, std::size_t _id 
-			, const AdapterCreateResponsePtr & _response );
+			, std::size_t _id );
 
 	protected:
 		boost::asio::io_service m_service;
-		PropertiesPtr m_properties;
+		boost::property_tree::ptree m_properties;
 
 		Proxy_EvictorManagerPtr m_evictorManager;
 		Proxy_GridManagerPtr m_gridManager;
@@ -123,7 +128,6 @@ namespace Axe
 		EndpointCachePtr m_endpointCache;
 
 		ServantFactoryPtr m_servantFactory;
-		ServantProviderPtr m_servantProvider;
 
 		typedef std::map<std::string, AdapterPtr> TMapAdapters;
 		TMapAdapters m_adapters; 

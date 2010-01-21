@@ -4,12 +4,19 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
-#	include <Axe/ProxyHostProvider.hpp>
+#	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	static std::string s_servant_type_Servant_PermissionsVerifier = "::Axe::Servant_PermissionsVerifier";
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Servant_PermissionsVerifier::getTypeId()
+	{
+		return s_servant_type_Servant_PermissionsVerifier;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_Servant_PermissionsVerifier_callMethod_checkPermissions( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_PermissionsVerifier_checkPermissionsPtr bellhop = new Bellhop_PermissionsVerifier_checkPermissions( _requestId, _session, _servant );
 	
@@ -18,16 +25,20 @@ namespace Axe
 	
 		_servant->checkPermissions_async( bellhop, arg0, arg1 );
 	}
+	static void s_Servant_PermissionsVerifier_dummyMethod( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	{
+		static_cast<Axe::Servant *>( _servant )->callMethod( _methodId, _requestId, _archive, _session );
+	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_PermissionsVerifier_callMethod)( Servant_PermissionsVerifier * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_PermissionsVerifier_callMethod s_Servant_PermissionsVerifier_callMethods[] =
 	{
-		0
+		&s_Servant_PermissionsVerifier_dummyMethod
 		, &s_Servant_PermissionsVerifier_callMethod_checkPermissions
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_PermissionsVerifier::callMethod( std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		(*s_Servant_PermissionsVerifier_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
@@ -67,32 +78,16 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_PermissionsVerifier_checkPermissions::response( bool _arg0 )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginResponse();
 		ar << _arg0;
-		m_session->process();
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_PermissionsVerifier_checkPermissions::throw_exception( const Axe::Exception & _ex )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginException();
 		s_Servant_PermissionsVerifier_writeException_checkPermissions( AxeUtil::nativePtr(m_servant), 3, ar, _ex );
-		m_session->process();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
-		: m_response(_response)
-		, m_exception(_exception)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::response( bool _arg0 )
-	{
-		m_response( _arg0 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>::throw_exception( const Axe::Exception & _ex )
-	{
-		m_exception( _ex );
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_PermissionsVerifier_checkPermissions::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
@@ -101,19 +96,8 @@ namespace Axe
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_PermissionsVerifier_checkPermissions::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		std::size_t exceptionId;
-		_ar.readSize( exceptionId );
-	
-		if( this->exceptionFilter( exceptionId, _ar ) == true )
-		{
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_PermissionsVerifier::Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
-		: Axe::Proxy(_id, _hostProvider)
+	Proxy_PermissionsVerifier::Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider )
+		: Axe::Proxy(_id, _adapterProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -125,8 +109,21 @@ namespace Axe
 	
 		this->processMessage();
 	}
+}
+namespace Axe
+{
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_PermissionsVerifierPtr & _value )
+	BindResponse<::Axe::Response_PermissionsVerifier_checkPermissionsPtr>::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )
+		: TBaseHelper(_response,_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<::Axe::Response_PermissionsVerifier_checkPermissionsPtr>::response( bool _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_PermissionsVerifierPtr & _value )
 	{
 		_value->write( _ar );
 	}

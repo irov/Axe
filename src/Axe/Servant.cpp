@@ -41,7 +41,8 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		const ProxyAdapterProviderPtr & provider = _connectionCache->getProxyAdapterProvider( m_servantId, m_adapterId );
+		const ProxyAdapterProviderPtr & provider = 
+			_connectionCache->getProxyAdapterProvider( m_servantId, m_adapterId );
 
 		return new Proxy( m_servantId, provider );
 	}
@@ -119,10 +120,13 @@ namespace Axe
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::restore( ArchiveDispatcher & _ar )
+	bool Servant::restore( ArchiveDispatcher & _ar, const boost::property_tree::ptree & _pr )
 	{
 		this->_restore(_ar);
-		this->onRestore();
+		
+		bool done = this->onRestore( _pr );
+
+		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::evict( ArchiveInvocation & _aw )
@@ -141,9 +145,9 @@ namespace Axe
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Servant::onRestore()
+	bool Servant::onRestore( const boost::property_tree::ptree & _pr )
 	{
-		//Empty
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Servant::onEvict()

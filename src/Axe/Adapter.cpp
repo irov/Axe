@@ -74,6 +74,7 @@ namespace Axe
 		, m_communicator(_communicator)
 		, m_adapterId(_adapterId)
 	{
+		m_servantProvider = new ServantProvider( m_communicator, _adapterId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const CommunicatorPtr & Adapter::getCommunicator() const
@@ -96,74 +97,87 @@ namespace Axe
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
+	void Adapter::addServantResponse_( std::size_t _servantId, const ServantPtr & _servant, const AdapterCreateServantResponsePtr & _response )
 	{
-		class AdapterServantFactoryCreateResponse
-			: public ServantFactoryCreateResponse
+		if( this->addServantWithId( _servantId, _servant ) == false )
 		{
-		public:
-			AdapterServantFactoryCreateResponse( const AdapterPtr & _adapter, const AdapterCreateServantResponsePtr & _cb )
-				: m_adapter(_adapter)
-				, m_cb(_cb)
-			{
-			}
+			printf("Adapter::addServant adapter '%d' already exist servant '%d'\n"
+				, m_adapterId
+				, _servantId 
+				);
 
-		public:
-			void onServantCreateSuccessful( const ServantPtr & _servant ) override
-			{
-				const CommunicatorPtr & communicator = m_adapter->getCommunicator();
+			AdapterServantAlreadyExistException ex;
+			ex.adapterId = m_adapterId;
+			ex.servantId = _servantId;
 
-				const Proxy_EvictorManagerPtr & evictorManager = communicator->getEvictorManager();
+			const Proxy_EvictorManagerPtr & evictorManager = m_communicator->getEvictorManager();
 
-				std::size_t adapterId = m_adapter->getAdapterId();
-
-				evictorManager->create_async( 
-					bindResponse( boost::bind( &AdapterServantFactoryCreateResponse::addServantResponse, handlePtr(this), _1, _servant ) )
-					, adapterId 
-					);
-			}
-
-			void addServantResponse( std::size_t _servantId, const ServantPtr & _servant )
-			{
-				if( m_adapter->addServantWithId( _servantId, _servant ) == false )
-				{
-					std::size_t adapterId = m_adapter->getAdapterId();
-
-					printf("Adapter::addServant adapter '%d' already exist servant '%d'\n"
-						, adapterId
-						, _servantId 
-						);
-
-					AdapterServantAlreadyExistException ex;
-					ex.adapterId = adapterId;
-					ex.servantId = _servantId;
-
-					this->onServantCreateFailed( ex );
-				}
-				else
-				{
-					m_cb->onServantCreateSuccessful( _servant );
-				}
-			}
-
-			void onServantCreateFailed( const Axe::Exception & _ex ) override
-			{
-				m_cb->onServantCreateFailed( _ex );
-			}
-
-		protected:
-			AdapterPtr m_adapter;
-			AdapterCreateServantResponsePtr m_cb;
-		};
+			evictorManager->erase_async( 
+				bindResponse( boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, ex )
+					, boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, _1 ) 
+					)
+				, _servantId
+				);
+		}
+		else
+		{
+			_response->onServantCreateSuccessful( _servant );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::addServant( const std::string & _type, const AdapterCreateServantResponsePtr & _response )
 	{
 		const ServantFactoryPtr & servantFactory = m_communicator->getServantFactory();
 
-		servantFactory->genServant( _type
-			, new AdapterServantFactoryCreateResponse( this, _response ) 
+		ServantPtr servant = servantFactory->genServant( _type );
+
+		if( servant == 0 )
+		{
+			AdapterServantFactoryNotRegistredGeneratorException ex;
+			ex.servantType = _type;
+			ex.adapterId = m_adapterId;
+
+			_response->onServantCreateFailed( ex );
+			return;
+		}
+
+		const Proxy_EvictorManagerPtr & evictorManager = m_communicator->getEvictorManager();
+
+		evictorManager->create_async( 
+			bindResponse( boost::bind( &Adapter::addServantResponse_, handlePtr(this), _1, servant, _response )
+				, boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, _1 ) 
+				)
+			, m_adapterId
+			, _type
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Adapter::addUnique( const std::string & _name, const std::string & _type, const AdapterCreateServantResponsePtr & _response )
+	{
+		const ServantFactoryPtr & servantFactory = m_communicator->getServantFactory();
+
+		ServantPtr servant = servantFactory->genServant( _type );
+
+		if( servant == 0 )
+		{
+			AdapterServantFactoryNotRegistredGeneratorException ex;
+			ex.servantType = _type;
+			ex.adapterId = m_adapterId;
+
+			if( _response )
+			{
+				_response->onServantCreateFailed( ex );
+			}
+		}
+		else
+		{
+			TMapUniques::iterator it_insert = m_uniques.insert( std::make_pair(_name, servant) ).first;
+
+			if( _response )
+			{
+				_response->onServantCreateSuccessful( it_insert->second );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Adapter::hasServant( std::size_t _servantId ) const
@@ -190,7 +204,6 @@ namespace Axe
 			bindResponse( boost::bind( &removeServantResponse, _proxy, _response ) )
 			, servantId
 			);
-		//_proxy->destroy_async(  )
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::setAdapterId( std::size_t _adapterId )
@@ -214,22 +227,44 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
-		TMapServants::iterator it_find = m_servants.find( _servantId );
+		if( _servantId == 0 )
+		{
+			std::string uniqueId;
+			_archive.readString( uniqueId );
 
-		if( it_find == m_servants.end() )
+			TMapUniques::iterator it_found = m_uniques.find( uniqueId );
+
+			if( it_found == m_uniques.end() )
+			{
+				DispatcherServantNotFoundException ex;
+				ex.servantId = _servantId;
+				ex.adapterId = m_adapterId;
+
+				_session->processException( _requestId, DispatcherServantNotFoundException::exceptionId, ex );
+				return;
+			}
+
+			const ServantPtr & servant = it_found->second;
+
+			servant->dispatchMethod( _methodId, _requestId, _archive, _session );
+			return;
+		}
+
+		TMapServants::iterator it_found = m_servants.find( _servantId );
+
+		if( it_found == m_servants.end() )
 		{
 			AdapterServantProviderResponsePtr response =
 				new AdapterServantProviderResponse( this, _servantId, _methodId, _requestId, _archive, _session );
 
-			const ServantProviderPtr & servantProvider = m_communicator->getServantProvider();
-
-			servantProvider->get( _servantId, m_adapterId, response );
-			return;
+			m_servantProvider->get( _servantId, response );
 		}
+		else
+		{
+			const ServantPtr & servant = it_found->second;
 
-		const ServantPtr & servant = it_find->second;
-
-		servant->dispatchMethod( _methodId, _requestId, _archive, _session );
+			servant->dispatchMethod( _methodId, _requestId, _archive, _session );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::replaceMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session, std::size_t _adapterId )
@@ -247,30 +282,20 @@ namespace Axe
 		}
 
 		{
-			ArchiveInvocation & ar = _session->beginException( _requestId );
-
 			DispatcherServantRelocateException ex;
 			ex.servantId = _servantId;
 			ex.adapterId = _adapterId;
 
-			ar.writeSize( DispatcherServantRelocateException::exceptionId );
-			ex.write( ar );
-
-			_session->process();
+			_session->processException( _requestId, DispatcherServantRelocateException::exceptionId, ex );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::exceptionMethod( std::size_t _servantId, std::size_t _requestId, const SessionPtr & _session )
 	{
-		ArchiveInvocation & ar = _session->beginException( _requestId );
-
-		DispatcherObjectNotFoundException ex;
+		DispatcherServantNotFoundException ex;
 		ex.servantId = _servantId;
 		ex.adapterId = m_adapterId;
 
-		ar.writeSize( DispatcherObjectNotFoundException::exceptionId );
-		ex.write( ar );
-
-		_session->process();
+		_session->processException( _requestId, DispatcherServantNotFoundException::exceptionId, ex );
 	}
 }

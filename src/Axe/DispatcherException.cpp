@@ -25,18 +25,18 @@ namespace Axe
 		_ar >> adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DispatcherObjectNotFoundException::rethrow() const
+	void DispatcherServantNotFoundException::rethrow() const
 	{
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DispatcherObjectNotFoundException::write( ArchiveInvocation & _ar ) const
+	void DispatcherServantNotFoundException::write( ArchiveInvocation & _ar ) const
 	{
 		_ar << servantId;
 		_ar << adapterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DispatcherObjectNotFoundException::read( ArchiveDispatcher & _ar )
+	void DispatcherServantNotFoundException::read( ArchiveDispatcher & _ar )
 	{
 		_ar >> servantId;
 		_ar >> adapterId;

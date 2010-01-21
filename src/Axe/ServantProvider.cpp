@@ -2,29 +2,33 @@
 
 #	include "ServantProvider.hpp"
 #	include "ServantFactory.hpp"
+#	include "Communicator.hpp"
 
 #	include <AxeProtocols/EvictorManager.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ServantProvider::ServantProvider( const ServantFactoryPtr & _servantFactory, const Proxy_EvictorManagerPtr & _evictorManager )
-		: m_servantFactory(_servantFactory)
-		, m_evictorManager(_evictorManager)
+	ServantProvider::ServantProvider( const CommunicatorPtr & _communicator, std::size_t _adapterId )
+		: m_communicator(_communicator)
+		, m_adapterId(_adapterId)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantProvider::get( std::size_t _servantId, std::size_t _adapterId, const ServantProviderResponsePtr & _cb )
+	void ServantProvider::get( std::size_t _servantId, const ServantProviderResponsePtr & _cb )
 	{
 		TMapWantedServant::iterator it_found = m_wantedServant.find( _servantId );
 
 		if( it_found == m_wantedServant.end() )
 		{
-			m_evictorManager->get_async( 
+			const Proxy_EvictorManagerPtr & evictorManager = 
+				m_communicator->getEvictorManager();
+
+			evictorManager->get_async(
 				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId )
 					, boost::bind( &ServantProvider::onException, handlePtr(this), _1, _servantId ) ) 
 				, _servantId
-				, _adapterId
+				, m_adapterId
 				);
 
 			TListServantProviderResponse responses;
@@ -36,12 +40,20 @@ namespace Axe
 		it_found->second.push_back( _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ServantProvider::onGet( const AxeUtil::Archive & _data, std::size_t _typeId, std::size_t _servantId )
+	void ServantProvider::onGet( const AxeUtil::Archive & _data, const std::string & _type, std::size_t _servantId )
 	{
-		ServantPtr servant = m_servantFactory->genServantWithId( _typeId );
+		const ServantFactoryPtr & servantFactory = 
+			m_communicator->getServantFactory();
 
+		ServantPtr servant = servantFactory->genServant( _type );
 		
-		// TODO
+		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
+		
+		ArchiveDispatcher ar( const_cast<AxeUtil::Archive &>(_data), connectionCache );
+
+		const boost::property_tree::ptree & pr = m_communicator->getProperties();
+
+		servant->restore( ar, pr );
 
 		TMapWantedServant::iterator it_found = m_wantedServant.find( _servantId );
 
@@ -65,7 +77,7 @@ namespace Axe
 		{
 			_ex.rethrow();
 		}
-		catch( const Axe::EvictingAlreadyRestored & _restored )
+		catch( const Axe::EvictorAlreadyRestored & _restored )
 		{
 			for( TListServantProviderResponse::iterator
 				it = it_found->second.begin(),
@@ -76,7 +88,7 @@ namespace Axe
 				(*it)->onServantReplace( _restored.adapterId );
 			}
 		}
-		catch( const Axe::EvictingNotFoundException & _notfound )
+		catch( const Axe::EvictorNotFoundException & _notfound )
 		{
 			for( TListServantProviderResponse::iterator
 				it = it_found->second.begin(),

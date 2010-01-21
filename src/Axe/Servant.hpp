@@ -10,6 +10,7 @@ namespace Axe
 	class Exception;
 
 	typedef AxeHandle<class Session> SessionPtr;
+	typedef AxeHandle<class Communicator> CommunicatorPtr;
 	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
 	typedef AxeHandle<class Proxy> ProxyPtr;
 
@@ -41,14 +42,14 @@ namespace Axe
 		virtual void responseException( std::size_t _methodId, std::size_t _requestId, const SessionPtr & _session, const Exception & _ex );
 
 	public:
-		void restore( ArchiveDispatcher & _ar );
+		bool restore( ArchiveDispatcher & _ar, const boost::property_tree::ptree & _pr );
 		void evict( ArchiveInvocation & _aw );
 
 	protected:
 		virtual void _restore( ArchiveDispatcher & _ar );
 		virtual void _evict( ArchiveInvocation & _aw );
 
-		virtual void onRestore();
+		virtual bool onRestore( const boost::property_tree::ptree & _pr );
 		virtual void onEvict();
 
 	protected:

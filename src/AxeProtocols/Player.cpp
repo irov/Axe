@@ -4,24 +4,19 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
-#	include <Axe/ProxyHostProvider.hpp>
+#	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & ar, const PlayerInfo & _value )
+	static std::string s_servant_type_Servant_Player = "::Axe::Servant_Player";
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Servant_Player::getTypeId()
 	{
-		ar << _value.name;
-		ar << _value.id;
+		return s_servant_type_Servant_Player;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( Axe::ArchiveDispatcher & ar, PlayerInfo & _value )
-	{
-		ar >> _value.name;
-		ar >> _value.id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Player_callMethod_test( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	static void s_Servant_Player_callMethod_test( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		Bellhop_Player_testPtr bellhop = new Bellhop_Player_test( _requestId, _session, _servant );
 	
@@ -30,27 +25,31 @@ namespace Axe
 		_servant->test_async( bellhop, arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void s_Servant_Player_subMethod_Session_callMethod( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	static void s_Servant_Player_subMethod_Session_callMethod( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
-		static_cast<Axe::Servant_Session *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );
+		static_cast<::Axe::Servant_Session *>(_servant)->callMethod( _methodId, _requestId, _archive, _session );
+	}
+	static void s_Servant_Player_dummyMethod( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	{
+		static_cast<Axe::Servant *>( _servant )->callMethod( _methodId, _requestId, _archive, _session );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef void (*TServant_Player_callMethod)( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
+	typedef void (*TServant_Player_callMethod)( Servant_Player * _servant, std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session );
 	//////////////////////////////////////////////////////////////////////////
 	static TServant_Player_callMethod s_Servant_Player_callMethods[] =
 	{
-		0
+		&s_Servant_Player_dummyMethod
 		, &s_Servant_Player_subMethod_Session_callMethod
 		, &s_Servant_Player_callMethod_test
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
+	void Servant_Player::callMethod( std::size_t _methodId, std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session )
 	{
 		(*s_Servant_Player_callMethods[ _methodId ])( this, _methodId, _requestId, _archive, _session );
 	}
 	static void s_Servant_Player_subMethod_Session_writeException( Servant_Player * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
 	{
-		static_cast<Axe::Servant_Session *>( _servant )->writeExceptions_( _methodId, _ar, _ex );
+		static_cast<::Axe::Servant_Session *>( _servant )->writeExceptions_( _methodId, _ar, _ex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_Servant_Player_writeException_test( Servant_Player * _servant, std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex )
@@ -89,32 +88,16 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Player_test::response( int _arg0 )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginResponse( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginResponse();
 		ar << _arg0;
-		m_session->process();
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Bellhop_Player_test::throw_exception( const Axe::Exception & _ex )
 	{
-		Axe::ArchiveInvocation & ar = m_session->beginException( m_requestId );
+		Axe::ArchiveInvocation & ar = this->beginException();
 		s_Servant_Player_writeException_test( AxeUtil::nativePtr(m_servant), 4, ar, _ex );
-		m_session->process();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	BindResponse<Response_Player_testPtr>::BindResponse( const TBindResponse & _response, const TBindException & _exception )
-		: m_response(_response)
-		, m_exception(_exception)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_Player_testPtr>::response( int _arg0 )
-	{
-		m_response( _arg0 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BindResponse<Response_Player_testPtr>::throw_exception( const Axe::Exception & _ex )
-	{
-		m_exception( _ex );
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Response_Player_test::responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
@@ -123,20 +106,9 @@ namespace Axe
 		this->response( arg0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Response_Player_test::exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		std::size_t exceptionId;
-		_ar.readSize( exceptionId );
-	
-		if( this->exceptionFilter( exceptionId, _ar ) == true )
-		{
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Proxy_Player::Proxy_Player( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider )
-		: Axe::Proxy(_id, _hostProvider)
-		, Axe::Proxy_Session(_id, _hostProvider)
+	Proxy_Player::Proxy_Player( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider )
+		: Axe::Proxy(_id, _adapterProvider)
+		, ::Axe::Proxy_Session(_id, _adapterProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -147,8 +119,33 @@ namespace Axe
 	
 		this->processMessage();
 	}
+}
+namespace Axe
+{
 	//////////////////////////////////////////////////////////////////////////
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_PlayerPtr & _value )
+	void operator << ( Axe::ArchiveInvocation & ar, const ::Axe::PlayerInfo & _value )
+	{
+		ar << _value.name;
+		ar << _value.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::Axe::PlayerInfo & _value )
+	{
+		ar >> _value.name;
+		ar >> _value.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BindResponse<::Axe::Response_Player_testPtr>::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )
+		: TBaseHelper(_response,_exception)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BindResponse<::Axe::Response_Player_testPtr>::response( int _arg0 )
+	{
+		m_response( _arg0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_PlayerPtr & _value )
 	{
 		_value->write( _ar );
 	}

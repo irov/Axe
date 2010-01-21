@@ -18,33 +18,33 @@ namespace Axe
 namespace AxeLibProtocol
 {
 	
+	typedef std::size_t AOIAvatarId;
+	
+	typedef std::size_t AOIPlayerId;
+	
+	typedef std::size_t AOITypeId;
+	
 	struct AOIPropagateAddAvatar
 	{
-		int userId;
-		int typeId;
-		AxeProtocol::Position pos;
-		AxeProtocol::Direction dir;
+		AOIPlayerId playerId;
+		AOITypeId typeId;
+		::AxeProtocol::Position pos;
+		::AxeProtocol::Direction dir;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIPropagateAddAvatar & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIPropagateAddAvatar & _value );
 	
 	struct AOIPropagateRemoveAvatar
 	{
-		int userId;
+		AOIPlayerId playerId;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIPropagateRemoveAvatar & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIPropagateRemoveAvatar & _value );
 	
 	struct AOIPropagateMoveAvatar
 	{
-		int userId;
-		AxeProtocol::MoveDesc steps;
+		AOIPlayerId playerId;
+		::AxeProtocol::MoveDesc steps;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIPropagateMoveAvatar & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIPropagateMoveAvatar & _value );
 	
 	typedef std::vector<AOIPropagateAddAvatar> AOIVectorAddAvatar;
 	
@@ -59,26 +59,21 @@ namespace AxeLibProtocol
 		AOIVectorRemoveAvatar remove;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIPropagateDiffAvatar & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIPropagateDiffAvatar & _value );
 	
 	struct AOIAvatarDesc
 	{
-		int typeId;
-		AxeProtocol::MoveDesc desc;
+		AOIPlayerId playerId;
+		AOITypeId typeId;
+		::AxeProtocol::MoveDesc desc;
 		float radius;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIAvatarDesc & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIAvatarDesc & _value );
 	
 	struct AOIAvatarMoveDesc
 	{
-		AxeProtocol::MoveDesc desc;
+		::AxeProtocol::MoveDesc desc;
 	};
 	
-	void operator << ( Axe::ArchiveInvocation & ar, const AOIAvatarMoveDesc & _value );
-	void operator >> ( Axe::ArchiveDispatcher & ar, AOIAvatarMoveDesc & _value );
 	
 	typedef AxeHandle<class Bellhop_AOITile_insertAvatar> Bellhop_AOITile_insertAvatarPtr;
 	typedef AxeHandle<class Bellhop_AOITile_removeAvatar> Bellhop_AOITile_removeAvatarPtr;
@@ -89,10 +84,13 @@ namespace AxeLibProtocol
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void insertAvatar_async( const Bellhop_AOITile_insertAvatarPtr & _cb, int _userId, const AOIAvatarDesc & _desc, bool _master ) = 0;
-		virtual void removeAvatar_async( const Bellhop_AOITile_removeAvatarPtr & _cb, int _avatarId ) = 0;
-		virtual void moveAvatar_async( const Bellhop_AOITile_moveAvatarPtr & _cb, const AOIAvatarMoveDesc & _desc ) = 0;
-		virtual void updateAvatar_async( const Bellhop_AOITile_updateAvatarPtr & _cb, int _avatarId ) = 0;
+		static const std::string & getTypeId();
+	
+	public:
+		virtual void insertAvatar_async( const Bellhop_AOITile_insertAvatarPtr & _cb, const AOIAvatarDesc & _desc, bool _master ) = 0;
+		virtual void removeAvatar_async( const Bellhop_AOITile_removeAvatarPtr & _cb, const AOIAvatarId & _avatarId ) = 0;
+		virtual void moveAvatar_async( const Bellhop_AOITile_moveAvatarPtr & _cb, const AOIAvatarId & _avatarId, const AOIAvatarMoveDesc & _desc ) = 0;
+		virtual void updateAvatar_async( const Bellhop_AOITile_updateAvatarPtr & _cb, const AOIAvatarId & _avatarId ) = 0;
 	
 	public:
 		void callMethod( std::size_t _methodId , std::size_t _requestId, Axe::ArchiveDispatcher & _archive, const Axe::SessionPtr & _session ) override;
@@ -111,7 +109,7 @@ namespace AxeLibProtocol
 		Bellhop_AOITile_insertAvatar( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_AOITilePtr & _servant );
 	
 	public:
-		void response( int );
+		void response( const AOIAvatarId & );
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -170,34 +168,13 @@ namespace AxeLibProtocol
 		: public Axe::Response
 	{
 	protected:
-		virtual void response( int ) = 0;
+		virtual void response( const AOIAvatarId & ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITile_insertAvatar> Response_AOITile_insertAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOITile_insertAvatarPtr>
-		: public Response_AOITile_insertAvatar
-	{
-		typedef boost::function<void(int)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( int _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOITile_removeAvatar
 		: public Axe::Response
@@ -207,30 +184,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITile_removeAvatar> Response_AOITile_removeAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOITile_removeAvatarPtr>
-		: public Response_AOITile_removeAvatar
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOITile_moveAvatar
 		: public Axe::Response
@@ -240,30 +196,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITile_moveAvatar> Response_AOITile_moveAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOITile_moveAvatarPtr>
-		: public Response_AOITile_moveAvatar
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOITile_updateAvatar
 		: public Axe::Response
@@ -273,47 +208,24 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITile_updateAvatar> Response_AOITile_updateAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOITile_updateAvatarPtr>
-		: public Response_AOITile_updateAvatar
-	{
-		typedef boost::function<void(const AOIPropagateDiffAvatar &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const AOIPropagateDiffAvatar & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_AOITile
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_AOITile( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_AOITile( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
-		void insertAvatar_async( const Response_AOITile_insertAvatarPtr & _response, int _userId, const AOIAvatarDesc & _desc, bool _master );
-		void removeAvatar_async( const Response_AOITile_removeAvatarPtr & _response, int _avatarId );
-		void moveAvatar_async( const Response_AOITile_moveAvatarPtr & _response, const AOIAvatarMoveDesc & _desc );
-		void updateAvatar_async( const Response_AOITile_updateAvatarPtr & _response, int _avatarId );
+		void insertAvatar_async( const Response_AOITile_insertAvatarPtr & _response, const AOIAvatarDesc & _desc, bool _master );
+		void removeAvatar_async( const Response_AOITile_removeAvatarPtr & _response, const AOIAvatarId & _avatarId );
+		void moveAvatar_async( const Response_AOITile_moveAvatarPtr & _response, const AOIAvatarId & _avatarId, const AOIAvatarMoveDesc & _desc );
+		void updateAvatar_async( const Response_AOITile_updateAvatarPtr & _response, const AOIAvatarId & _avatarId );
 	};
 	
 	typedef AxeHandle<Proxy_AOITile> Proxy_AOITilePtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_AOITilePtr & _value );
 	
 	typedef AxeHandle<class Bellhop_AOITileFactory_createTile> Bellhop_AOITileFactory_createTilePtr;
 	typedef AxeHandle<class Bellhop_AOITileFactory_destroyTile> Bellhop_AOITileFactory_destroyTilePtr;
@@ -321,6 +233,9 @@ namespace AxeLibProtocol
 	class Servant_AOITileFactory
 		: virtual public Axe::Servant
 	{
+	public:
+		static const std::string & getTypeId();
+	
 	public:
 		virtual void createTile_async( const Bellhop_AOITileFactory_createTilePtr & _cb ) = 0;
 		virtual void destroyTile_async( const Bellhop_AOITileFactory_destroyTilePtr & _cb, const Proxy_AOITilePtr & _tileProxy ) = 0;
@@ -375,30 +290,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITileFactory_createTile> Response_AOITileFactory_createTilePtr;
-	
-	template<>
-	class BindResponse<Response_AOITileFactory_createTilePtr>
-		: public Response_AOITileFactory_createTile
-	{
-		typedef boost::function<void(const Proxy_AOITilePtr &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const Proxy_AOITilePtr & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOITileFactory_destroyTile
 		: public Axe::Response
@@ -408,36 +302,15 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOITileFactory_destroyTile> Response_AOITileFactory_destroyTilePtr;
-	
-	template<>
-	class BindResponse<Response_AOITileFactory_destroyTilePtr>
-		: public Response_AOITileFactory_destroyTile
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_AOITileFactory
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_AOITileFactory( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_AOITileFactory( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
 		void createTile_async( const Response_AOITileFactory_createTilePtr & _response );
@@ -445,8 +318,6 @@ namespace AxeLibProtocol
 	};
 	
 	typedef AxeHandle<Proxy_AOITileFactory> Proxy_AOITileFactoryPtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_AOITileFactoryPtr & _value );
 	
 	typedef AxeHandle<class Bellhop_AOISpace_insertAvatar> Bellhop_AOISpace_insertAvatarPtr;
 	typedef AxeHandle<class Bellhop_AOISpace_removeAvatar> Bellhop_AOISpace_removeAvatarPtr;
@@ -458,10 +329,13 @@ namespace AxeLibProtocol
 		: virtual public Axe::Servant
 	{
 	public:
-		virtual void insertAvatar_async( const Bellhop_AOISpace_insertAvatarPtr & _cb, __compiler__type__error _userPrx, const AOIAvatarDesc & _desc ) = 0;
-		virtual void removeAvatar_async( const Bellhop_AOISpace_removeAvatarPtr & _cb, int _userId ) = 0;
-		virtual void moveAvatar_async( const Bellhop_AOISpace_moveAvatarPtr & _cb, int _userId, const AOIAvatarMoveDesc & _moveDesc ) = 0;
-		virtual void updateAvatar_async( const Bellhop_AOISpace_updateAvatarPtr & _cb, int _userId ) = 0;
+		static const std::string & getTypeId();
+	
+	public:
+		virtual void insertAvatar_async( const Bellhop_AOISpace_insertAvatarPtr & _cb, const AOIAvatarDesc & _desc ) = 0;
+		virtual void removeAvatar_async( const Bellhop_AOISpace_removeAvatarPtr & _cb, const AOIAvatarId & _userId ) = 0;
+		virtual void moveAvatar_async( const Bellhop_AOISpace_moveAvatarPtr & _cb, const AOIAvatarId & _userId, const AOIAvatarMoveDesc & _moveDesc ) = 0;
+		virtual void updateAvatar_async( const Bellhop_AOISpace_updateAvatarPtr & _cb, const AOIAvatarId & _userId ) = 0;
 		virtual void finalize_async( const Bellhop_AOISpace_finalizePtr & _cb ) = 0;
 	
 	public:
@@ -471,8 +345,8 @@ namespace AxeLibProtocol
 		void writeExceptions_( std::size_t _methodId, Axe::ArchiveInvocation & _ar, const Axe::Exception & _ex );
 	
 	protected:
-		void _restore( ArchiveDispatcher & _ar ) override;
-		void _evict( ArchiveInvocation & _aw ) override;
+		void _restore( Axe::ArchiveDispatcher & _ar ) override;
+		void _evict( Axe::ArchiveInvocation & _aw ) override;
 	
 	protected:
 		Proxy_AOITilePtr m_tileProxy;
@@ -488,7 +362,7 @@ namespace AxeLibProtocol
 		Bellhop_AOISpace_insertAvatar( std::size_t _requestId, const Axe::SessionPtr & _session, const Servant_AOISpacePtr & _servant );
 	
 	public:
-		void response( int );
+		void response( const AOIAvatarId & );
 		void throw_exception( const Axe::Exception & _ex );
 	
 	protected:
@@ -562,34 +436,13 @@ namespace AxeLibProtocol
 		: public Axe::Response
 	{
 	protected:
-		virtual void response( int ) = 0;
+		virtual void response( const AOIAvatarId & ) = 0;
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpace_insertAvatar> Response_AOISpace_insertAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOISpace_insertAvatarPtr>
-		: public Response_AOISpace_insertAvatar
-	{
-		typedef boost::function<void(int)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( int _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOISpace_removeAvatar
 		: public Axe::Response
@@ -599,30 +452,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpace_removeAvatar> Response_AOISpace_removeAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOISpace_removeAvatarPtr>
-		: public Response_AOISpace_removeAvatar
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOISpace_moveAvatar
 		: public Axe::Response
@@ -632,30 +464,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpace_moveAvatar> Response_AOISpace_moveAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOISpace_moveAvatarPtr>
-		: public Response_AOISpace_moveAvatar
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOISpace_updateAvatar
 		: public Axe::Response
@@ -665,30 +476,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpace_updateAvatar> Response_AOISpace_updateAvatarPtr;
-	
-	template<>
-	class BindResponse<Response_AOISpace_updateAvatarPtr>
-		: public Response_AOISpace_updateAvatar
-	{
-		typedef boost::function<void(const AOIPropagateDiffAvatar &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const AOIPropagateDiffAvatar & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOISpace_finalize
 		: public Axe::Response
@@ -698,48 +488,25 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpace_finalize> Response_AOISpace_finalizePtr;
-	
-	template<>
-	class BindResponse<Response_AOISpace_finalizePtr>
-		: public Response_AOISpace_finalize
-	{
-		typedef boost::function<void(const Proxy_AOITilePtr &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const Proxy_AOITilePtr & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_AOISpace
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_AOISpace( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_AOISpace( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
-		void insertAvatar_async( const Response_AOISpace_insertAvatarPtr & _response, __compiler__type__error _userPrx, const AOIAvatarDesc & _desc );
-		void removeAvatar_async( const Response_AOISpace_removeAvatarPtr & _response, int _userId );
-		void moveAvatar_async( const Response_AOISpace_moveAvatarPtr & _response, int _userId, const AOIAvatarMoveDesc & _moveDesc );
-		void updateAvatar_async( const Response_AOISpace_updateAvatarPtr & _response, int _userId );
+		void insertAvatar_async( const Response_AOISpace_insertAvatarPtr & _response, const AOIAvatarDesc & _desc );
+		void removeAvatar_async( const Response_AOISpace_removeAvatarPtr & _response, const AOIAvatarId & _userId );
+		void moveAvatar_async( const Response_AOISpace_moveAvatarPtr & _response, const AOIAvatarId & _userId, const AOIAvatarMoveDesc & _moveDesc );
+		void updateAvatar_async( const Response_AOISpace_updateAvatarPtr & _response, const AOIAvatarId & _userId );
 		void finalize_async( const Response_AOISpace_finalizePtr & _response );
 	};
 	
 	typedef AxeHandle<Proxy_AOISpace> Proxy_AOISpacePtr;
-	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_AOISpacePtr & _value );
 	
 	typedef AxeHandle<class Bellhop_AOISpaceFactory_createSpace> Bellhop_AOISpaceFactory_createSpacePtr;
 	typedef AxeHandle<class Bellhop_AOISpaceFactory_destroySpace> Bellhop_AOISpaceFactory_destroySpacePtr;
@@ -747,6 +514,9 @@ namespace AxeLibProtocol
 	class Servant_AOISpaceFactory
 		: virtual public Axe::Servant
 	{
+	public:
+		static const std::string & getTypeId();
+	
 	public:
 		virtual void createSpace_async( const Bellhop_AOISpaceFactory_createSpacePtr & _cb ) = 0;
 		virtual void destroySpace_async( const Bellhop_AOISpaceFactory_destroySpacePtr & _cb, const Proxy_AOISpacePtr & spaceProxy ) = 0;
@@ -801,30 +571,9 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpaceFactory_createSpace> Response_AOISpaceFactory_createSpacePtr;
-	
-	template<>
-	class BindResponse<Response_AOISpaceFactory_createSpacePtr>
-		: public Response_AOISpaceFactory_createSpace
-	{
-		typedef boost::function<void(const Proxy_AOISpacePtr &)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( const Proxy_AOISpacePtr & _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class Response_AOISpaceFactory_destroySpace
 		: public Axe::Response
@@ -834,36 +583,15 @@ namespace AxeLibProtocol
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_AOISpaceFactory_destroySpace> Response_AOISpaceFactory_destroySpacePtr;
-	
-	template<>
-	class BindResponse<Response_AOISpaceFactory_destroySpacePtr>
-		: public Response_AOISpaceFactory_destroySpace
-	{
-		typedef boost::function<void()> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response() override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_AOISpaceFactory
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_AOISpaceFactory( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_AOISpaceFactory( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
 		void createSpace_async( const Response_AOISpaceFactory_createSpacePtr & _response );
@@ -871,6 +599,209 @@ namespace AxeLibProtocol
 	};
 	
 	typedef AxeHandle<Proxy_AOISpaceFactory> Proxy_AOISpaceFactoryPtr;
+}
+namespace Axe
+{
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIPropagateAddAvatar & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIPropagateAddAvatar & _value );
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIPropagateRemoveAvatar & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIPropagateRemoveAvatar & _value );
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIPropagateMoveAvatar & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIPropagateMoveAvatar & _value );
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIPropagateDiffAvatar & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIPropagateDiffAvatar & _value );
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIAvatarDesc & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIAvatarDesc & _value );
+	void operator << ( Axe::ArchiveInvocation & ar, const ::AxeLibProtocol::AOIAvatarMoveDesc & _value );
+	void operator >> ( Axe::ArchiveDispatcher & ar, ::AxeLibProtocol::AOIAvatarMoveDesc & _value );
 	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_AOISpaceFactoryPtr & _value );
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITile_insertAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITile_insertAvatar, void(const ::AxeLibProtocol::AOIAvatarId &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITile_insertAvatar, void(const ::AxeLibProtocol::AOIAvatarId &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::AOIAvatarId & _arg0 ) override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITile_removeAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITile_removeAvatar, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITile_removeAvatar, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITile_moveAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITile_moveAvatar, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITile_moveAvatar, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITile_updateAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITile_updateAvatar, void(const ::AxeLibProtocol::AOIPropagateDiffAvatar &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITile_updateAvatar, void(const ::AxeLibProtocol::AOIPropagateDiffAvatar &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::AOIPropagateDiffAvatar & _arg0 ) override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::AxeLibProtocol::Proxy_AOITilePtr & _value );
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITileFactory_createTilePtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITileFactory_createTile, void(const ::AxeLibProtocol::Proxy_AOITilePtr &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITileFactory_createTile, void(const ::AxeLibProtocol::Proxy_AOITilePtr &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::Proxy_AOITilePtr & _arg0 ) override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOITileFactory_destroyTilePtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOITileFactory_destroyTile, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOITileFactory_destroyTile, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::AxeLibProtocol::Proxy_AOITileFactoryPtr & _value );
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpace_insertAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpace_insertAvatar, void(const ::AxeLibProtocol::AOIAvatarId &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpace_insertAvatar, void(const ::AxeLibProtocol::AOIAvatarId &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::AOIAvatarId & _arg0 ) override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpace_removeAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpace_removeAvatar, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpace_removeAvatar, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpace_moveAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpace_moveAvatar, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpace_moveAvatar, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpace_updateAvatarPtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpace_updateAvatar, void(const ::AxeLibProtocol::AOIPropagateDiffAvatar &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpace_updateAvatar, void(const ::AxeLibProtocol::AOIPropagateDiffAvatar &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::AOIPropagateDiffAvatar & _arg0 ) override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpace_finalizePtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpace_finalize, void(const ::AxeLibProtocol::Proxy_AOITilePtr &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpace_finalize, void(const ::AxeLibProtocol::Proxy_AOITilePtr &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::Proxy_AOITilePtr & _arg0 ) override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::AxeLibProtocol::Proxy_AOISpacePtr & _value );
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpaceFactory_createSpacePtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpaceFactory_createSpace, void(const ::AxeLibProtocol::Proxy_AOISpacePtr &)>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpaceFactory_createSpace, void(const ::AxeLibProtocol::Proxy_AOISpacePtr &)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( const ::AxeLibProtocol::Proxy_AOISpacePtr & _arg0 ) override;
+	};
+	
+	template<>
+	class BindResponse<::AxeLibProtocol::Response_AOISpaceFactory_destroySpacePtr>
+		: public BindResponseHelper<::AxeLibProtocol::Response_AOISpaceFactory_destroySpace, void()>
+	{
+	protected:
+		typedef BindResponseHelper<::AxeLibProtocol::Response_AOISpaceFactory_destroySpace, void()> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response() override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::AxeLibProtocol::Proxy_AOISpaceFactoryPtr & _value );
 }

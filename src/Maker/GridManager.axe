@@ -21,22 +21,19 @@ namespace Axe
 	};
 		
 	typedef map<string, size_t> TMapAdapterIds;
-	typedef map<string, size_t> TMapServantTypeIds;
 	typedef map<string, Proxy> TMapUniques;
 	typedef map<size_t, string> TMapEndpoints;
 
 	class GridManager
 	{
 		size_t addAdapter( string _name, string _endpoint ) throws AdapterAlreadyExistException;
+		size_t getAdapterId( string _name ) throws AdapterNotFoundException;
 		string getAdapterEndpoint( size_t _adapterId ) throws AdapterNotFoundException;
 
 		void addUnique( string _name, Proxy _unique ) throws UniqueAlreadyExistException;
 		Proxy getUnique( string _name ) throws UniqueNotFoundException;
 		
-		size_t getServantTypeId( string _type );
-
 		TMapAdapterIds m_adapterIds;
-		TMapServantTypeIds m_servantTypeIds;
 		
 		TMapUniques m_uniques;
 		TMapEndpoints m_endpoints;

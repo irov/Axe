@@ -22,6 +22,9 @@ namespace Axe
 		: virtual public Axe::Servant
 	{
 	public:
+		static const std::string & getTypeId();
+	
+	public:
 		virtual void checkPermissions_async( const Bellhop_PermissionsVerifier_checkPermissionsPtr & _cb, const std::string & _login, const std::string & _password ) = 0;
 	
 	public:
@@ -59,42 +62,38 @@ namespace Axe
 	
 	public:
 		void responseCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void exceptionCall( Axe::ArchiveDispatcher & _ar, std::size_t _size ) override;
 	};
 	
 	typedef AxeHandle<Response_PermissionsVerifier_checkPermissions> Response_PermissionsVerifier_checkPermissionsPtr;
-	
-	template<>
-	class BindResponse<Response_PermissionsVerifier_checkPermissionsPtr>
-		: public Response_PermissionsVerifier_checkPermissions
-	{
-		typedef boost::function<void(bool)> TBindResponse;
-		typedef boost::function<void(const Axe::Exception &)> TBindException;
-	
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception );
-	
-	public:
-		void response( bool _arg0 ) override;
-	
-		void throw_exception( const Axe::Exception & _ex ) override;
-	
-	protected:
-		TBindResponse m_response;
-		TBindException m_exception;
-	};
 	
 	class Proxy_PermissionsVerifier
 		: virtual public Axe::Proxy
 	{
 	public:
-		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyHostProviderPtr & _hostProvider );
+		Proxy_PermissionsVerifier( std::size_t _id, const Axe::ProxyAdapterProviderPtr & _adapterProvider );
 	
 	public:
 		void checkPermissions_async( const Response_PermissionsVerifier_checkPermissionsPtr & _response, const std::string & _login, const std::string & _password );
 	};
 	
 	typedef AxeHandle<Proxy_PermissionsVerifier> Proxy_PermissionsVerifierPtr;
+}
+namespace Axe
+{
 	
-	void operator << ( Axe::ArchiveInvocation & _ar, const Proxy_PermissionsVerifierPtr & _value );
+	template<>
+	class BindResponse<::Axe::Response_PermissionsVerifier_checkPermissionsPtr>
+		: public BindResponseHelper<::Axe::Response_PermissionsVerifier_checkPermissions, void(bool)>
+	{
+	protected:
+		typedef BindResponseHelper<::Axe::Response_PermissionsVerifier_checkPermissions, void(bool)> TBaseHelper;
+	
+	public:
+		BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );
+	
+	public:
+		void response( bool _arg0 ) override;
+	};
+	
+	void operator << ( Axe::ArchiveInvocation & _ar, const ::Axe::Proxy_PermissionsVerifierPtr & _value );
 }

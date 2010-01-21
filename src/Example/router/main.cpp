@@ -1,6 +1,5 @@
-#	pragma once
-
 #	include "pch.hpp"
+
 #	include <Axe/Communicator.hpp>
 #	include <Axe/Router.hpp>
 

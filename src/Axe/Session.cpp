@@ -1,8 +1,9 @@
 #	include "pch.hpp"
 
-#	include <Axe/Session.hpp>
+#	include "Session.hpp"
+#	include "Exception.hpp"
 
-#	include <Axe/ArchiveInvocation.hpp>
+#	include "ArchiveInvocation.hpp"
 
 namespace Axe
 {
@@ -51,6 +52,16 @@ namespace Axe
 		m_streamWrite.writePOD( false );
 
 		return m_streamWrite;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Session::processException( std::size_t _requestId, std::size_t _exceptionId, const Exception & _ex )
+	{
+		ArchiveInvocation & ar = this->beginException( _requestId );
+
+		ar.writeSize( _exceptionId );
+		_ex.write( ar );
+
+		this->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Session::handleReadPermissionSize( const boost::system::error_code & _ec, std::size_t * _size )

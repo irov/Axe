@@ -1,6 +1,5 @@
-#	pragma once
-
 #	include "pch.hpp"
+
 #	include <Axe/Client.hpp>
 
 #	include <AxeProtocols/SessionManager.hpp>

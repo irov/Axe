@@ -9,7 +9,7 @@
 #	include <Axe/AdapterConnection.hpp>
 
 #	include <Axe/ServantFactory.hpp>
-#	include <Axe/ServantProvider.hpp>
+
 
 #	include <AxeProtocols/EvictorManager.hpp>
 #	include <AxeProtocols/GridManager.hpp>
@@ -17,15 +17,21 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Communicator::Communicator( const PropertiesPtr & _properties )
+	Communicator::Communicator( const boost::property_tree::ptree & _properties )
 		: m_properties(_properties)
 	{	
 		m_connectionCache = new ConnectionCache( this );
+		m_servantFactory = new ServantFactory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	boost::asio::io_service & Communicator::getService()
 	{
 		return m_service;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const boost::property_tree::ptree & Communicator::getProperties()
+	{
+		return m_properties;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConnectionCachePtr & Communicator::getConnectionCache() const
@@ -41,11 +47,6 @@ namespace Axe
 	const ServantFactoryPtr & Communicator::getServantFactory() const
 	{
 		return m_servantFactory;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ServantProviderPtr & Communicator::getServantProvider() const
-	{
-		return m_servantProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::connectGrid( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _initializeResponse )
@@ -71,9 +72,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::setEvictorManager( const Proxy_EvictorManagerPtr & _evictorManager )
 	{
-		m_evictorManager = _evictorManager;
-		m_servantFactory = new ServantFactory( m_gridManager );
-		m_servantProvider = new ServantProvider( m_servantFactory, m_evictorManager );
+		m_evictorManager = _evictorManager;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Proxy_EvictorManagerPtr & Communicator::getEvictorManager() const
@@ -86,20 +85,16 @@ namespace Axe
 		m_service.run();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Communicator::createAdapterWithId_(
+	AdapterPtr Communicator::createAdapterWithId_(
 		const boost::asio::ip::tcp::endpoint & _endpoint
 		, const std::string & _name
-		, std::size_t _id 
-		, const AdapterCreateResponsePtr & _response )
+		, std::size_t _id )
 	{
 		AdapterPtr adapter = new Adapter( this, _endpoint, _name, _id );
 
 		m_adapters.insert( std::make_pair( _name, adapter ) );
 
-		if( _response )
-		{
-			_response->onCreate( adapter );
-		}
+		return adapter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::addAdapterResponse_( std::size_t _id
@@ -107,7 +102,12 @@ namespace Axe
 		, const std::string & _name
 		, const AdapterCreateResponsePtr & _response )
 	{
-		this->createAdapterWithId_( _endpoint, _name, _id, _response );
+		AdapterPtr adapter = this->createAdapterWithId_( _endpoint, _name, _id );
+
+		if( _response )
+		{
+			_response->onCreate( adapter );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::addAdapterException_( const Axe::Exception & _ex )
@@ -140,6 +140,16 @@ namespace Axe
 			, _name
 			, endpoint 
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	AdapterPtr Communicator::createUnregistredAdapter( 
+		const boost::asio::ip::tcp::endpoint & _endpoint
+		, const std::string & _name 
+		)
+	{
+		AdapterPtr adapter = this->createAdapterWithId_( _endpoint, _name, 0 );
+
+		return adapter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Communicator::createRouter(

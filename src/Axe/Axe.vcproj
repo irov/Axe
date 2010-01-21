@@ -461,6 +461,14 @@
 				RelativePath=".\Box.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Host.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Host.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Communicator"
