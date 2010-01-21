@@ -14,7 +14,7 @@ namespace AxeLib
 
 	public:
 		void addAdapter_async( const Bellhop_GridManager_addAdapterPtr & _cb, const std::string & _name, const std::string & _endpoint ) override;
-		void getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId ) override;
+		void getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _adapterId ) override;
 
 		void addUnique_async( const Bellhop_GridManager_addUniquePtr & _cb, const std::string & _name, const ProxyPtr & _unique ) override;
 		void getUnique_async( const Bellhop_GridManager_getUniquePtr & _cb, const std::string & _name ) override;		

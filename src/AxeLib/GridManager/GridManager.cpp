@@ -29,14 +29,14 @@ namespace AxeLib
 		_cb->response( m_adapterEnumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GridManager::getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _hostId )
+	void GridManager::getAdapterEndpoint_async( const Bellhop_GridManager_getAdapterEndpointPtr & _cb, std::size_t _adapterId )
 	{
-		TMapEndpoints::const_iterator it_found = m_endpoints.find( _hostId );
+		TMapEndpoints::const_iterator it_found = m_endpoints.find( _adapterId );
 
 		if( it_found == m_endpoints.end() )
 		{
-			HostNotFoundException ex;
-			ex.hostId = _hostId;
+			AdapterNotFoundException ex;
+			ex.adapterId = _adapterId;
 
 			_cb->throw_exception( ex );
 			return;
