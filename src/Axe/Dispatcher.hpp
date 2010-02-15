@@ -11,7 +11,7 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		Dispatcher( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache );
+		Dispatcher( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void process();
@@ -42,13 +42,12 @@ namespace Axe
 		static bool handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait );
 
 	protected:
+		SocketPtr m_socket;
+		ConnectionCachePtr m_connectionCache;
+
 		ArchiveInvocation m_streamWrite;
 		AxeUtil::Archive m_archiveSend;
 
-		ArchiveDispatcher m_streamIn;
-
-		ConnectionCachePtr m_connectionCache;
-
-		boost::asio::ip::tcp::socket m_socket;
+		ArchiveDispatcher m_streamIn;		
 	};
 }

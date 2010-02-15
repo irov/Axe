@@ -494,6 +494,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Socket"
+			>
+			<File
+				RelativePath=".\Socket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Socket.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
