@@ -156,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServantConnection.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ServantFactory.cpp"
 				>
 			</File>
@@ -382,31 +386,11 @@
 			Name="Dispatcher"
 			>
 			<File
-				RelativePath=".\Dispatcher.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Dispatcher.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\DispatcherException.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\DispatcherException.hpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Invocation"
-			>
-			<File
-				RelativePath=".\Invocation.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Invocation.hpp"
 				>
 			</File>
 		</Filter>
