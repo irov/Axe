@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <Axe/Socket.hpp>
+
 #	include <Axe/ConnectionCache.hpp>
 #	include <Axe/EndpointCache.hpp>
 
@@ -102,6 +104,9 @@ namespace Axe
 
 	protected:
 		ConnectionPtr createConnection( std::size_t _adapterId ) override;
+
+	public:
+		SocketPtr createSocket();
 
 	protected:
 		void addAdapterResponse_( std::size_t _id

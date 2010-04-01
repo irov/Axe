@@ -25,6 +25,11 @@ namespace Axe
 		m_socket.close();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Socket::is_open() const
+	{
+		return m_socket.is_open();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static bool s_handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait )
 	{
 		return ( _read >= _wait );

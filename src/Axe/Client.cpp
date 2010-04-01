@@ -1,8 +1,9 @@
 #	include "pch.hpp"
 
 #	include <Axe/Client.hpp>
+
 #	include <Axe/RouterConnection.hpp>
-#	include <Axe/Client.hpp>
+#	include <Axe/Socket.hpp>
 
 namespace Axe
 {
@@ -14,7 +15,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Client::connect( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password, const ClientConnectResponsePtr & _client )
 	{
-		m_routerConnection = new RouterConnection( m_service, 0, m_connectionCache, _client );
+		SocketPtr socket = new Socket( m_service );
+
+		m_routerConnection = new RouterConnection( socket, m_connectionCache, 0, _client );
 
 		m_routerConnection->createSession( _endpoint, _login, _password );
 	}

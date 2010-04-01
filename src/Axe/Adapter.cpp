@@ -220,7 +220,9 @@ namespace Axe
 	{
 		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
 
-		AdapterSessionPtr session = new AdapterSession( m_acceptor.get_io_service(), this, connectionCache );
+		SocketPtr socket = m_communicator->createSocket();
+
+		AdapterSessionPtr session = new AdapterSession( socket, connectionCache, this );
 
 		return session;
 	}
@@ -278,7 +280,7 @@ namespace Axe
 
 			ar << _archive;
 
-			connection->processMessage();
+			connection->process();
 		}
 
 		{

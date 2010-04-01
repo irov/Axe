@@ -82,7 +82,7 @@ namespace Axe
 
 		write.writeArchive( args_buff, lenght );
 
-		cn->processMessage();
+		cn->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::createResponse( const Proxy_SessionPtr & _player, const SessionPtr & _session )
@@ -123,7 +123,9 @@ namespace Axe
 	{
 		const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
 
-		RouterSessionPtr session = new RouterSession( m_service, this, connectionCache );
+		SocketPtr socket = m_communicator->createSocket();
+
+		RouterSessionPtr session = new RouterSession( socket, connectionCache, this );
 
 		return session;
 	}

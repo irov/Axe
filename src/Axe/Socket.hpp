@@ -22,6 +22,9 @@ namespace Axe
 		void close();
 
 	public:
+		bool is_open() const;
+
+	public:
 		void read( void * _buffer, std::size_t _size, const FSocketReadResponse & _response );
 		void write( void * _buffer, std::size_t _size, const FSocketWriteResponse & _response );
 

@@ -15,8 +15,10 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	AdapterConnection::AdapterConnection( boost::asio::io_service & _service, std::size_t _adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache )
-		: Invocation(_service, _adapterId, _endpointCache, _connectionCache)
+	AdapterConnection::AdapterConnection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, std::size_t _adapterId, const EndpointCachePtr & _endpointCache )
+		: Connection(_socket, _connectionCache)
+		, m_adapterId(_adapterId)
+		, m_endpointCache(_endpointCache)
 		, m_messageEnum(0)
 	{
 	}
@@ -92,5 +94,20 @@ namespace Axe
 		printf("Invocation::connectionFailed %d \n"
 			, m_adapterId
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::_reconnect()
+	{
+		printf("Invocation::processMessage m_socket is closed, opening\n"
+			);
+
+		m_endpointCache->getEndpoint( m_adapterId, 
+			boost::bind( &AdapterConnection::onEndpoint, handlePtr(this), _1 )
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		this->connect( _endpoint );
 	}
 }

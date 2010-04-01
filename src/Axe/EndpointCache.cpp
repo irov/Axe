@@ -17,7 +17,7 @@ namespace Axe
 		m_endpoints.insert( std::make_pair(_adapterId, _endpoint) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::getEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::getEndpoint( std::size_t _adapterId, const FEndpointCallback & _cb )
 	{
 		TMapEndpoints::iterator it_found = m_endpoints.find( _adapterId );
 
@@ -27,11 +27,11 @@ namespace Axe
 		}
 		else
 		{
-			_cb->onEndpoint( it_found->second );
+			_cb( it_found->second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::provideEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::provideEndpoint( std::size_t _adapterId, const FEndpointCallback & _cb )
 	{
 		TMapWantedEndpoints::iterator it_found = m_wantedEndpoints.find( _adapterId );
 
@@ -52,7 +52,7 @@ namespace Axe
 		it_found->second.push_back( _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EndpointCache::getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const EndpointCallbackPtr & _cb )
+	void EndpointCache::getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const FEndpointCallback & _cb )
 	{
 		std::string addr;
 		unsigned short port;
@@ -76,7 +76,7 @@ namespace Axe
 		it != it_end;
 		++it )
 		{
-			(*it)->onEndpoint( tcp_endpoint );
+			(*it)( tcp_endpoint );
 		}
 
 		m_wantedEndpoints.erase( it_found );

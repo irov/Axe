@@ -10,7 +10,7 @@ namespace Axe
 		: public Session
 	{
 	public:
-		AdapterSession( boost::asio::io_service & _service, const AdapterPtr & _adapter, const ConnectionCachePtr & _connectionCache );
+		AdapterSession( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, const AdapterPtr & _adapter );
 
 	public:
 		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;

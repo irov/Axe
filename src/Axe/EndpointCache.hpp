@@ -6,14 +6,7 @@ namespace Axe
 {
 	typedef AxeHandle<class Proxy_GridManager> Proxy_GridManagerPtr;
 
-	class EndpointCacheResponse
-		: virtual public AxeUtil::Shared
-	{
-	public:
-		virtual void onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint ) = 0;
-	};
-
-	typedef AxeHandle<EndpointCacheResponse> EndpointCallbackPtr;
+	typedef boost::function1<void, boost::asio::ip::tcp::endpoint> FEndpointCallback;
 
 	class EndpointCache
 		: virtual public AxeUtil::Shared
@@ -23,13 +16,13 @@ namespace Axe
 
 	public:
 		void addEndpoint( std::size_t _adapterId, const boost::asio::ip::tcp::endpoint & _endpoint );
-		void getEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb );
+		void getEndpoint( std::size_t _adapterId, const FEndpointCallback & _cb );
 
 	protected:
-		void getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const EndpointCallbackPtr & _cb );
+		void getEndpointResponse( const std::string & _endpoint, std::size_t _adapterId, const FEndpointCallback & _cb );
 
 	protected:
-		void provideEndpoint( std::size_t _adapterId, const EndpointCallbackPtr & _cb );
+		void provideEndpoint( std::size_t _adapterId, const FEndpointCallback & _cb );
 
 	protected:
 		Proxy_GridManagerPtr m_gridManager;
@@ -37,7 +30,7 @@ namespace Axe
 		typedef std::map<std::size_t, boost::asio::ip::tcp::endpoint> TMapEndpoints;
 		TMapEndpoints m_endpoints;
 
-		typedef std::list<EndpointCallbackPtr> TListEndpointResponses;
+		typedef std::list<FEndpointCallback> TListEndpointResponses;
 		typedef std::map<std::size_t, TListEndpointResponses> TMapWantedEndpoints;
 		TMapWantedEndpoints m_wantedEndpoints;
 	};

@@ -7,119 +7,92 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	Connection::Connection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache )
 		: m_socket(_socket)
+		, m_connectionCache(_connectionCache)
 		, m_permission(_connectionCache)
 		, m_streamIn(_connectionCache)
+		, m_streamOut(_connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
+	const SocketPtr & Connection::getSocket() const
 	{
-		class ConnectionSocketConnectResponse
-			: public SocketConnectResponse
-		{
-		public:
-			ConnectionSocketConnectResponse()
-			{
-			}
-
-		protected:
-			void onConnect( const boost::system::error_code & _ec ) override
-			{
-				if( _ec )
-				{
-					printf("Connection::handleConnect ec: %s\n"
-						, _ec.message().c_str() 
-						);
-					return;
-				}
-
-				printf("Connection::handleConnect successful\n"
-					);
-
-				//if( m_permission.empty() == false )
-				//{
-				//	printf("Connection::handleConnect send permission \n"
-				//		);
-
-				//	const AxeUtil::Archive & ar = m_permission.getArchive();
-
-				//	this->processArchive( ar );
-				//}
-
-				std::size_t * size = m_streamIn.keep<std::size_t>();
-
-				boost::asio::async_read( m_socket
-					, boost::asio::buffer( size, sizeof(std::size_t) )
-					, boost::bind( &Socket::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-					, boost::bind( &ConnectionSocketConnectResponse::handleReadConnectSize, handlePtr(this), boost::asio::placeholders::error, size )
-					);
-			}
-
-			void handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size )
-			{
-				if( _ec )
-				{
-					printf("Connection::handleReadConnectSize ec: %s\n"
-						, _ec.message().c_str() 
-						);
-
-					return;
-				}
-
-				std::size_t size_blob = *_size - sizeof(std::size_t);
-
-				AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
-
-				boost::asio::async_read( m_socket
-					, boost::asio::buffer( blob, size_blob )
-					, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-					, boost::bind( &Invocation::handleReadConnect, handlePtr(this), boost::asio::placeholders::error, blob )
-					);
-			}
-
-		//protected:
-		//	AxeUtil::Archive m_permission
-		};
+		return m_socket;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionCachePtr & Connection::getConnectionCache() const
+	{
+		return m_connectionCache;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ArchiveInvocation & Connection::getArchiveInvocation()
+	{
+		return m_streamOut;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveInvocation & Connection::connect( const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
+		m_permission.clear();
 		m_permission.begin();
 
 		printf("Connection::connect endpoint %s\n"
 			, _endpoint.address().to_string().c_str()
 			);
 
-		m_socket.async_connect( _endpoint
+		m_socket->connect( _endpoint
 			, boost::bind( &Connection::handleConnect, handlePtr(this), boost::asio::placeholders::error ) 
 			);
-
-		m_socket->connect( _endpoint,  )
 
 		return m_permission;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Connection::close()
 	{
-		m_socket.close();
+		m_socket->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Connection::processMessage()
+	void Connection::process()
 	{
-		printf("Connection::processMessage adapter\n");
-
-		if( m_socket.is_open() == false )
+		if( m_socket->is_open() == false )
 		{
-			printf("Connection::processMessage m_socket is closed, opening\n"
-				);
-
-			this->reconnect();
+			_reconnect();
+			return;
 		}
-		else
+
+		if( m_archiveSend.empty() )
 		{
-			printf("Connection::processMessage process\n"
+			m_streamOut.swap( m_archiveSend );
+
+			this->processArchive( m_archiveSend );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Connection::_reconnect()
+	{
+		//Empty;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Connection::processArchive( const AxeUtil::Archive & _ar )
+	{
+		m_socket->write_arhive( _ar
+			, boost::bind( &Connection::handleWriteStream, handlePtr(this), boost::asio::placeholders::error )
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Connection::handleWriteStream( const boost::system::error_code & _ec )
+	{
+		if( _ec )
+		{
+			printf("Connection::handleWriteStream ec: %s\n"
+				, _ec.message().c_str() 
 				);
 
+			return;
+		}
+
+		m_archiveSend.clear();
+
+		if( m_streamOut.empty() == false )
+		{
 			this->process();
 		}
 	}
@@ -149,9 +122,13 @@ namespace Axe
 
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
-		boost::asio::async_read( m_socket
-			, boost::asio::buffer( size, sizeof(std::size_t) )
-			, boost::bind( &Connection::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
+		//boost::asio::async_read( m_socket
+		//	, boost::asio::buffer( size, sizeof(std::size_t) )
+		//	, boost::bind( &Connection::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
+		//	, boost::bind( &Connection::handleReadConnectSize, handlePtr(this), boost::asio::placeholders::error, size )
+		//	);
+
+		m_socket->read( size, sizeof(std::size_t)
 			, boost::bind( &Connection::handleReadConnectSize, handlePtr(this), boost::asio::placeholders::error, size )
 			);
 	}
@@ -167,14 +144,18 @@ namespace Axe
 			return;
 		}
 
-		std::size_t size_blob = *_size - sizeof(std::size_t);
+		std::size_t blob_size = *_size - sizeof(std::size_t);
 
-		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( blob_size );
 
-		boost::asio::async_read( m_socket
-			, boost::asio::buffer( blob, size_blob )
-			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
-			, boost::bind( &Invocation::handleReadConnect, handlePtr(this), boost::asio::placeholders::error, blob )
+		//boost::asio::async_read( m_socket
+		//	, boost::asio::buffer( blob, size_blob )
+		//	, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
+		//	, boost::bind( &Invocation::handleReadConnect, handlePtr(this), boost::asio::placeholders::error, blob )
+		//	);
+
+		m_socket->read( blob, blob_size
+			, boost::bind( &Connection::handleReadConnect, handlePtr(this), boost::asio::placeholders::error, blob )
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,8 +175,7 @@ namespace Axe
 		bool result;
 		m_streamIn.read( result );
 
-		printf("Connection::handleReadConnect adapter - %d size - %d, result - %d\n"
-			, m_adapterId
+		printf("Connection::handleReadConnect size - %d, result - %d\n"
 			, size
 			, (int)result
 			);
@@ -209,5 +189,45 @@ namespace Axe
 			this->close();
 			this->connectionFailed( m_streamIn, size );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Connection::handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size )
+	{
+		if( _ec )
+		{
+			printf("Connection::handleReadBodySize ec: %s\n"
+				, _ec.message().c_str() 
+				);
+
+			return;
+		}
+
+		std::size_t blob_size = *_size - sizeof(std::size_t);
+
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( blob_size );
+
+		m_socket->read( blob, blob_size
+			, boost::bind( &Connection::handleReadBody, handlePtr(this), boost::asio::placeholders::error )
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Connection::handleReadBody( const boost::system::error_code & _ec )
+	{
+		if( _ec )
+		{
+			printf("Connection::handleReadBody ec: %s\n"
+				, _ec.message().c_str() 
+				);
+
+			return;
+		}
+
+		m_streamIn.begin();
+
+		std::size_t size;
+		m_streamIn.read( size );
+
+		this->dispatchMessage( m_streamIn, size );
+		this->run();
 	}
 }

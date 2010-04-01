@@ -173,4 +173,9 @@ namespace Axe
 
 		return connection;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	SocketPtr Communicator::createSocket()
+	{
+		return new Socket( m_service );
+	}
 }

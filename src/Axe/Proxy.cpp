@@ -43,7 +43,8 @@ namespace Axe
 	void Proxy::processMessage()
 	{
 		const ConnectionPtr & connection = m_adapterProvider->getConnection();
-		connection->processMessage();
+
+		connection->process();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Proxy::destroy_async( const Response_Servant_destroyPtr & _response )

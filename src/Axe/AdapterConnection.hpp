@@ -1,9 +1,9 @@
 #	pragma once
 
-
-#	include <Axe/Invocation.hpp>
+#	include <Axe/Connection.hpp>
 
 #	include <Axe/ConnectionCache.hpp>
+#	include <Axe/EndpointCache.hpp>
 
 namespace Axe
 {
@@ -12,13 +12,13 @@ namespace Axe
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class AdapterConnection
-		: public Invocation
+		: public Connection
 	{
 	public:
-		AdapterConnection( boost::asio::io_service & _service, std::size_t m_adapterId, const EndpointCachePtr & _endpointCache, const ConnectionCachePtr & _connectionCache );
+		AdapterConnection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, std::size_t _adapterId, const EndpointCachePtr & _endpointCache );
 
 	public:
-		ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;		
+		ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
 	public:
 		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;
@@ -31,6 +31,15 @@ namespace Axe
 		void writeBody( ArchiveInvocation & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 
 	protected:
+		void _reconnect() override;
+
+	protected:
+		void onEndpoint( const boost::asio::ip::tcp::endpoint & _endpoint );
+
+	protected:
+		std::size_t m_adapterId;
+		EndpointCachePtr m_endpointCache;
+
 		std::size_t m_messageEnum;
 
 		typedef std::map<std::size_t, ResponsePtr> TMapResponse;

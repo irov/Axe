@@ -8,7 +8,7 @@ namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
 	RouterProxyConnection::RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _adapterId )
-		: Connection( _adapterId )
+		: Connection( _base->getSocket(), _base->getConnectionCache() )
 		, m_base(_base)
 	{
 	}
@@ -23,8 +23,18 @@ namespace Axe
 		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RouterProxyConnection::processMessage()
+	void RouterProxyConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		m_base->process();
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterProxyConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterProxyConnection::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
+	{
+		//Empty
 	}
 }
