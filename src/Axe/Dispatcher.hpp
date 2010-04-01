@@ -2,6 +2,8 @@
 
 #	include <AxeUtil/Shared.hpp>
 
+#	include <Axe/Socket.hpp>
+
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
 
@@ -17,7 +19,7 @@ namespace Axe
 		void process();
 
 	public:
-		boost::asio::ip::tcp::socket & getSocket();
+		const SocketPtr & getSocket();
 
 		ArchiveInvocation & getArchiveInvocation();
 

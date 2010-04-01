@@ -10,7 +10,7 @@ namespace Axe
 		: public Dispatcher
 	{
 	public:
-		Session( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache );
+		Session( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache );
 
 	public:
 		void accept();

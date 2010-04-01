@@ -8,8 +8,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Session::Session( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache )
-		: Dispatcher(_service, _connectionCache)
+	Session::Session( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache )
+		: Dispatcher(_socket, _connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

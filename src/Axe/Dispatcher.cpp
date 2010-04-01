@@ -5,15 +5,15 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Dispatcher::Dispatcher( boost::asio::io_service & _service, const ConnectionCachePtr & _connectionCache )
-		: m_socket(_service)
+	Dispatcher::Dispatcher( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache )
+		: m_socket(_socket)
 		, m_connectionCache(_connectionCache)
 		, m_streamIn(_connectionCache)
 		, m_streamWrite(_connectionCache)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	boost::asio::ip::tcp::socket & Dispatcher::getSocket()
+	const SocketPtr & Dispatcher::getSocket()
 	{
 		return m_socket;
 	}
@@ -30,16 +30,20 @@ namespace Axe
 
 		std::size_t * size = m_streamIn.keep<std::size_t>();
 
-		boost::asio::async_read( m_socket
-			, boost::asio::buffer( size, sizeof(std::size_t) )
-			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
-			, boost::bind( &Dispatcher::handleReadBodySize, handlePtr(this), boost::asio::placeholders::error, size )
+		//boost::asio::async_read( m_socket
+		//	, boost::asio::buffer( size, sizeof(std::size_t) )
+		//	, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, sizeof(std::size_t) )
+		//	, boost::bind( &Dispatcher::handleReadBodySize, handlePtr(this), boost::asio::placeholders::error, size )
+		//	);
+		
+		m_socket->read( size, sizeof(size)
+			, boost::bind( &Dispatcher::handleReadBodySize, handlePtr(this), boost::asio::placeholders::error, size ) 
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::close()
 	{
-		m_socket.close();
+		m_socket->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::process()
@@ -54,10 +58,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::processArchive( const AxeUtil::Archive & _ar )
 	{
-		std::size_t size_ar = _ar.size();
-
-		boost::asio::async_write( m_socket
-			, boost::asio::buffer( _ar, size_ar )
+		//boost::asio::async_write( m_socket
+		//	, boost::asio::buffer( _ar, size_ar )
+		//	, boost::bind( &Dispatcher::handleWriteStream, handlePtr(this), boost::asio::placeholders::error )
+		//	);
+		m_socket->write_arhive( _ar
 			, boost::bind( &Dispatcher::handleWriteStream, handlePtr(this), boost::asio::placeholders::error )
 			);
 	}
@@ -92,13 +97,17 @@ namespace Axe
 			return;
 		}
 
-		std::size_t size_blob = *_size - sizeof(std::size_t);
+		std::size_t blob_size = *_size - sizeof(std::size_t);
 
-		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( size_blob );
+		AxeUtil::Archive::value_type * blob = m_streamIn.keepBuffer( blob_size );
 
-		boost::asio::async_read( m_socket
-			, boost::asio::buffer( blob, size_blob )
-			, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
+		//boost::asio::async_read( m_socket
+		//	, boost::asio::buffer( blob, size_blob )
+		//	, boost::bind( &Dispatcher::handleReadCondition, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, size_blob )
+		//	, boost::bind( &Dispatcher::handleReadBody, handlePtr(this), boost::asio::placeholders::error )
+		//	);
+
+		m_socket->read( blob, blob_size
 			, boost::bind( &Dispatcher::handleReadBody, handlePtr(this), boost::asio::placeholders::error )
 			);
 	}

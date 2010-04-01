@@ -1,26 +1,14 @@
 #	pragma once
 
 #	include <AxeUtil/Shared.hpp>
+#	include <AxeUtil/Archive.hpp>
 
 namespace Axe
 {
-	class SocketConnectResponse
-		: virtual public AxeUtil::Shared
-	{
-	public:
-		virtual void onConnect( const boost::system::error_code & _ec ) = 0;
-	};
-
-	typedef AxeHandle<SocketConnectResponse> SocketConnectResponsePtr;
-
-	class SocketAcceptResponse
-		: virtual public AxeUtil::Shared
-	{
-	public:
-		virtual void onAccept( const boost::system::error_code & _ec ) = 0;
-	};
-
-	typedef AxeHandle<SocketAcceptResponse> SocketAcceptResponsePtr;
+	typedef boost::function1<void, boost::system::error_code> FSocketConnectResponse;
+	typedef boost::function1<void, boost::system::error_code> FSocketAcceptResponse;
+	typedef boost::function2<void, boost::system::error_code, std::size_t> FSocketReadResponse;
+	typedef boost::function2<void, boost::system::error_code, std::size_t> FSocketWriteResponse;
 
 	class Socket
 		: virtual public AxeUtil::Shared
@@ -28,13 +16,17 @@ namespace Axe
 	public:
 		Socket( boost::asio::io_service & _service );
 
-	protected:
-		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const SocketConnectResponsePtr & _response );
-		void accept( boost::asio::ip::tcp::acceptor & _aceeptor, const SocketAcceptResponsePtr & _response );
+	public:
+		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const FSocketConnectResponse & _response );
+		void accept( boost::asio::ip::tcp::acceptor & _aceeptor, const FSocketAcceptResponse & _response );
 		void close();
 
-	protected:
-		static bool handleReadCondition( const boost::system::error_code & _ec, std::size_t _read, std::size_t _wait );
+	public:
+		void read( void * _buffer, std::size_t _size, const FSocketReadResponse & _response );
+		void write( void * _buffer, std::size_t _size, const FSocketWriteResponse & _response );
+
+		void read_arhive( const AxeUtil::Archive & _ar, const FSocketReadResponse & _response );
+		void write_arhive( const AxeUtil::Archive & _ar, const FSocketWriteResponse & _response );
 
 	protected:
 		boost::asio::ip::tcp::socket m_socket;
