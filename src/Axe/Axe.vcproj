@@ -156,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServantConnection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ServantConnection.hpp"
 				>
 			</File>
