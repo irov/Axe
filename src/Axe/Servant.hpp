@@ -29,6 +29,7 @@ namespace Axe
 		void setAdapterId( std::size_t _adapterId );
 		std::size_t getAdapterId() const;
 
+	public:
 		ProxyPtr getProxy( const ConnectionCachePtr & _connectionCache );
 
 	protected:

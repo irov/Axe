@@ -90,7 +90,7 @@ namespace Axe
 		, const std::string & _name
 		, std::size_t _id )
 	{
-		AdapterPtr adapter = new Adapter( this, _endpoint, _name, _id );
+		AdapterPtr adapter = new Adapter( this, _endpoint, _id );
 
 		m_adapters.insert( std::make_pair( _name, adapter ) );
 
@@ -157,7 +157,7 @@ namespace Axe
 		, const std::string & _name
 		, const RouterCreateResponsePtr & _response )
 	{
-		RouterPtr router = new Router( this, _endpoint, _name );
+		RouterPtr router = new Router( this, _endpoint );
 
 		m_routers.insert( std::make_pair( _name, router ) );
 
@@ -167,9 +167,11 @@ namespace Axe
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Communicator::createConnection( std::size_t _adapterId )
+	ConnectionPtr Communicator::createAdapterConnection( std::size_t _adapterId )
 	{
-		AdapterConnectionPtr connection = new AdapterConnection( m_service, _adapterId, m_endpointCache, m_connectionCache );
+		SocketPtr socket = createSocket();
+
+		AdapterConnectionPtr connection = new AdapterConnection( socket, _adapterId, m_endpointCache, m_connectionCache );
 
 		return connection;
 	}

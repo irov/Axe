@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Service.hpp>
+#	include <Axe/Acceptor.hpp>
 
 #	include <AxeProtocols/SessionManager.hpp>
 #	include <AxeProtocols/PermissionsVerifier.hpp>
@@ -11,10 +11,10 @@ namespace Axe
 	typedef AxeHandle<class RouterSession> RouterSessionPtr;	
 
 	class Router
-		: public Service
+		: public Acceptor
 	{
 	public:
-		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint );
 
 	public:
 		void start();

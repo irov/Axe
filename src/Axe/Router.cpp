@@ -18,8 +18,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name )
-		: Service(_communicator->getService(), _endpoint, _name)
+	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint )
+		: Acceptor(_communicator->getService(), _endpoint)
 		, m_communicator(_communicator)
 	{
 	}
@@ -28,7 +28,7 @@ namespace Axe
 	{
 		m_sessionManager = uncheckedCast<Proxy_SessionManagerPtr>( _unique );
 
-		Service::accept();
+		this->accept();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::getPermissionsVerifierResponse( const ProxyPtr & _unique )
@@ -49,8 +49,7 @@ namespace Axe
 		const Proxy_GridManagerPtr & gridManager = m_communicator->getGridManager();
 
 		gridManager->getUnique_async(
-			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 )
-				, noneExceptionFilter() )
+			bindResponse( boost::bind( &Router::getPermissionsVerifierResponse, handlePtr(this), _1 ) )
 			, "PermissionsVerifier"
 			);
 	}
@@ -62,9 +61,9 @@ namespace Axe
 		std::size_t requestId;
 		std::size_t adapterId;
 
-		_ar.read( servantId);
-		_ar.readSize( methodId);
-		_ar.readSize( requestId);
+		_ar.read( servantId );
+		_ar.readSize( methodId );
+		_ar.readSize( requestId );
 		_ar.readSize( adapterId );
 
 		const ConnectionCachePtr & connectionCache 
@@ -98,8 +97,7 @@ namespace Axe
 		if( _successful )
 		{
 			m_sessionManager->create_async( 
-				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session )
-					, noneExceptionFilter() )
+				bindResponse( boost::bind( &Router::createResponse, handlePtr(this), _1, _session ) )
 				, _login
 				);
 		}
@@ -112,8 +110,7 @@ namespace Axe
 	void Router::permissionVerify( const std::string & _login, const std::string & _password, const SessionPtr & _session )
 	{
 		m_permissionsVerifier->checkPermissions_async( 
-			bindResponse( boost::bind( &Router::checkPermissionsResponse, handlePtr(this), _1, _login, _session )
-				, noneExceptionFilter() )
+			bindResponse( boost::bind( &Router::checkPermissionsResponse, handlePtr(this), _1, _login, _session ) )
 			, _login
 			, _password
 			);

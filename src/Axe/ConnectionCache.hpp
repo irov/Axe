@@ -15,7 +15,7 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		virtual ConnectionPtr createConnection( std::size_t _adapterId ) = 0;
+		virtual ConnectionPtr createAdapterConnection( std::size_t _adapterId ) = 0;
 	};
 
 	typedef AxeHandle<ConnectionProvider> ConnectionProviderPtr;
@@ -28,8 +28,8 @@ namespace Axe
 		ConnectionCache( const ConnectionProviderPtr & _provider );
 
 	public:
-		void addConnection( std::size_t _adapterId, const ConnectionPtr & _connection );
-		const ConnectionPtr & getConnection( std::size_t _adapterId );
+		void addAdapterConnection( std::size_t _adapterId, const ConnectionPtr & _connection );
+		const ConnectionPtr & getAdapterConnection( std::size_t _adapterId );
 
 		const ProxyAdapterProviderPtr & getProxyAdapterProvider( std::size_t _servantId, std::size_t _adapterId ); 
 
@@ -38,7 +38,7 @@ namespace Axe
 
 	protected:
 		typedef std::map<std::size_t, ConnectionPtr> TMapConnections;
-		TMapConnections m_connections;
+		TMapConnections m_adapterConnections;
 
 		ConnectionProviderPtr m_provider;
 

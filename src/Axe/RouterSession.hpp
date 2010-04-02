@@ -9,7 +9,7 @@ namespace Axe
 		: public Session
 	{
 	public:
-		RouterSession( const SocketPtr & _socket, const RouterPtr & _rt, const ConnectionCachePtr & _connectionCache );
+		RouterSession( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, const RouterPtr & _rt );
 
 	public:
 		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;

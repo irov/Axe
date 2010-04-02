@@ -58,7 +58,9 @@ namespace Axe
 		_ar << m_servantId;
 
 		const ConnectionPtr & connection = m_adapterProvider->getConnection();
+		
 		std::size_t adapterId = connection->getAdapterId();
+
 		_ar.writeSize( adapterId );
 	}
 	//////////////////////////////////////////////////////////////////////////

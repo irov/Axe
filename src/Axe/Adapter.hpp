@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <Axe/Service.hpp>
+#	include <Axe/Acceptor.hpp>
 #	include <Axe/ServantProvider.hpp>
 
 namespace Axe
@@ -33,10 +33,10 @@ namespace Axe
 	typedef AxeHandle<AdapterRemoveServantResponse> AdapterRemoveServantResponsePtr;
 
 	class Adapter
-		: public Service
+		: public Acceptor
 	{
 	public:
-		Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _adapterId );
+		Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, std::size_t _adapterId );
 
 	public:
 		const CommunicatorPtr & getCommunicator() const;

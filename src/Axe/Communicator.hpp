@@ -103,7 +103,7 @@ namespace Axe
 			);
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _adapterId ) override;
+		ConnectionPtr createAdapterConnection( std::size_t _adapterId ) override;
 
 	public:
 		SocketPtr createSocket();

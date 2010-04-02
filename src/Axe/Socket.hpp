@@ -17,6 +17,9 @@ namespace Axe
 		Socket( boost::asio::io_service & _service );
 
 	public:
+		boost::asio::ip::tcp::socket & getAsioSocket() const;
+
+	public:
 		void connect( const boost::asio::ip::tcp::endpoint & _endpoint, const FSocketConnectResponse & _response );
 		void accept( boost::asio::ip::tcp::acceptor & _aceeptor, const FSocketAcceptResponse & _response );
 		void close();

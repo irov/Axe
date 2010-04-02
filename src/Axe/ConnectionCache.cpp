@@ -1,7 +1,8 @@
 #	include "pch.hpp"
 
-#	include <Axe/Connection.hpp>
 #	include <Axe/ConnectionCache.hpp>
+
+#	include <Axe/Connection.hpp>
 #	include <Axe/ProxyAdapterProvider.hpp>
 
 namespace Axe
@@ -12,20 +13,20 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConnectionCache::addConnection( std::size_t _adapterId, const ConnectionPtr & _connection )
+	void ConnectionCache::addAdapterConnection( std::size_t _adapterId, const ConnectionPtr & _connection )
 	{
-		m_connections.insert( std::make_pair(_adapterId, _connection) );
+		m_adapterConnections.insert( std::make_pair(_adapterId, _connection) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & ConnectionCache::getConnection( std::size_t _adapterId )
+	const ConnectionPtr & ConnectionCache::getAdapterConnection( std::size_t _adapterId )
 	{
-		TMapConnections::const_iterator it_found = m_connections.find( _adapterId );
+		TMapConnections::const_iterator it_found = m_adapterConnections.find( _adapterId );
 
-		if( it_found == m_connections.end() )
+		if( it_found == m_adapterConnections.end() )
 		{
 			ConnectionPtr connection = m_provider->createConnection( _adapterId );
 
-			it_found = m_connections.insert( std::make_pair(_adapterId, connection) ).first;
+			it_found = m_adapterConnections.insert( std::make_pair(_adapterId, connection) ).first;
 		}
 
 		return it_found->second;
@@ -37,7 +38,7 @@ namespace Axe
 
 		if( it_found == m_proxyAdapterProviders.end() )
 		{
-			const ConnectionPtr & connection = this->getConnection( _adapterId );
+			const ConnectionPtr & connection = this->getAdapterConnection( _adapterId );
 
 			ProxyAdapterProviderPtr provider = new ProxyAdapterProvider( connection );
 
@@ -56,7 +57,7 @@ namespace Axe
 			return;
 		}
 
-		const ConnectionPtr & connection = this->getConnection( _adapterId );
+		const ConnectionPtr & connection = this->getAdapterConnection( _adapterId );
 
 		it_found->second->setConnection( connection );
 	}

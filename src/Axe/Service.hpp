@@ -4,37 +4,16 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class Session> SessionPtr;
-
 	class Service
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		Service( boost::asio::io_service & _service, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name );
+		Service( boost::asio::io_service & _service );
 
 	public:
 		void run();
-		void accept();
-
-	public:
-		const std::string & getName() const;
-		const boost::asio::ip::tcp::endpoint & getEndpoint() const;
-
-	protected:
-		virtual SessionPtr makeSession() = 0;
-
-	private:
-		void acceptHandle( const boost::system::error_code & _ec, const SessionPtr & _sn );
 
 	protected:
 		boost::asio::io_service & m_service;
-
-		boost::asio::ip::tcp::endpoint m_endpoint;
-		boost::asio::ip::tcp::acceptor m_acceptor;
-
-		std::string m_name;
-
-		typedef std::list<SessionPtr> TListSessions;
-		TListSessions m_sessions;
 	};
 }

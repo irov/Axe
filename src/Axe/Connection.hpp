@@ -70,6 +70,7 @@ namespace Axe
 		ArchiveDispatcher m_streamIn;
 		ArchiveInvocation m_streamOut;
 
+	private:
 		AxeUtil::Archive m_archiveSend;
 	};
 

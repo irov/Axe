@@ -8,7 +8,7 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	RouterSession::RouterSession( const SocketPtr & _socket, const RouterPtr & _router, const ConnectionCachePtr & _connectionCache )
+	RouterSession::RouterSession( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, const RouterPtr & _router )
 		: Session(_socket, _connectionCache)
 		, m_router(_router)
 	{

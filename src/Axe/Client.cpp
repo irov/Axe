@@ -22,7 +22,7 @@ namespace Axe
 		m_routerConnection->createSession( _endpoint, _login, _password );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConnectionPtr Client::createConnection( std::size_t _adapterId )
+	ConnectionPtr Client::createAdapterConnection( std::size_t _adapterId )
 	{
 		ConnectionPtr cn = m_routerConnection->createProxyConnection( _adapterId );
 

@@ -10,6 +10,11 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	boost::asio::ip::tcp::socket & Socket::getAsioSocket() const
+	{
+		return m_socket;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Socket::connect( const boost::asio::ip::tcp::endpoint & _endpoint, const FSocketConnectResponse & _response )
 	{
 		m_socket.async_connect( _endpoint, _response );

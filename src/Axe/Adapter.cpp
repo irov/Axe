@@ -69,8 +69,8 @@ namespace Axe
 		typedef AxeHandle<AdapterServantProviderResponse> AdapterServantProviderResponsePtr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Adapter::Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _name, std::size_t _adapterId )
-		: Service(_communicator->getService(), _endpoint, _name)
+	Adapter::Adapter( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, std::size_t _adapterId )
+		: Acceptor(_communicator->getService(), _endpoint)
 		, m_communicator(_communicator)
 		, m_adapterId(_adapterId)
 	{
@@ -274,7 +274,7 @@ namespace Axe
 		{
 			const ConnectionCachePtr & connectionCache = m_communicator->getConnectionCache();
 
-			const ConnectionPtr & connection = connectionCache->getConnection( _adapterId );
+			const ConnectionPtr & connection = connectionCache->getAdapterConnection( _adapterId );
 
 			ArchiveInvocation & ar = connection->beginMessage( _servantId, _methodId, new RouterResponse( _requestId, _session ) );
 

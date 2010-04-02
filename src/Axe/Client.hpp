@@ -18,7 +18,7 @@ namespace Axe
 		void run();
 
 	protected:
-		ConnectionPtr createConnection( std::size_t _adapterId ) override;
+		ConnectionPtr createAdapterConnection( std::size_t _adapterId ) override;
 
 	protected:
 		boost::asio::io_service m_service;

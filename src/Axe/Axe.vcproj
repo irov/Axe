@@ -490,6 +490,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Acceptor"
+			>
+			<File
+				RelativePath=".\Acceptor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Acceptor.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
