@@ -62,8 +62,8 @@ namespace AxeLibProtocol
 	
 	class AOITileFactory
 	{
-		AOITile createTile();
-		void destroyTile( AOITile _tileProxy );
+		AOITile * createTile();
+		void destroyTile( AOITile * _tileProxy );
 	};
 	
 	class AOISpace
@@ -74,14 +74,14 @@ namespace AxeLibProtocol
 		void moveAvatar( AOIAvatarId _userId, AOIAvatarMoveDesc _moveDesc );
 		AOIPropagateDiffAvatar updateAvatar( AOIAvatarId _userId );
 
-		AOITile finalize();
+		AOITile * finalize();
 		
-		AOITile m_tileProxy;
+		AOITile * m_tileProxy;
 	};
 	
 	class AOISpaceFactory
 	{
-		AOISpace createSpace();
-		void destroySpace( AOISpace spaceProxy );
+		AOISpace * createSpace();
+		void destroySpace( AOISpace * spaceProxy );
 	};
 }

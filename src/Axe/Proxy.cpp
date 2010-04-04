@@ -3,7 +3,7 @@
 #	include <Axe/Proxy.hpp>
 
 #	include <Axe/ConnectionCache.hpp>
-#	include <Axe/ProxyAdapterProvider.hpp>
+#	include <Axe/ProxyConnectionProvider.hpp>
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ArchiveDispatcher.hpp>
@@ -16,9 +16,9 @@ namespace Axe
 		this->response();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Proxy::Proxy( std::size_t _servantId, const ProxyAdapterProviderPtr & _adapterProvider )
+	Proxy::Proxy( std::size_t _servantId, const ProxyConnectionProviderPtr & _adapterProvider )
 		: m_servantId(_servantId)
-		, m_adapterProvider(_adapterProvider)
+		, m_connectionProvider(_adapterProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,14 +27,14 @@ namespace Axe
 		return m_servantId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyAdapterProviderPtr & Proxy::getProxyAdapterProvider() const
+	const ProxyConnectionProviderPtr & Proxy::getConnectionProvider() const
 	{
-		return m_adapterProvider;
+		return m_connectionProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveInvocation & Proxy::beginMessage( std::size_t _methodId, const ResponsePtr & _response )
 	{
-		const ConnectionPtr & connection = m_adapterProvider->getConnection();
+		const ConnectionPtr & connection = m_connectionProvider->getConnection();
 		ArchiveInvocation & ar = connection->beginMessage( m_servantId, _methodId, _response );
 
 		return ar;
@@ -42,7 +42,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Proxy::processMessage()
 	{
-		const ConnectionPtr & connection = m_adapterProvider->getConnection();
+		const ConnectionPtr & connection = m_connectionProvider->getConnection();
 
 		connection->process();
 	}
@@ -57,14 +57,14 @@ namespace Axe
 	{
 		_ar << m_servantId;
 
-		const ConnectionPtr & connection = m_adapterProvider->getConnection();
+		const ConnectionPtr & connection = m_connectionProvider->getConnection();
 		
 		std::size_t adapterId = connection->getAdapterId();
 
 		_ar.writeSize( adapterId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyAdapterProviderPtr & makeProxyAdapterProvider( ArchiveDispatcher & _ar, std::size_t & _servantId )
+	const ProxyConnectionProviderPtr & makeProxyConnectionProvider( ArchiveDispatcher & _ar, std::size_t & _servantId )
 	{
 		_ar.read( _servantId );
 
@@ -73,7 +73,7 @@ namespace Axe
 
 		const ConnectionCachePtr & connectionCache = _ar.getConnectionCache();
 
-		const ProxyAdapterProviderPtr & provider = 
+		const ProxyConnectionProviderPtr & provider = 
 			connectionCache->getProxyAdapterProvider( _servantId, adapterId );
 
 		return provider;

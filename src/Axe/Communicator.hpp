@@ -53,6 +53,9 @@ namespace Axe
 
 	typedef AxeHandle<RouterCreateResponse> RouterCreateResponsePtr;
 
+	typedef boost::function1<void, Exception> TCommunicatorException;
+	typedef boost::function0<void> TCommunicatorConnectResponse
+
 	class Communicator
 		: virtual public AxeUtil::Shared
 		, public ConnectionProvider
@@ -70,7 +73,7 @@ namespace Axe
 		const ServantFactoryPtr & getServantFactory() const;
 
 	public:
-		void connectGrid( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _response );
+		void initialize( const boost::asio::ip::tcp::endpoint & _grid, const TCommunicatorConnectResponse & _response, const TCommunicatorException & _ex );
 		void connectEvictor( const boost::asio::ip::tcp::endpoint & _grid, const CommunicatorConnectResponsePtr & _response );
 
 	public:
@@ -134,8 +137,7 @@ namespace Axe
 
 		ServantFactoryPtr m_servantFactory;
 
-		typedef std::map<std::string, AdapterPtr> TMapAdapters;
-		TMapAdapters m_adapters; 
+
 
 		typedef std::map<std::string, RouterPtr> TMapRouters;
 		TMapRouters m_routers;

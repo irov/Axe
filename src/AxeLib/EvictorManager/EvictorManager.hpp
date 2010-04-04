@@ -33,13 +33,13 @@ namespace AxeLib
 
 		std::size_t m_enumerator;
 
-		struct Servant
+		struct ServantDesc
 		{
 			std::size_t adapterId;
 			std::string typeId;
 		};
 
-		typedef std::map<std::size_t, Servant> TMapServants;
+		typedef std::map<std::size_t, ServantDesc> TMapServants;
 		TMapServants m_servants;
 	};
 

@@ -22,13 +22,13 @@ namespace AxeLib
 			fwrite( &m_enumerator, sizeof(m_enumerator), 1, f );
 
 			fclose( f );
-
-			return true;
 		}
-		
-		fread( &m_enumerator, sizeof(m_enumerator), 1, f );
+		else
+		{
+			fread( &m_enumerator, sizeof(m_enumerator), 1, f );
 	
-		fclose( f );
+			fclose( f );
+		}
 
 		return true;
 	}
@@ -46,7 +46,7 @@ namespace AxeLib
 	{
 		++m_enumerator;
 
-		Servant desc;
+		ServantDesc desc;
 		desc.adapterId = _adapterId;
 		desc.typeId = _typeId;
 

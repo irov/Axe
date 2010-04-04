@@ -8,7 +8,7 @@
 
 #	include <Axe/ArchiveInvocation.hpp>
 #	include <Axe/ConnectionCache.hpp>
-#	include <Axe/ProxyAdapterProvider.hpp>
+#	include <Axe/ProxyConnectionProvider.hpp>
 
 namespace Axe
 {
@@ -41,7 +41,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	ProxyPtr Servant::getProxy( const ConnectionCachePtr & _connectionCache )
 	{
-		const ProxyAdapterProviderPtr & provider = 
+		const ProxyConnectionProviderPtr & provider = 
 			_connectionCache->getProxyAdapterProvider( m_servantId, m_adapterId );
 
 		return new Proxy( m_servantId, provider );

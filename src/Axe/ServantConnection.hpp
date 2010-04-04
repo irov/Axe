@@ -16,4 +16,6 @@ namespace Axe
 	protected:
 		std::string m_uniqueId;
 	};
+
+	typedef AxeHandle<ServantConnection> ServantConnectionPtr;
 }

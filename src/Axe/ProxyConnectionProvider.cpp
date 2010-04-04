@@ -1,23 +1,23 @@
 #	include "pch.hpp"
 
-#	include <Axe/ProxyAdapterProvider.hpp>
+#	include <Axe/ProxyConnectionProvider.hpp>
 #	include <Axe/Connection.hpp>
 
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	ProxyAdapterProvider::ProxyAdapterProvider( const ConnectionPtr & _connection )
+	ProxyConnectionProvider::ProxyConnectionProvider( const ConnectionPtr & _connection )
 		: m_connection(_connection)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConnectionPtr & ProxyAdapterProvider::getConnection() const
+	const ConnectionPtr & ProxyConnectionProvider::getConnection() const
 	{
 		return m_connection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ProxyAdapterProvider::setConnection( const ConnectionPtr & _connection )
+	void ProxyConnectionProvider::setConnection( const ConnectionPtr & _connection )
 	{
 		m_connection = _connection;
 	}

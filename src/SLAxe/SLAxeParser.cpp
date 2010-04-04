@@ -160,6 +160,11 @@ namespace Axe
 		m_type.name.assign( str, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::set_type_proxy( char const* str, char const* end )
+	{
+		m_type.proxy = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_typedef( char const* str, char const* end )
 	{
 		Namespace * nm = m_namespaces.back();
@@ -185,6 +190,9 @@ namespace Axe
 	void SLAxeParser::add_type_to_template_list( char const* str, char const* end )
 	{
 		m_typedef.templates.push_back( m_type );
+
+		m_type.name.clear();
+		m_type.proxy = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_method( char const* str, char const* end )
@@ -221,6 +229,9 @@ namespace Axe
 		}
 
 		m_outArgument = false;
+
+		m_type.name.clear();
+		m_type.proxy = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_default_out_argument( char const* str, char const* end )
@@ -236,6 +247,9 @@ namespace Axe
 		arg.out = true;
 
 		m_method.outArguments.push_back( arg );
+
+		m_type.name.clear();
+		m_type.proxy = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_exception_to_method( char const* str, char const* end )

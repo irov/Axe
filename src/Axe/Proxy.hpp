@@ -5,7 +5,7 @@
 
 namespace Axe
 {
-	typedef AxeHandle<class ProxyAdapterProvider> ProxyAdapterProviderPtr;
+	typedef AxeHandle<class ProxyConnectionProvider> ProxyConnectionProviderPtr;
 	typedef AxeHandle<class Response> ResponsePtr;
 
 	class ArchiveDispatcher;
@@ -44,11 +44,11 @@ namespace Axe
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		Proxy( std::size_t _servantId, const ProxyAdapterProviderPtr & _adaterProvider );
+		Proxy( std::size_t _servantId, const ProxyConnectionProviderPtr & _adaterProvider );
 
 	public:
 		std::size_t getServantId() const;
-		const ProxyAdapterProviderPtr & getProxyAdapterProvider() const;
+		const ProxyConnectionProviderPtr & getConnectionProvider() const;
 
 	public:
 		ArchiveInvocation & beginMessage( std::size_t _methodId, const ResponsePtr & _response );
@@ -62,7 +62,7 @@ namespace Axe
 
 	protected:
 		std::size_t m_servantId;
-		ProxyAdapterProviderPtr m_adapterProvider;
+		ProxyConnectionProviderPtr m_connectionProvider;
 	};
 
 	typedef AxeHandle<Proxy> ProxyPtr;
@@ -71,22 +71,22 @@ namespace Axe
 	inline T uncheckedCast( const ProxyPtr & _proxy )
 	{
 		std::size_t servantId = _proxy->getServantId();
-		const ProxyAdapterProviderPtr & provider = _proxy->getProxyAdapterProvider();
+		const ProxyConnectionProviderPtr & provider = _proxy->getProxyAdapterProvider();
 
 		typedef typename T::element_type element_type;
 
 		return new element_type( servantId, provider );
 	}
 
-	const ProxyAdapterProviderPtr & makeProxyAdapterProvider( ArchiveDispatcher & ar, std::size_t & servantId );
+	const ProxyConnectionProviderPtr & makeProxyConnectionProvider( ArchiveDispatcher & ar, std::size_t & servantId );
 
 	template<class T>
 	T makeProxy( ArchiveDispatcher & _ar )
 	{
 		std::size_t servantId;
 
-		const ProxyAdapterProviderPtr & provider = 
-			makeProxyAdapterProvider( _ar, servantId );
+		const ProxyConnectionProviderPtr & provider = 
+			makeProxyConnectionProvider( _ar, servantId );
 
 		typedef typename T::element_type El;
 

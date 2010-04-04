@@ -309,14 +309,6 @@
 				RelativePath=".\EndpointCache.hpp"
 				>
 			</File>
-			<File
-				RelativePath=".\ProxyAdapterProvider.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ProxyAdapterProvider.hpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Proxy"
@@ -327,6 +319,14 @@
 			</File>
 			<File
 				RelativePath=".\Proxy.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ProxyConnectionProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ProxyConnectionProvider.hpp"
 				>
 			</File>
 		</Filter>
@@ -467,6 +467,14 @@
 			</File>
 			<File
 				RelativePath=".\Communicator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ServerCommunicator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ServerCommunicator.hpp"
 				>
 			</File>
 		</Filter>

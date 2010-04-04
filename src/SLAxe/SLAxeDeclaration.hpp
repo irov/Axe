@@ -9,6 +9,7 @@ namespace Axe
 		struct Type
 		{
 			std::string name;
+			bool proxy;
 		};
 
 		typedef std::vector<Type> TVectorTypes;

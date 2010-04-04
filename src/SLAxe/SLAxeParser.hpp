@@ -34,6 +34,7 @@ namespace Axe
 
 
 		void set_type_name( char const* str, char const* end );
+		void set_type_proxy( char const* str, char const* end );
 
 		void add_typedef( char const* str, char const* end );
 		void set_typedef_name( char const* str, char const* end );

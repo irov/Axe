@@ -6,11 +6,11 @@ namespace Axe
 {
 	typedef AxeHandle<class Connection> ConnectionPtr; 
 
-	class ProxyAdapterProvider
+	class ProxyConnectionProvider
 		: virtual public AxeUtil::Shared
 	{
 	public:
-		ProxyAdapterProvider( const ConnectionPtr & _connection );
+		ProxyConnectionProvider( const ConnectionPtr & _connection );
 
 	public:
 		const ConnectionPtr & getConnection() const;
@@ -20,6 +20,6 @@ namespace Axe
 		ConnectionPtr m_connection;
 	};
 
-	typedef AxeHandle<ProxyAdapterProvider> ProxyAdapterProviderPtr;
+	typedef AxeHandle<ProxyConnectionProvider> ProxyConnectionProviderPtr;
 
 }

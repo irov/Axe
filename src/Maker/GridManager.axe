@@ -26,12 +26,12 @@ namespace Axe
 
 	class GridManager
 	{
-		size_t addAdapter( string _name, string _endpoint ) throws AdapterAlreadyExistException;
+		size_t addAdapter( string _name, string _endpoint, out EvictorManager * _evictor ) throws AdapterAlreadyExistException;
 		size_t getAdapterId( string _name ) throws AdapterNotFoundException;
 		string getAdapterEndpoint( size_t _adapterId ) throws AdapterNotFoundException;
 
-		void addUnique( string _name, Proxy _unique ) throws UniqueAlreadyExistException;
-		Proxy getUnique( string _name ) throws UniqueNotFoundException;
+		void addUnique( string _name, Proxy * _unique ) throws UniqueAlreadyExistException;
+		Proxy * getUnique( string _name ) throws UniqueNotFoundException;
 		
 		TMapAdapterIds m_adapterIds;
 		

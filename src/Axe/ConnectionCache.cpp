@@ -3,7 +3,7 @@
 #	include <Axe/ConnectionCache.hpp>
 
 #	include <Axe/Connection.hpp>
-#	include <Axe/ProxyAdapterProvider.hpp>
+#	include <Axe/ProxyConnectionProvider.hpp>
 
 namespace Axe
 {
@@ -20,11 +20,11 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	const ConnectionPtr & ConnectionCache::getAdapterConnection( std::size_t _adapterId )
 	{
-		TMapConnections::const_iterator it_found = m_adapterConnections.find( _adapterId );
+		TMapAdapterConnections::const_iterator it_found = m_adapterConnections.find( _adapterId );
 
 		if( it_found == m_adapterConnections.end() )
 		{
-			ConnectionPtr connection = m_provider->createConnection( _adapterId );
+			ConnectionPtr connection = m_provider->createAdapterConnection( _adapterId );
 
 			it_found = m_adapterConnections.insert( std::make_pair(_adapterId, connection) ).first;
 		}
@@ -32,7 +32,37 @@ namespace Axe
 		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ProxyAdapterProviderPtr & ConnectionCache::getProxyAdapterProvider( std::size_t _servantId, std::size_t _adapterId )
+	const ProxyConnectionProviderPtr & ConnectionCache::getProxyServantProvider( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		TMapProxyServantProviders::const_iterator it_found = m_proxyServantProviders.find( _name );
+
+		if( it_found == m_proxyServantProviders.end() )
+		{
+			const ServantConnectionPtr & connection = this->getServantConnection( _name, _endpoint );
+
+			ProxyConnectionProviderPtr provider = new ProxyConnectionProvider( connection );
+
+			it_found = m_proxyServantProviders.insert( std::make_pair(_name, provider) ).first;
+		}
+
+		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ServantConnectionPtr & ConnectionCache::getServantConnection( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		TMapServantConnections::const_iterator it_found = m_servantConnections.find( _name );
+
+		if( it_found == m_servantConnections.end() )
+		{
+			ServantConnectionPtr connection = m_provider->createServantConnection( _name, _endpoint );
+
+			it_found = m_servantConnections.insert( std::make_pair(_name, connection) ).first;
+		}
+
+		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ProxyConnectionProviderPtr & ConnectionCache::getProxyAdapterProvider( std::size_t _servantId, std::size_t _adapterId )
 	{
 		TMapProxyAdapterProviders::const_iterator it_found = m_proxyAdapterProviders.find( _servantId );
 
@@ -40,7 +70,7 @@ namespace Axe
 		{
 			const ConnectionPtr & connection = this->getAdapterConnection( _adapterId );
 
-			ProxyAdapterProviderPtr provider = new ProxyAdapterProvider( connection );
+			ProxyConnectionProviderPtr provider = new ProxyConnectionProvider( connection );
 
 			it_found = m_proxyAdapterProviders.insert( std::make_pair(_servantId, provider) ).first;
 		}

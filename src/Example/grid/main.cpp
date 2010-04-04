@@ -23,12 +23,11 @@ public:
 
 void main()
 {
-	boost::asio::ip::tcp::endpoint ep( boost::asio::ip::address::from_string("127.0.0.1"), 12001 );
-
 	Axe::CommunicatorPtr cm = new Axe::Communicator();
 	
 	AxeLib::GridManagerPtr grid = new AxeLib::GridManager;
 
+	boost::asio::ip::tcp::endpoint ep( boost::asio::ip::address::from_string("127.0.0.1"), 12001 );
 	cm->createGrid( ep, "Grid", grid, new MyGridCreateResponse );
 
 	cm->run();

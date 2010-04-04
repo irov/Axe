@@ -37,6 +37,6 @@ namespace AxeLibProtocol
 	
 	class PathFinderManager
 	{
-		PathFinderSpace createSpace( PathFinderSpaceDesc _desc );
+		PathFinderSpace * createSpace( PathFinderSpaceDesc _desc );
 	};
 }

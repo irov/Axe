@@ -122,8 +122,11 @@ namespace Axe
 					;
 
 				type
-					= boost::spirit::lexeme_d[name >> *("::" >> name)][ boost::bind( &SLAxeParser::set_type_name, parser, _1, _2 ) ]
+					= boost::spirit::lexeme_d[name >> *("::" >> name)][ boost::bind( &SLAxeParser::set_type_name, parser, _1, _2 ) ] >> *type_is_ptr
 				;
+
+				type_is_ptr
+					= boost::spirit::lexeme_d[boost::spirit::str_p("*")][ boost::bind( &SLAxeParser::set_type_proxy, parser, _1, _2 ) ];
 
 				name
 					= boost::spirit::lexeme_d[(boost::spirit::alpha_p | '_') >> *(boost::spirit::alnum_p | '_')]
@@ -141,7 +144,7 @@ namespace Axe
 				parents, parent, struct_body, class_body, include_helper, include_body,
 				member, method, method_argument_list, method_argument, throws_body, throws_name,
 
-				typedefs_template_type_list, complex_type, type, template_type,
+				typedefs_template_type_list, complex_type, type, type_is_ptr, template_type,
 				inheritance_type, name;
 		};
 

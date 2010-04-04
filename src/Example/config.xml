@@ -1,10 +1,10 @@
 <Solution>
-	<Adapter>Grid
-		<Endpoints>
+	<Grid>
+		<Endpoints>	
 			<Address>127.0.0.1</Address>
 			<Port>12001</Port>
 		</Endpoints>
-	</Adapter>
+	</Grid>
 		
 	<Evictor>
 		<Dll>server.dll</Dll>
