@@ -7,8 +7,8 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	RouterProxyConnection::RouterProxyConnection( const RouterConnectionPtr & _base, std::size_t _adapterId )
-		: Connection( _base->getSocket(), _base->getConnectionCache(), _adapterId )
+	RouterProxyConnection::RouterProxyConnection( const RouterConnectionPtr & _base )
+		: Connection( _base->getSocket(), _base->getConnectionCache() )
 		, m_base(_base)
 	{
 	}
@@ -18,10 +18,6 @@ namespace Axe
 		ArchiveInvocation & ar 
 			= m_base->beginMessage( _servantId, _methodId, _response );
 
-		std::size_t adapterId = this->getAdapterId();
-
-		ar.writeSize( adapterId );
-	
 		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
