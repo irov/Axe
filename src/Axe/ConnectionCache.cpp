@@ -3,6 +3,7 @@
 #	include <Axe/ConnectionCache.hpp>
 
 #	include <Axe/Connection.hpp>
+#	include <Axe/ServantConnection.hpp>
 #	include <Axe/ProxyConnectionProvider.hpp>
 
 namespace Axe
@@ -38,8 +39,8 @@ namespace Axe
 
 		if( it_found == m_proxyServantProviders.end() )
 		{
-			const ServantConnectionPtr & connection = this->getServantConnection( _name, _endpoint );
-
+			const ConnectionPtr & connection = this->getServantConnection( _name, _endpoint );
+			
 			ProxyConnectionProviderPtr provider = new ProxyConnectionProvider( connection );
 
 			it_found = m_proxyServantProviders.insert( std::make_pair(_name, provider) ).first;
@@ -48,13 +49,13 @@ namespace Axe
 		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ServantConnectionPtr & ConnectionCache::getServantConnection( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
+	const ConnectionPtr & ConnectionCache::getServantConnection( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		TMapServantConnections::const_iterator it_found = m_servantConnections.find( _name );
 
 		if( it_found == m_servantConnections.end() )
 		{
-			ServantConnectionPtr connection = m_provider->createServantConnection( _name, _endpoint );
+			ConnectionPtr connection = m_provider->createServantConnection( _name, _endpoint );
 
 			it_found = m_servantConnections.insert( std::make_pair(_name, connection) ).first;
 		}

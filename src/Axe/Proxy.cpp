@@ -59,9 +59,7 @@ namespace Axe
 
 		const ConnectionPtr & connection = m_connectionProvider->getConnection();
 		
-		std::size_t adapterId = connection->getAdapterId();
-
-		_ar.writeSize( adapterId );
+		connection->write( _ar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ProxyConnectionProviderPtr & makeProxyConnectionProvider( ArchiveDispatcher & _ar, std::size_t & _servantId )

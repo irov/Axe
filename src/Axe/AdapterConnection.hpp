@@ -27,6 +27,9 @@ namespace Axe
 		void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:
+		void write( ArchiveInvocation & _ar ) const override;
+
+	protected:
 		std::size_t addDispatch( const ResponsePtr & _response );
 		void writeBody( ArchiveInvocation & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response );
 

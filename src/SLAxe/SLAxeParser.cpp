@@ -8,7 +8,6 @@ namespace Axe
 
 	//////////////////////////////////////////////////////////////////////////
 	SLAxeParser::SLAxeParser()
-		:  m_outArgument(false)
 	{
 		m_namespaces.push_back( new Namespace(0) );
 	}
@@ -131,7 +130,9 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_member_type( char const* str, char const* end )
 	{
-		m_member.type.name.assign( str, end );
+		m_member.type = m_type;
+
+		m_type = Declaration::Type();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_member_name( char const* str, char const* end )
@@ -191,8 +192,7 @@ namespace Axe
 	{
 		m_typedef.templates.push_back( m_type );
 
-		m_type.name.clear();
-		m_type.proxy = false;
+		m_type = Declaration::Type();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_method( char const* str, char const* end )
@@ -209,29 +209,30 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::set_argument_out( char const* str, char const* end )
 	{
-		m_outArgument = true;
+		m_argument.out = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SLAxeParser::add_argument_type( char const* str, char const* end )
+	{
+		m_argument.type = m_type;
+
+		m_type = Declaration::Type();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_argument( char const* str, char const* end )
 	{
-		Argument arg;
-		arg.type = m_type;
-		arg.name.assign(str,end);
-		arg.out = m_outArgument;
+		m_argument.name.assign( str, end );
 
-		if( m_outArgument == false )
+		if( m_argument.out == false )
 		{
-			m_method.inArguments.push_back( arg );
+			m_method.inArguments.push_back( m_argument );
 		}
 		else
 		{
-			m_method.outArguments.push_back( arg );
+			m_method.outArguments.push_back( m_argument );
 		}
 
-		m_outArgument = false;
-
-		m_type.name.clear();
-		m_type.proxy = false;
+		m_argument = Argument();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_default_out_argument( char const* str, char const* end )
@@ -248,8 +249,7 @@ namespace Axe
 
 		m_method.outArguments.push_back( arg );
 
-		m_type.name.clear();
-		m_type.proxy = false;
+		m_type = Declaration::Type();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeParser::add_exception_to_method( char const* str, char const* end )

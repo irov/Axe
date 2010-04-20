@@ -69,7 +69,7 @@ namespace Axe
 		const ConnectionCachePtr & connectionCache 
 			= m_communicator->getConnectionCache();
 
-		const ConnectionPtr & cn = connectionCache->getConnection( adapterId );
+		const ConnectionPtr & cn = connectionCache->getAdapterConnection( adapterId );
 
 		ResponsePtr response = new RouterResponse( requestId, _session );
 

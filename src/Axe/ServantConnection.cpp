@@ -11,8 +11,16 @@ namespace Axe
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	void ServantConnection::write( ArchiveInvocation & _ar ) const
 	{
+		char connectionTypeId = 1;
+		_ar.writePOD( connectionTypeId );
 
+		_ar.write( m_uniqueId );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	//ArchiveInvocation & ServantConnection::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
+	//{
+
+	//}
 }

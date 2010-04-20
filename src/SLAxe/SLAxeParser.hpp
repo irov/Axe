@@ -45,6 +45,7 @@ namespace Axe
 		void set_method_name( char const* str, char const* end );
 
 		void set_argument_out( char const* str, char const* end );
+		void add_argument_type( char const* str, char const* end );
 		void add_argument( char const* str, char const* end );
 		void add_default_out_argument( char const* str, char const* end );
 		void add_exception_to_method( char const* str, char const* end );
@@ -58,12 +59,12 @@ namespace Axe
 
 		std::string m_inheritance;
 
-		bool m_outArgument;
 		Declaration::Class m_class;
 		Declaration::Struct m_struct;
 		Declaration::Exception m_exception;
 		Declaration::Method m_method;
 		Declaration::Member m_member;
+		Declaration::Argument m_argument;
 		Declaration::Typedef m_typedef;
 		Declaration::Type m_type;
 	};

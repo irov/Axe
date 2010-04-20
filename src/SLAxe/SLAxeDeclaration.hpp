@@ -8,6 +8,8 @@ namespace Axe
 
 		struct Type
 		{
+			Type(): proxy(false){}
+
 			std::string name;
 			bool proxy;
 		};
@@ -35,6 +37,8 @@ namespace Axe
 
 		struct Argument
 		{
+			Argument(): out(false){};
+
 			std::string name;
 			Type type;
 			bool out;

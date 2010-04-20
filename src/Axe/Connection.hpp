@@ -46,6 +46,9 @@ namespace Axe
 		void process();
 		void run();
 
+	public:
+		virtual void write( ArchiveInvocation & _ar ) const = 0;
+
 	protected:
 		void handleReadBodySize( const boost::system::error_code & _ec, std::size_t * _size );
 		void handleReadBody( const boost::system::error_code & _ec );

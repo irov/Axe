@@ -34,6 +34,14 @@ namespace Axe
 		return ar;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AdapterConnection::write( ArchiveInvocation & _ar ) const
+	{
+		char connectionTypeId = 0;
+		_ar.writePOD( connectionTypeId );
+
+		_ar.write( m_adapterId );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
 	{
 		if( _response == 0 )

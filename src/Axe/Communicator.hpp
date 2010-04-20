@@ -54,7 +54,7 @@ namespace Axe
 	typedef AxeHandle<RouterCreateResponse> RouterCreateResponsePtr;
 
 	typedef boost::function1<void, Exception> TCommunicatorException;
-	typedef boost::function0<void> TCommunicatorConnectResponse
+	typedef boost::function0<void> TCommunicatorConnectResponse;
 
 	class Communicator
 		: virtual public AxeUtil::Shared
