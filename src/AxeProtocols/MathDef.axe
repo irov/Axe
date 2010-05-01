@@ -1,0 +1,8 @@
+namespace Axe
+{
+	struct Position
+	{
+		float x;
+		float y;
+	};
+}

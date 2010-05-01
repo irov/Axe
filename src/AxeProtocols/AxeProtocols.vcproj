@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -147,6 +147,10 @@
 			Name="Player"
 			>
 			<File
+				RelativePath=".\Player.axe"
+				>
+			</File>
+			<File
 				RelativePath=".\Player.cpp"
 				>
 			</File>
@@ -158,6 +162,10 @@
 		<Filter
 			Name="EvictorManager"
 			>
+			<File
+				RelativePath=".\EvictorManager.axe"
+				>
+			</File>
 			<File
 				RelativePath=".\EvictorManager.cpp"
 				>
@@ -171,6 +179,10 @@
 			Name="GridManager"
 			>
 			<File
+				RelativePath=".\GridManager.axe"
+				>
+			</File>
+			<File
 				RelativePath=".\GridManager.cpp"
 				>
 			</File>
@@ -182,6 +194,10 @@
 		<Filter
 			Name="PermissionVerifier"
 			>
+			<File
+				RelativePath=".\PermissionsVerifier.axe"
+				>
+			</File>
 			<File
 				RelativePath=".\PermissionsVerifier.cpp"
 				>
@@ -195,6 +211,10 @@
 			Name="SessionManager"
 			>
 			<File
+				RelativePath=".\SessionManager.axe"
+				>
+			</File>
+			<File
 				RelativePath=".\SessionManager.cpp"
 				>
 			</File>
@@ -206,6 +226,10 @@
 		<Filter
 			Name="PathFinderSystem"
 			>
+			<File
+				RelativePath=".\PathFinderSystem.axe"
+				>
+			</File>
 			<File
 				RelativePath=".\PathFinderSystem.cpp"
 				>
@@ -219,6 +243,10 @@
 			Name="AOISystem"
 			>
 			<File
+				RelativePath=".\AOISystem.axe"
+				>
+			</File>
+			<File
 				RelativePath=".\AOISystem.cpp"
 				>
 			</File>
@@ -231,11 +259,19 @@
 			Name="Common"
 			>
 			<File
+				RelativePath=".\Common.axe"
+				>
+			</File>
+			<File
 				RelativePath=".\Common.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Common.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MathDef.axe"
 				>
 			</File>
 		</Filter>

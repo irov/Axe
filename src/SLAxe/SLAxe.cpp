@@ -12,16 +12,18 @@ namespace Axe
 		m_grammar = new SLAxeGrammar;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SLAxeParser * SLAxe::parse_( const std::string & _protocol )
+	SLAxeParser * SLAxe::parse_( const std::string & _path, const std::string & _protocol )
 	{
-		TMapParsers::iterator it_found = m_parsers.find( _protocol );
+		std::string parse_protocol = _path + _protocol;
+
+		TMapParsers::iterator it_found = m_parsers.find( parse_protocol );
 
 		if( it_found != m_parsers.end() )
 		{
 			return it_found->second;
 		}
 
-		FILE * file_in = fopen( _protocol.c_str(), "rb" );
+		FILE * file_in = fopen( parse_protocol.c_str(), "rb" );
 
 		if( file_in == 0 )
 		{
@@ -49,7 +51,7 @@ namespace Axe
 			return 0;
 		}
 
-		m_parsers.insert( std::make_pair(_protocol, parser) );
+		m_parsers.insert( std::make_pair(parse_protocol, parser) );
 
 		const Declaration::TVectorIncludes & includes = parser->getIncludes();
 
@@ -59,7 +61,7 @@ namespace Axe
 		it != it_end;
 		++it )
 		{
-			if( parse_( it->path + ".axe" ) == 0 )
+			if( parse_( _path, it->path + ".axe" ) == 0 )
 			{
 				return 0;
 			}
@@ -109,7 +111,7 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	bool SLAxe::make( const std::string & _protocol, const std::string & _path, const std::string & _name )
 	{
-		SLAxeParser * parser = parse_( _protocol );
+		SLAxeParser * parser = parse_( _path, _protocol );
 
 		if( parser == 0 )
 		{

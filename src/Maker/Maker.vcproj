@@ -172,43 +172,11 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\AOISystem.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\Common.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\EvictorManager.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\GridManager.axe"
-			>
-		</File>
-		<File
 			RelativePath=".\main.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\PathFinderSystem.axe"
-			>
-		</File>
-		<File
 			RelativePath=".\pch.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\PermissionsVerifier.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\Player.axe"
-			>
-		</File>
-		<File
-			RelativePath=".\SessionManager.axe"
 			>
 		</File>
 	</Files>

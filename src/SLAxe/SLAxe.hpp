@@ -18,7 +18,7 @@ namespace Axe
 		bool make( const std::string & _protocol, const std::string & _path, const std::string & _name ); 
 
 	protected:
-		SLAxeParser * parse_( const std::string & _protocol );
+		SLAxeParser * parse_( const std::string & _path, const std::string & _protocol );
 		void generate_( SLAxeParser * _parser, const std::string & _path, const std::string & _name );
 
 	protected:
