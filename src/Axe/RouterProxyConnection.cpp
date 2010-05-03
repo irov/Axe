@@ -35,4 +35,10 @@ namespace Axe
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterProxyConnection::write( ArchiveInvocation & _ar ) const
+	{
+		m_base->write( _ar );
+
+	}
 }

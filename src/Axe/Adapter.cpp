@@ -152,34 +152,6 @@ namespace Axe
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Adapter::addUnique( const std::string & _name, const std::string & _type, const AdapterCreateServantResponsePtr & _response )
-	{
-		const ServantFactoryPtr & servantFactory = m_communicator->getServantFactory();
-
-		ServantPtr servant = servantFactory->genServant( _type );
-
-		if( servant == 0 )
-		{
-			AdapterServantFactoryNotRegistredGeneratorException ex;
-			ex.servantType = _type;
-			ex.adapterId = m_adapterId;
-
-			if( _response )
-			{
-				_response->onServantCreateFailed( ex );
-			}
-		}
-		else
-		{
-			TMapUniques::iterator it_insert = m_uniques.insert( std::make_pair(_name, servant) ).first;
-
-			if( _response )
-			{
-				_response->onServantCreateSuccessful( it_insert->second );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Adapter::hasServant( std::size_t _servantId ) const
 	{
 		TMapServants::const_iterator it_found = m_servants.find( _servantId );
@@ -229,29 +201,6 @@ namespace Axe
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::dispatchMethod( std::size_t _servantId, std::size_t _methodId, std::size_t _requestId, ArchiveDispatcher & _archive, const SessionPtr & _session )
 	{
-		if( _servantId == 0 )
-		{
-			std::string uniqueId;
-			_archive.readString( uniqueId );
-
-			TMapUniques::iterator it_found = m_uniques.find( uniqueId );
-
-			if( it_found == m_uniques.end() )
-			{
-				DispatcherServantNotFoundException ex;
-				ex.servantId = _servantId;
-				ex.adapterId = m_adapterId;
-
-				_session->processException( _requestId, DispatcherServantNotFoundException::exceptionId, ex );
-				return;
-			}
-
-			const ServantPtr & servant = it_found->second;
-
-			servant->dispatchMethod( _methodId, _requestId, _archive, _session );
-			return;
-		}
-
 		TMapServants::iterator it_found = m_servants.find( _servantId );
 
 		if( it_found == m_servants.end() )

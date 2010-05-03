@@ -114,14 +114,9 @@ namespace Axe
 		this->permissionVerify( m_streamIn, size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Session::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
+	void Session::write( ArchiveInvocation & _ar ) const
 	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Session::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		//Empty
+		throw Axe::InternalException();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveInvocation & Session::beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )

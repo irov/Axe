@@ -19,7 +19,6 @@ namespace Axe
 		: Connection(_socket, _connectionCache)
 		, m_adapterId(_adapterId)
 		, m_endpointCache(_endpointCache)
-		, m_messageEnum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,7 @@ namespace Axe
 		
 		ar.begin();
 
-		this->writeBody( ar, _servantId, _methodId, _response );
+		this->invokeMethod( ar, _servantId, _methodId, _response );
 
 		return ar;
 	}
@@ -42,66 +41,11 @@ namespace Axe
 		_ar.write( m_adapterId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t AdapterConnection::addDispatch( const ResponsePtr & _response )
-	{
-		if( _response == 0 )
-		{
-			return 0;
-		}
-
-		++m_messageEnum;
-		m_dispatch.insert( std::make_pair( m_messageEnum, _response ) );
-
-		return m_messageEnum;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::writeBody( ArchiveInvocation & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )
-	{
-		std::size_t messageId = this->addDispatch( _response );
-
-		_archive << _servantId;
-
-		_archive.writeSize( _methodId );
-		_archive.writeSize( messageId );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void AdapterConnection::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
 	{
-		std::size_t responseId;
-		_ar.readSize( responseId );
-
-		TMapResponse::iterator it_found = m_dispatch.find( responseId );
-
-		if( it_found == m_dispatch.end() )
-		{
-			throw ProtocolMismatchException();
-		}
-
-		const ResponsePtr & response = it_found->second;
-
-		if( response->dispatch( _ar, _size ) == true )
-		{
-			m_dispatch.erase( it_found );
-		}
-
-		if( m_dispatch.empty() )
-		{
-			m_messageEnum = 0;
-		}
+		this->dispatchResponse( _ar, _size );
 
 		_ar.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AdapterConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		printf("Invocation::connectionFailed %d \n"
-			, m_adapterId
-			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AdapterConnection::_reconnect()

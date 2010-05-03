@@ -33,6 +33,11 @@ namespace Axe
 		return it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ConnectionCache::addServantConnection( const std::string & _name, const ConnectionPtr & _connection )
+	{
+		m_servantConnections.insert( std::make_pair(_name, _connection) );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ProxyConnectionProviderPtr & ConnectionCache::getProxyServantProvider( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint )
 	{
 		TMapProxyServantProviders::const_iterator it_found = m_proxyServantProviders.find( _name );
@@ -58,6 +63,25 @@ namespace Axe
 			ConnectionPtr connection = m_provider->createServantConnection( _name, _endpoint );
 
 			it_found = m_servantConnections.insert( std::make_pair(_name, connection) ).first;
+		}
+
+		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ConnectionCache::addRouterConnection( const boost::asio::ip::tcp::endpoint & _endpoint, const ConnectionPtr & _connection )
+	{
+		m_routerConnections.insert( std::make_pair(_endpoint, _connection) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConnectionPtr & ConnectionCache::getRouterConnection( const boost::asio::ip::tcp::endpoint & _endpoint )
+	{
+		TMapRouterConnections::const_iterator it_found = m_routerConnections.find( _endpoint );
+
+		if( it_found == m_routerConnections.end() )
+		{
+			ConnectionPtr connection = m_provider->createRouterConnection( _endpoint );
+
+			it_found = m_routerConnections.insert( std::make_pair(_endpoint, connection) ).first;
 		}
 
 		return it_found->second;

@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -389,6 +389,14 @@
 		<Filter
 			Name="Dispatcher"
 			>
+			<File
+				RelativePath=".\Dispatcher.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dispatcher.hpp"
+				>
+			</File>
 			<File
 				RelativePath=".\DispatcherException.cpp"
 				>

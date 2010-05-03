@@ -14,7 +14,10 @@ namespace Axe
 		: public Acceptor
 	{
 	public:
-		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint );
+		Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, std::size_t _routerId );
+
+	public:
+		std::size_t getRouterId() const;
 
 	public:
 		void start();
@@ -39,6 +42,7 @@ namespace Axe
 
 	protected:
 		CommunicatorPtr m_communicator;
+		std::size_t m_routerId;
 
 		Proxy_SessionManagerPtr m_sessionManager;
 		Proxy_PermissionsVerifierPtr m_permissionsVerifier;

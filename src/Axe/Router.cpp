@@ -18,10 +18,16 @@
 namespace Axe
 {
 	//////////////////////////////////////////////////////////////////////////
-	Router::Router(  const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint )
+	Router::Router( const CommunicatorPtr & _communicator, const boost::asio::ip::tcp::endpoint & _endpoint, std::size_t _routerId )
 		: Acceptor(_communicator->getService(), _endpoint)
 		, m_communicator(_communicator)
+		, m_routerId(_routerId)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Router::getRouterId() const
+	{
+		return m_routerId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Router::getSessionManagerResponse( const ProxyPtr & _unique )

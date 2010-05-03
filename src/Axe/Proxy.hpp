@@ -71,7 +71,7 @@ namespace Axe
 	inline T uncheckedCast( const ProxyPtr & _proxy )
 	{
 		std::size_t servantId = _proxy->getServantId();
-		const ProxyConnectionProviderPtr & provider = _proxy->getProxyAdapterProvider();
+		const ProxyConnectionProviderPtr & provider = _proxy->getConnectionProvider();
 
 		typedef typename T::element_type element_type;
 

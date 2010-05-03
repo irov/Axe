@@ -17,7 +17,7 @@ namespace Axe
 	{
 		SocketPtr socket = new Socket( m_service );
 
-		m_routerConnection = new RouterConnection( socket, m_connectionCache, 0, _client );
+		m_routerConnection = new RouterConnection( socket, m_connectionCache, 0, 0, _client );
 
 		m_routerConnection->createSession( _endpoint, _login, _password );
 	}

@@ -46,9 +46,6 @@ namespace Axe
 		bool hasServant( std::size_t _servantId ) const;
 
 	public:
-		void addUnique( const std::string & _name, const std::string & _type, const AdapterCreateServantResponsePtr & _response );
-
-	public:
 		void removeServant( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response );
 
 	public:
@@ -80,9 +77,6 @@ namespace Axe
 
 		typedef std::map<std::size_t, ServantPtr> TMapServants;
 		TMapServants m_servants;
-
-		typedef std::map<std::string, ServantPtr> TMapUniques;
-		TMapUniques m_uniques;
 	};
 
 	typedef AxeHandle<Adapter> AdapterPtr;

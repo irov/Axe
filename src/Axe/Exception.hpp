@@ -27,7 +27,7 @@ namespace Axe
 		void read( ArchiveDispatcher & _ar ) override;
 	};
 
-	class LocalException
+	class InternalException
 		: public Exception
 	{
 	public:
@@ -39,13 +39,10 @@ namespace Axe
 
 	public:
 		static const std::size_t exceptionId = EX_LocalException;
-
-	public:
-		std::string message;
 	};
 
 	class StdException
-		: public LocalException
+		: public InternalException
 	{
 	public:
 		void rethrow() const override;

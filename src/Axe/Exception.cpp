@@ -20,19 +20,19 @@ namespace Axe
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LocalException::rethrow() const
+	void InternalException::rethrow() const
 	{
 		throw *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LocalException::write( ArchiveInvocation & _aw ) const
+	void InternalException::write( ArchiveInvocation & _aw ) const
 	{
-		_aw << message;
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LocalException::read( ArchiveDispatcher & _ar )
+	void InternalException::read( ArchiveDispatcher & _ar )
 	{
-		_ar >> message;
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void StdException::rethrow() const
@@ -61,10 +61,10 @@ namespace Axe
 		{
 			throw;
 		}
-		catch( const ::Axe::Exception & )
+		catch( const ::Axe::Exception & _ex )
 		{
-			LocalException rex;
-			_ar.writeSize( LocalException::exceptionId );
+			InternalException rex;
+			_ar.writeSize( InternalException::exceptionId );
 			rex.write( _ar );
 		}
 		catch( const std::exception & _ex )
@@ -98,7 +98,7 @@ namespace Axe
 
 		switch( _exceptionId )
 		{
-			AXE_CASE_EXCEPTION(LocalException);
+			AXE_CASE_EXCEPTION(InternalException);
 			AXE_CASE_EXCEPTION(StdException);
 			AXE_CASE_EXCEPTION(UnknownException);
 		default:

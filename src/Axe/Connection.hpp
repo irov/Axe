@@ -10,11 +10,18 @@
 
 namespace Axe
 {
-	class ArchiveInvocation;
-	class ArchiveDispatcher;
-
 	typedef AxeHandle<class Response> ResponsePtr;
 	typedef AxeHandle<class ConnectionCache> ConnectionCachePtr;
+
+	enum EConnectionStatus
+	{
+		ECS_ERROR,
+		ECS_SUCCESSFUL,
+		ECS_FAILED,
+		ECS_LAST
+	};
+
+	typedef boost::function3<void, EConnectionStatus, ArchiveDispatcher &, std::size_t> FConnectionConnect;
 
 	class Connection
 		: virtual public AxeUtil::Shared
@@ -29,18 +36,14 @@ namespace Axe
 		ArchiveInvocation & getArchiveInvocation();
 	
 	public:
-		ArchiveInvocation & connect( const boost::asio::ip::tcp::endpoint & _endpoint );
+		ArchiveInvocation & connect( const boost::asio::ip::tcp::endpoint & _endpoint, FConnectionConnect _response );
 		void close();
 
 	protected:
-		void handleConnect( const boost::system::error_code & _ec );
+		void handleConnect( const boost::system::error_code & _ec, FConnectionConnect _response );
 
-		void handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size );
-		void handleReadConnect( const boost::system::error_code & _ec, AxeUtil::Archive::value_type * _blob );
-
-	protected:
-		virtual void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
-		virtual void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) = 0;
+		void handleReadConnectSize( const boost::system::error_code & _ec, std::size_t * _size, FConnectionConnect _response );
+		void handleReadConnect( const boost::system::error_code & _ec, AxeUtil::Archive::value_type * _blob, FConnectionConnect _response );
 
 	public:
 		void process();

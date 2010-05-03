@@ -14,18 +14,16 @@
 
 namespace Axe
 {
-	const std::size_t router_endpoint_id = 0;
 	//////////////////////////////////////////////////////////////////////////
-	RouterConnection::RouterConnection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache, const EndpointCachePtr & _endpointCache, const ClientConnectResponsePtr & _connectResponse )
-		: AdapterConnection(_socket, _connectionCache, router_endpoint_id, _endpointCache)
+	RouterConnection::RouterConnection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache )
+		: Connection(_socket, _connectionCache)
 		, m_connectionCache(_connectionCache)
-		, m_connectResponse(_connectResponse)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterConnection::createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password )
 	{
-		m_connectionCache->addConnection( router_endpoint_id, this );
+		m_connectionCache->addRouterConnection( _endpoint, this );
 
 		ArchiveInvocation & permission = this->connect( _endpoint );
 
@@ -51,5 +49,12 @@ namespace Axe
 	{
 		m_connectResponse->connectFailed();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RouterConnection::write( ArchiveInvocation & _ar ) const
+	{
+		char connectionTypeId = 2;
+		_ar.writePOD( connectionTypeId );
 
+		_ar.write( m_adapterId );
+	}
 }

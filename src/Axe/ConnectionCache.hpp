@@ -17,6 +17,7 @@ namespace Axe
 	public:
 		virtual ConnectionPtr createAdapterConnection( std::size_t _adapterId ) = 0;
 		virtual ConnectionPtr createServantConnection( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint ) = 0;
+		virtual ConnectionPtr createRouterConnection( const boost::asio::ip::tcp::endpoint & _endpoint ) = 0;
 	};
 
 	typedef AxeHandle<ConnectionProvider> ConnectionProviderPtr;
@@ -30,7 +31,12 @@ namespace Axe
 	public:
 		void addAdapterConnection( std::size_t _adapterId, const ConnectionPtr & _connection );
 		const ConnectionPtr & getAdapterConnection( std::size_t _adapterId );
+
+		void addServantConnection( const std::string & _name, const ConnectionPtr & _connection );
 		const ConnectionPtr & getServantConnection( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint );
+
+		void addRouterConnection( const boost::asio::ip::tcp::endpoint & _endpoint, const ConnectionPtr & _connection );
+		const ConnectionPtr & getRouterConnection( const boost::asio::ip::tcp::endpoint & _endpoint );
 
 		const ProxyConnectionProviderPtr & getProxyAdapterProvider( std::size_t _servantId, std::size_t _adapterId ); 
 		const ProxyConnectionProviderPtr & getProxyServantProvider( const std::string & _name, const boost::asio::ip::tcp::endpoint & _endpoint );
@@ -46,6 +52,9 @@ namespace Axe
 
 		typedef std::map<std::string, ConnectionPtr> TMapServantConnections;
 		TMapServantConnections m_servantConnections;
+
+		typedef std::map<boost::asio::ip::tcp::endpoint, ConnectionPtr> TMapRouterConnections;
+		TMapRouterConnections m_routerConnections;
 
 		typedef std::map<std::size_t, ProxyConnectionProviderPtr> TMapProxyAdapterProviders;
 		TMapProxyAdapterProviders m_proxyAdapterProviders;

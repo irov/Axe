@@ -275,6 +275,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="RouterLobby"
+			>
+			<File
+				RelativePath=".\RouterLobby.axe"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\pch.hpp"
 			>
