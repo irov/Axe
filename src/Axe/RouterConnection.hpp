@@ -8,6 +8,18 @@
 
 namespace Axe
 {
+	typedef AxeHandle<class Proxy_Session> Proxy_SessionPtr;
+
+	class RouterConnectionResponse
+		: virtual public AxeUtil::Shared
+	{
+	public:
+		virtual void response( const Proxy_SessionPtr & _session ) = 0;
+		virtual void throw_exception( const Exception & _ex ) = 0;
+	};
+
+	typedef AxeHandle<RouterConnectionResponse> RouterConnectionResponsePtr;
+
 	class RouterConnection
 		: public Connection
 		, public Dispatcher
@@ -16,14 +28,14 @@ namespace Axe
 		RouterConnection( const SocketPtr & _socket, const ConnectionCachePtr & _connectionCache );
 
 	public:
-		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint, const std::string & _login, const std::string & _password );
+		void createSession( const boost::asio::ip::tcp::endpoint & _endpoint
+			, const std::string & _login
+			, const std::string & _password
+			, const RouterConnectionResponsePtr & _cb
+			);
 
 	public:
 		ConnectionPtr createProxyConnection( std::size_t _adapterId );
-
-	protected:
-		void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:
 		void write( ArchiveInvocation & _ar ) const override;

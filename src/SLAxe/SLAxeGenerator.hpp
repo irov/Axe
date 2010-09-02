@@ -40,7 +40,7 @@ namespace Axe
 	protected:
 		void generateHeaderNamespaceHelper( Declaration::Namespace * _namespace );
 		void generateHeaderStructHelper( const Declaration::Struct & _struct );
-		void generateHeaderClassHelper( const Declaration::Class & _class );
+// 		void generateHeaderClassHelper( const Declaration::Class & _class );
 		
 
 	protected:
@@ -57,7 +57,7 @@ namespace Axe
 	protected:
 		void generateImplementNamespaceHelper( Declaration::Namespace * _namespace );
 		void generateImplementStructHelper( const Declaration::Struct & _struct );
-		void generateImplementClassHelper( const Declaration::Class & _class );
+//		void generateImplementClassHelper( const Declaration::Class & _class );
 
 	public:
 		std::stringstream & getStream();

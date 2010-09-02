@@ -24,10 +24,10 @@ namespace Axe
 			return 0;
 		}
 
-		++m_messageEnum;
-		m_dispatch.insert( std::make_pair( m_messageEnum, _response ) );
+		std::size_t new_messageId = ++m_messageEnum;
+		m_dispatch.insert( std::make_pair( new_messageId, _response ) );
 
-		return m_messageEnum;
+		return new_messageId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Dispatcher::invokeMethod( ArchiveInvocation & _archive, std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response )

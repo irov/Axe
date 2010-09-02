@@ -302,6 +302,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ConnectionException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ConnectionException.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EndpointCache.cpp"
 				>
 			</File>

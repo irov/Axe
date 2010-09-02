@@ -87,7 +87,7 @@ namespace Axe
 		void throw_exception( const Axe::Exception & _ex )
 		{
 			Axe::ArchiveInvocation & ar = this->beginException();
-			_ew.write( ar );
+			_ex.write( ar );
 			this->process();
 		}
 

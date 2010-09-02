@@ -17,8 +17,6 @@ namespace Axe
 		ArchiveInvocation & beginMessage( std::size_t _servantId, std::size_t _methodId, const ResponsePtr & _response ) override;
 
 	protected:
-		void connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size ) override;
-		void connectionFailed( ArchiveDispatcher & _ar, std::size_t _size ) override;
 		void dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size ) override;
 
 	protected:

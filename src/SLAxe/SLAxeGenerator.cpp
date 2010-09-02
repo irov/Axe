@@ -200,7 +200,7 @@ namespace Axe
 				}break;
 			case DECL_CLASS:
 				{
-					generateHeaderClassHelper( *it_class );
+					//generateHeaderClassHelper( *it_class );
 					++it_class;
 				}break;
 			case DECL_NAMESPACE:
@@ -357,104 +357,104 @@ namespace Axe
 		generateHeaderResponse( _class );
 		generateHeaderProxy( _class );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateHeaderClassHelper( const Declaration::Class & _class )
-	{
-		//class response_add_adapter
-		//	: public response_base
-		//{
-		//public:
-		//	virtual void response( std::size_t ) = 0;
-		//private:
-		//	void response_call( stream_read * _stream ) override;
-		//};
-
-		const Class & cl = _class;
-
-		for( TVectorMethods::const_iterator
-			it_method = cl.methods.begin(),
-			it_method_end = cl.methods.end();
-		it_method != it_method_end;
-		++it_method )
-		{
-			const Method & mt = *it_method;
-
-			std::string response_name = writeResponseName( cl.name, mt.name );
-
-			write() << std::endl;
-
-			std::string response_function = "void(";
-
-			TVectorArguments::const_iterator
-				it_arg = mt.outArguments.begin(),
-				it_arg_end = mt.outArguments.end();
-
-			if( it_arg != it_arg_end )
-			{
-				response_function += writeArgumentType( it_arg->type.name );
-
-				for( ++it_arg; it_arg != it_arg_end; ++it_arg )
-				{
-					response_function += ", " + writeArgumentType( it_arg->type.name );
-				}
-			}
-
-			response_function += ")";
-
-			write() << "template<>" << std::endl;
-			write() << "class BindResponse<" << response_name << "Ptr>" << std::endl;
-			write() << "	: public BindResponseHelper<" << response_name << ", " << response_function << '>' << std::endl;
-			write() << "{" << std::endl;
-			write() << "protected:" << std::endl;
-			write() << "	typedef BindResponseHelper<" << response_name << ", " << response_function << "> TBaseHelper;" << std::endl;
-			write() << std::endl;
-			write() << "public:" << std::endl;
-			write() << "	BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );" << std::endl;
-			write() << std::endl;
-			write() << "public:" << std::endl;
-
-			//	void response( int _i, float _f ) override
-			//	{
-			//		m_response( _i, _f );
-			//	}
-
-			write() << "	void response(";
-
-			{
-				std::size_t bellhop_args = 0;
-
-				TVectorArguments::const_iterator 
-					it_args = mt.outArguments.begin(),
-					it_args_end = mt.outArguments.end();
-
-				if( it_args != it_args_end )
-				{
-					const Argument & ar = *it_args;
-
-					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
-					++bellhop_args;
-
-					for( ++it_args; it_args != it_args_end; ++it_args )
-					{
-						const Argument & ar = *it_args;
-
-						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
-						++bellhop_args;
-					}
-
-					m_stream << " ";
-				}
-			}
-
-			m_stream << ") override;" << std::endl;
-			write() << "};" << std::endl;
-		}
-
-		std::string proxy_name = writeProxyName( cl.name );
-
-		write() << std::endl;
-		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value );" << std::endl;
-	}
+// 	//////////////////////////////////////////////////////////////////////////
+// 	void SLAxeGenerator::generateHeaderClassHelper( const Declaration::Class & _class )
+// 	{
+// 		//class response_add_adapter
+// 		//	: public response_base
+// 		//{
+// 		//public:
+// 		//	virtual void response( std::size_t ) = 0;
+// 		//private:
+// 		//	void response_call( stream_read * _stream ) override;
+// 		//};
+// 
+// 		const Class & cl = _class;
+// 
+// 		for( TVectorMethods::const_iterator
+// 			it_method = cl.methods.begin(),
+// 			it_method_end = cl.methods.end();
+// 		it_method != it_method_end;
+// 		++it_method )
+// 		{
+// 			const Method & mt = *it_method;
+// 
+// 			std::string response_name = writeResponseName( cl.name, mt.name );
+// 
+// 			write() << std::endl;
+// 
+// 			std::string response_function = "void(";
+// 
+// 			TVectorArguments::const_iterator
+// 				it_arg = mt.outArguments.begin(),
+// 				it_arg_end = mt.outArguments.end();
+// 
+// 			if( it_arg != it_arg_end )
+// 			{
+// 				response_function += writeArgumentType( it_arg->type.name );
+// 
+// 				for( ++it_arg; it_arg != it_arg_end; ++it_arg )
+// 				{
+// 					response_function += ", " + writeArgumentType( it_arg->type.name );
+// 				}
+// 			}
+// 
+// 			response_function += ")";
+// 
+// 			write() << "template<>" << std::endl;
+// 			write() << "class BindResponse<" << response_name << "Ptr>" << std::endl;
+// 			write() << "	: public BindResponseHelper<" << response_name << ", " << response_function << '>' << std::endl;
+// 			write() << "{" << std::endl;
+// 			write() << "protected:" << std::endl;
+// 			write() << "	typedef BindResponseHelper<" << response_name << ", " << response_function << "> TBaseHelper;" << std::endl;
+// 			write() << std::endl;
+// 			write() << "public:" << std::endl;
+// 			write() << "	BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception );" << std::endl;
+// 			write() << std::endl;
+// 			write() << "public:" << std::endl;
+// 
+// 			//	void response( int _i, float _f ) override
+// 			//	{
+// 			//		m_response( _i, _f );
+// 			//	}
+// 
+// 			write() << "	void response(";
+// 
+// 			{
+// 				std::size_t bellhop_args = 0;
+// 
+// 				TVectorArguments::const_iterator 
+// 					it_args = mt.outArguments.begin(),
+// 					it_args_end = mt.outArguments.end();
+// 
+// 				if( it_args != it_args_end )
+// 				{
+// 					const Argument & ar = *it_args;
+// 
+// 					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+// 					++bellhop_args;
+// 
+// 					for( ++it_args; it_args != it_args_end; ++it_args )
+// 					{
+// 						const Argument & ar = *it_args;
+// 
+// 						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+// 						++bellhop_args;
+// 					}
+// 
+// 					m_stream << " ";
+// 				}
+// 			}
+// 
+// 			m_stream << ") override;" << std::endl;
+// 			write() << "};" << std::endl;
+// 		}
+// 
+// 		std::string proxy_name = writeProxyName( cl.name );
+// 
+// 		write() << std::endl;
+// 		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value );" << std::endl;
+// 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateHeaderBellhop( const Class & _class )
 	{
@@ -920,7 +920,7 @@ namespace Axe
 				}break;
 			case DECL_CLASS:
 				{
-					generateImplementClassHelper( *it_class );
+					//generateImplementClassHelper( *it_class );
 					++it_class;
 				}break;
 			case DECL_NAMESPACE:
@@ -1001,103 +1001,103 @@ namespace Axe
 
 		write() << "}" << std::endl;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void SLAxeGenerator::generateImplementClassHelper( const Declaration::Class & _class )
-	{
-		const Class & cl = _class;
-
-		for( TVectorMethods::const_iterator
-			it_method = cl.methods.begin(),
-			it_method_end = cl.methods.end();
-		it_method != it_method_end;
-		++it_method )
-		{
-			const Method & mt = *it_method;
-
-			writeLine();
-
-			std::string response_name = writeResponseName( cl.name, mt.name );
-
-			std::string bindResponse = "BindResponse<" + response_name + "Ptr>";
-
-			write() << bindResponse << "::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )" << std::endl;
-			write() << "	: TBaseHelper(_response,_exception)" << std::endl;
-			write() << "{" << std::endl;
-			write() << "}" << std::endl;
-			//	void response( int _i, float _f ) override
-			//	{
-			//		m_response( _i, _f );
-			//	}
-
-			writeLine();
-			write() << "void " << bindResponse << "::response(";
-
-			{
-				std::size_t bellhop_args = 0;
-
-				TVectorArguments::const_iterator 
-					it_args = mt.outArguments.begin(),
-					it_args_end = mt.outArguments.end();
-
-				if( it_args != it_args_end )
-				{
-					const Argument & ar = *it_args;
-
-					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
-					++bellhop_args;
-
-					for( ++it_args; it_args != it_args_end; ++it_args )
-					{
-						const Argument & ar = *it_args;
-
-						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
-						++bellhop_args;
-					}
-
-					m_stream << " ";
-				}
-			}
-
-			m_stream << ")" << std::endl;
-
-			write() << "{" << std::endl;
-
-			write() << "	m_response(";
-
-			{
-				std::size_t bellhop_args = 0;
-
-				TVectorArguments::const_iterator
-					it_arg = mt.outArguments.begin(),
-					it_arg_end = mt.outArguments.end();
-
-				if( it_arg != it_arg_end )
-				{
-					m_stream << " _arg" << bellhop_args;
-					++bellhop_args;
-
-					for( ++it_arg; it_arg != it_arg_end; ++it_arg )
-					{
-						m_stream << ", _arg" << bellhop_args;
-						++bellhop_args;
-					}
-
-					m_stream << " ";
-				}
-			}
-
-			m_stream << ");" << std::endl;
-			write() << "}" << std::endl;
-		}
-
-		std::string proxy_name = writeProxyName( cl.name );
-
-		writeLine();
-		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
-		write() << "{" << std::endl;
-		write() << "	_value->write( _ar );" << std::endl;
-		write() << "}" << std::endl;
-	}
+// 	//////////////////////////////////////////////////////////////////////////
+// 	void SLAxeGenerator::generateImplementClassHelper( const Declaration::Class & _class )
+// 	{
+// 		const Class & cl = _class;
+// 
+// 		for( TVectorMethods::const_iterator
+// 			it_method = cl.methods.begin(),
+// 			it_method_end = cl.methods.end();
+// 		it_method != it_method_end;
+// 		++it_method )
+// 		{
+// 			const Method & mt = *it_method;
+// 
+// 			writeLine();
+// 
+// 			std::string response_name = writeResponseName( cl.name, mt.name );
+// 
+// 			std::string bindResponse = "BindResponse<" + response_name + "Ptr>";
+// 
+// 			write() << bindResponse << "::BindResponse( const TBaseHelper::TBindResponse & _response, const TBaseHelper::TBindException & _exception )" << std::endl;
+// 			write() << "	: TBaseHelper(_response,_exception)" << std::endl;
+// 			write() << "{" << std::endl;
+// 			write() << "}" << std::endl;
+// 			//	void response( int _i, float _f ) override
+// 			//	{
+// 			//		m_response( _i, _f );
+// 			//	}
+// 
+// 			writeLine();
+// 			write() << "void " << bindResponse << "::response(";
+// 
+// 			{
+// 				std::size_t bellhop_args = 0;
+// 
+// 				TVectorArguments::const_iterator 
+// 					it_args = mt.outArguments.begin(),
+// 					it_args_end = mt.outArguments.end();
+// 
+// 				if( it_args != it_args_end )
+// 				{
+// 					const Argument & ar = *it_args;
+// 
+// 					m_stream << " " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+// 					++bellhop_args;
+// 
+// 					for( ++it_args; it_args != it_args_end; ++it_args )
+// 					{
+// 						const Argument & ar = *it_args;
+// 
+// 						m_stream << ", " << writeArgumentType( ar.type.name ) << " _arg" << bellhop_args;
+// 						++bellhop_args;
+// 					}
+// 
+// 					m_stream << " ";
+// 				}
+// 			}
+// 
+// 			m_stream << ")" << std::endl;
+// 
+// 			write() << "{" << std::endl;
+// 
+// 			write() << "	m_response(";
+// 
+// 			{
+// 				std::size_t bellhop_args = 0;
+// 
+// 				TVectorArguments::const_iterator
+// 					it_arg = mt.outArguments.begin(),
+// 					it_arg_end = mt.outArguments.end();
+// 
+// 				if( it_arg != it_arg_end )
+// 				{
+// 					m_stream << " _arg" << bellhop_args;
+// 					++bellhop_args;
+// 
+// 					for( ++it_arg; it_arg != it_arg_end; ++it_arg )
+// 					{
+// 						m_stream << ", _arg" << bellhop_args;
+// 						++bellhop_args;
+// 					}
+// 
+// 					m_stream << " ";
+// 				}
+// 			}
+// 
+// 			m_stream << ");" << std::endl;
+// 			write() << "}" << std::endl;
+// 		}
+// 
+// 		std::string proxy_name = writeProxyName( cl.name );
+// 
+// 		writeLine();
+// 		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
+// 		write() << "{" << std::endl;
+// 		write() << "	_value->write( _ar );" << std::endl;
+// 		write() << "}" << std::endl;
+// 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplementClass(  const Class & _class )
 	{

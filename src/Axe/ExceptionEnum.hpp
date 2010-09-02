@@ -15,5 +15,7 @@ namespace Axe
 		, EX_DispatcherUniqueNotFoundException = 12
 		, EX_AdapterServantAlreadyExistException = 20
 		, EX_ServantFactoryGeneratorNotFoundException = 30
+		, EX_ConnectionConnectException = 40
+		, EX_ConnectionInvalidPermissionException = 41
 	};
 }

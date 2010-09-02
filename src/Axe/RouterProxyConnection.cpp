@@ -1,7 +1,6 @@
 #	include "pch.hpp"
 
 #	include <Axe/RouterProxyConnection.hpp>
-
 #	include <Axe/ArchiveInvocation.hpp>
 
 namespace Axe
@@ -19,16 +18,6 @@ namespace Axe
 			= m_base->beginMessage( _servantId, _methodId, _response );
 
 		return ar;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RouterProxyConnection::connectionSuccessful( ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RouterProxyConnection::connectionFailed( ArchiveDispatcher & _ar, std::size_t _size )
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RouterProxyConnection::dispatchMessage( ArchiveDispatcher & _ar, std::size_t _size )
