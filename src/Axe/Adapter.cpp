@@ -113,8 +113,9 @@ namespace Axe
 			const Proxy_EvictorManagerPtr & evictorManager = m_communicator->getEvictorManager();
 
 			evictorManager->erase_async( 
-				bindResponse( boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, ex )
-					, boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, _1 ) 
+				amiCallback(
+					amiMethod( _response, &AdapterCreateServantResponse::onServantCreateFailed, ex ),
+					amiMethod( _response, &AdapterCreateServantResponse::onServantCreateFailed )
 					)
 				, _servantId
 				);
@@ -144,8 +145,9 @@ namespace Axe
 		const Proxy_EvictorManagerPtr & evictorManager = m_communicator->getEvictorManager();
 
 		evictorManager->create_async( 
-			bindResponse( boost::bind( &Adapter::addServantResponse_, handlePtr(this), _1, servant, _response )
-				, boost::bind( &AdapterCreateServantResponse::onServantCreateFailed, _response, _1 ) 
+			amiCallback(
+				amiMethod( this, &Adapter::addServantResponse_, servant, _response ),
+				amiMethod( _response, &AdapterCreateServantResponse::onServantCreateFailed )
 				)
 			, m_adapterId
 			, _type
@@ -159,11 +161,19 @@ namespace Axe
 		return it_found != m_servants.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void removeServantResponse( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response )
+	static void s_removeServantResponse( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response )
 	{
 		_proxy->destroy_async(
-			bindResponse( boost::bind( &AdapterRemoveServantResponse::onServantRemoveSuccessful, _response ), boost::bind( &AdapterRemoveServantResponse::onServantRemoveFailed, _response, _1 ) )
+			amiCallback(
+				amiMethod( _response, &AdapterRemoveServantResponse::onServantRemoveSuccessful ),
+				amiMethod( _response, &AdapterRemoveServantResponse::onServantRemoveFailed )
+				)
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_removeServantException( const Exception & _ex )
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Adapter::removeServant( const ProxyPtr & _proxy, const AdapterRemoveServantResponsePtr & _response )
@@ -173,7 +183,10 @@ namespace Axe
 		const Proxy_EvictorManagerPtr & evictor = m_communicator->getEvictorManager();
 
 		evictor->erase_async(
-			bindResponse( boost::bind( &removeServantResponse, _proxy, _response ) )
+			amiCallback( 
+				amiFunction( &s_removeServantResponse, _proxy, _response ),
+				amiFunction( &s_removeServantException )
+				)
 			, servantId
 			);
 	}

@@ -677,7 +677,7 @@ namespace Axe
 			write() << "	: public Axe::Response" << std::endl;
 
 			write() << "{" << std::endl;
-			write() << "protected:" << std::endl;
+			write() << "public:" << std::endl;
 
 			write() << "	virtual void response(";
 
@@ -800,11 +800,12 @@ namespace Axe
 		write() << "};" << std::endl;
 		write() << std::endl;
 
-		//write() << "void operator << ( Axe::ArchiveInvocation & ar, const " << proxy_name << " & _value );" << std::endl;
-		//write() << "void operator >> ( Axe::ArchiveDispatcher & ar, " << proxy_name << " & _value );" << std::endl;
-		/*write() << std::endl;*/
-
 		writeTypedefHandle( proxy_name );
+
+		write() << std::endl;
+		write() << "void operator << ( Axe::ArchiveInvocation & ar, const " << proxy_name << "Ptr & _value );" << std::endl;
+		write() << "void operator >> ( Axe::ArchiveDispatcher & ar, " << proxy_name << "Ptr & _value );" << std::endl;
+		write() << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SLAxeGenerator::generateImplement( const std::string & _fileName )
@@ -1931,6 +1932,18 @@ namespace Axe
 			write() << "}" << std::endl;
 			//write() << std::endl;
 		}
+		
+		writeLine();
+		write() << "void operator >> ( Axe::ArchiveDispatcher & _ar, " << proxy_name << "Ptr & _value )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	" << proxy_name << "Ptr self = Axe::makeProxy<" << proxy_name << "Ptr>( _ar );" << std::endl;
+		write() << "	_value.swap( self );" << std::endl;
+		write() << "}" << std::endl;
+		writeLine();
+		write() << "void operator << ( Axe::ArchiveInvocation & _ar, const " << proxy_name << "Ptr & _value )" << std::endl;
+		write() << "{" << std::endl;
+		write() << "	_value->write(_ar);" << std::endl;
+		write() << "}" << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>

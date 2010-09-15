@@ -14,7 +14,7 @@ namespace Axe
 	class Response_Servant_destroy
 		: public Response
 	{
-	protected:
+	public:
 		virtual void response() = 0;
 
 	public:
@@ -22,23 +22,6 @@ namespace Axe
 	};
 
 	typedef AxeHandle<class Response_Servant_destroy> Response_Servant_destroyPtr;
-
-	template<>
-	class BindResponse<Response_Servant_destroyPtr>
-		: public BindResponseHelper<Response_Servant_destroy, void()>
-	{
-	public:
-		BindResponse( const TBindResponse & _response, const TBindException & _exception )
-			: BindResponseHelper<Response_Servant_destroy, void()>(_response, _exception )
-		{
-		}
-
-	public:
-		void response() override
-		{
-			m_response();
-		}
-	};
 
 	class Proxy
 		: virtual public AxeUtil::Shared
@@ -92,7 +75,4 @@ namespace Axe
 
 		return new El( servantId, provider );
 	}
-
-	void operator >> ( ArchiveDispatcher & _ar, ProxyPtr & _value );
-	void operator << ( ArchiveInvocation & _ar, const ProxyPtr & _value );
 }

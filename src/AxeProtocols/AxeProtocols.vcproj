@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="AxeProtocols"
 	ProjectGUID="{0815A219-E9A5-4E3A-9A1B-6CD74B3CBC49}"
 	RootNamespace="AxeProtocols"
@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="pch.hpp"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"

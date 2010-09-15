@@ -25,8 +25,10 @@ namespace Axe
 				m_communicator->getEvictorManager();
 
 			evictorManager->get_async(
-				bindResponse( boost::bind( &ServantProvider::onGet, handlePtr(this), _1, _2, _servantId )
-					, boost::bind( &ServantProvider::onException, handlePtr(this), _1, _servantId ) ) 
+				amiCallback( 
+					amiMethod( this, &ServantProvider::onGet, _servantId ),
+					amiMethod( this, &ServantProvider::onException, _servantId )					
+					)
 				, _servantId
 				, m_adapterId
 				);

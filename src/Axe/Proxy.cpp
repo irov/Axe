@@ -76,16 +76,4 @@ namespace Axe
 
 		return provider;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( ArchiveDispatcher & _ar, ProxyPtr & _value )
-	{
-		ProxyPtr self = makeProxy<ProxyPtr>( _ar );
-
-		_value.swap( self );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator << ( ArchiveInvocation & _ar, const ProxyPtr & _value )
-	{
-		_value->write(_ar);
-	}
 }
